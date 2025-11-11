@@ -42,7 +42,7 @@ export function RegulationModal() {
         <DialogHeader>
           <DialogTitle>Nosso Regulamento</DialogTitle>
           <DialogDescription>
-            Informações importantes para uma estadia tranquila e agradável para todos.
+            Importante: leia nossas orientações para a sua estadia
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
