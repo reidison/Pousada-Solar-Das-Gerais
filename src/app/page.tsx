@@ -113,9 +113,21 @@ export default function SolarInfoHubPage() {
     },
     {
       icon: <PhoneCall size={28} />,
-      title: "Telefones Úteis",
+      title: "Serviços e Locais Úteis",
       content: (
-        <p className="text-sm">Em breve...</p>
+        <div className="text-sm text-left w-full space-y-2">
+          <p>• Farmácia Drogaria Brasil</p>
+          <p>• Farmácia Araújo (Praça Tiradentes)</p>
+          <p>• Farmácia Perpétuo Socorro (Delivery)</p>
+          <p>• Unimed</p>
+          <p>• UPA Dom Orione</p>
+          <p>• Supermercado Estela da Barra</p>
+          <p>• Academia Powerfit</p>
+          <p>• Horários de Missas</p>
+          <p>• Agências Bancárias</p>
+          <p>• App de mobilidade: Pam Pam, 2V</p>
+          <p>• Programação de Shows</p>
+        </div>
       ),
     },
     {
