@@ -47,8 +47,8 @@ export default function SolarInfoHubPage() {
         <>
           <p>A porta principal utiliza uma senha eletrônica.</p>
           <p>Senha:</p>
-          <p className="font-bold text-lg text-primary flex items-center justify-center gap-2">
-            0525 <Check size={20} className="text-green-600" />
+          <p className="font-extrabold text-xl text-primary flex items-center justify-center gap-1">
+            0525 <Check size={22} className="text-green-600" />
           </p>
         </>
       ),
