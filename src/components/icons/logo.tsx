@@ -1,10 +1,15 @@
-import type { SVGProps } from 'react';
+'use client';
+
 import Image from 'next/image';
 
-export function Logo(props: Omit<React.ComponentProps<typeof Image>, 'src' | 'alt'>) {
+interface LogoProps extends Omit<React.ComponentProps<typeof Image>, 'alt'> {
+  src: string;
+}
+
+export function Logo({ src, ...props }: LogoProps) {
   return (
     <Image
-      src="/logo.png"
+      src={src}
       alt="Pousada Solar das Gerais"
       width={472}
       height={184}

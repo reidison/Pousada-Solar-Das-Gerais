@@ -1,3 +1,4 @@
+'use client';
 
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
@@ -10,23 +11,24 @@ import { Coffee, Wifi, Check, Map, Phone, GlassWater, KeyRound, PhoneCall, BookT
 import { UsefulServicesModal } from '@/components/useful-services-modal';
 import { RegulationModal } from '@/components/regulation-modal';
 import { WhatsappIcon } from '@/components/icons/whatsapp-icon';
+import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
+import type { LodgeInfo } from '@/types/lodge-info';
 
 export default function SolarInfoHubPage() {
-  const minibarItems = [
-    { item: 'Batata Pringles 109g', price: 'R$ 20,00' },
-    { item: 'Batata Raiz do Bem 80g', price: 'R$ 10,00' },
-    { item: 'Pimentinha 100g', price: 'R$ 10,00' },
-    { item: 'Pele Pururuca 70g', price: 'R$ 10,00' },
-    { item: 'Barra de Chocolate 80g', price: 'R$ 10,00' },
-    { item: 'Biscoito LOOK 55g', price: 'R$ 10,00' },
-    { item: 'Biscoito Clube Social 23,5g', price: 'R$ 3,50' },
-    { item: 'Tridente 18g', price: 'R$ 5,00' },
-    { item: 'Garrafa de Vinho', price: 'R$ 60,00' },
-    { item: 'Lata de Cerveja', price: 'R$ 10,00' },
-    { item: 'Lata de Refrigerante', price: 'R$ 7,00' },
-    { item: 'Água s/ Gás', price: 'R$ 5,00' },
-    { item: 'Água c/ Gás', price: 'R$ 5,00' },
-  ];
+  const firestore = useFirestore();
+  const lodgeInfoRef = useMemoFirebase(
+    () => (firestore ? doc(firestore, 'lodge_info', 'main') : null),
+    [firestore]
+  );
+  const { data: lodgeInfo, isLoading } = useDoc<LodgeInfo>(lodgeInfoRef);
+  
+  const minibarItems = lodgeInfo?.minibarMenu
+    ? lodgeInfo.minibarMenu.split('\n').map(item => {
+        const [name, price] = item.split(';');
+        return { item: name, price: price };
+      })
+    : [];
 
   const infoCards = [
     {
@@ -35,8 +37,8 @@ export default function SolarInfoHubPage() {
       content: (
         <>
           <p>Servido diariamente das</p>
-          <p className="font-bold text-lg text-primary">07:30 às 10:00</p>
-          <p className="text-sm">Local: Salão de Café</p>
+          <p className="font-bold text-lg text-primary">{lodgeInfo?.breakfastHours || 'Carregando...'}</p>
+          <p className="text-sm">Local: {lodgeInfo?.breakfastLocation || 'Carregando...'}</p>
         </>
       ),
     },
@@ -46,9 +48,9 @@ export default function SolarInfoHubPage() {
       content: (
         <>
           <p>Rede:</p>
-          <p className="font-bold text-lg text-primary">PousadaSolar</p>
+          <p className="font-bold text-lg text-primary">{lodgeInfo?.wifiName || 'Carregando...'}</p>
           <p>Senha:</p>
-          <p className="font-bold text-lg text-primary">pousada2023</p>
+          <p className="font-bold text-lg text-primary">{lodgeInfo?.wifiPassword || 'Carregando...'}</p>
         </>
       ),
     },
@@ -60,7 +62,8 @@ export default function SolarInfoHubPage() {
           <p>A porta principal utiliza uma senha eletrônica.</p>
           <p>Senha:</p>
           <p className="font-extrabold text-3xl text-primary flex items-center justify-center gap-1">
-            0525<Check size={40} className="text-green-600" strokeWidth={4} />
+            {lodgeInfo?.mainDoorAccessCode || '...'}
+            <Check size={40} className="text-green-600" strokeWidth={4} />
           </p>
         </>
       ),
@@ -70,9 +73,7 @@ export default function SolarInfoHubPage() {
       title: "City Tour",
       content: (
         <>
-          <p>Passeio pelos pontos históricos.</p>
-          <p>Saídas diárias às <strong>10:00</strong>.</p>
-          <p className="text-sm mt-2">Agende na recepção com 1 dia de antecedência.</p>
+          <p>{lodgeInfo?.cityTourSchedule || 'Carregando...'}</p>
         </>
       ),
     },
@@ -83,7 +84,7 @@ export default function SolarInfoHubPage() {
         <>
           <p className="mb-4">Precisa de algo? Estamos à disposição no WhatsApp.</p>
           <Button asChild className="bg-primary text-primary-foreground hover:bg-green-600">
-            <a href="https://wa.me/55313105268" target="_blank" rel="noopener noreferrer">
+            <a href={`https://wa.me/${lodgeInfo?.whatsappNumber || ''}`} target="_blank" rel="noopener noreferrer">
               <WhatsappIcon className="mr-2 h-5 w-5" />
               Falar pelo WhatsApp
             </a>
@@ -104,7 +105,9 @@ export default function SolarInfoHubPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {minibarItems.map((item) => (
+              {isLoading ? (
+                <TableRow><TableCell colSpan={2} className="text-center">Carregando...</TableCell></TableRow>
+              ) : minibarItems.map((item) => (
                 <TableRow key={item.item}>
                   <TableCell className="text-left py-2">{item.item}</TableCell>
                   <TableCell className="text-right py-2">{item.price}</TableCell>

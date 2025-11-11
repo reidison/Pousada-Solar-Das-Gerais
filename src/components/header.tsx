@@ -1,11 +1,26 @@
+'use client';
+
+import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
 import { Logo } from '@/components/icons/logo';
+import type { LodgeInfo } from '@/types/lodge-info';
 
 export function Header() {
+  const firestore = useFirestore();
+  const lodgeInfoRef = useMemoFirebase(
+    () => (firestore ? doc(firestore, 'lodge_info', 'main') : null),
+    [firestore]
+  );
+  const { data: lodgeInfo } = useDoc<LodgeInfo>(lodgeInfoRef);
+
+  // Use o logo local como padrão enquanto os dados carregam ou se não houver URL
+  const logoUrl = lodgeInfo?.logoUrl || "/logo.png";
+
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-sm border-b">
       <div className="container mx-auto px-4 h-20 flex items-center justify-center text-center sm:justify-start sm:text-left">
         <div className="flex items-center gap-3">
-          <Logo className="h-16 w-auto" />
+          <Logo src={logoUrl} className="h-16 w-auto" />
         </div>
       </div>
     </header>

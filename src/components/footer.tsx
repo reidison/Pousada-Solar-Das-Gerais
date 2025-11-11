@@ -1,5 +1,6 @@
-import { Logo } from '@/components/icons/logo';
-import { QrCodeIcon } from '@/components/icons/qr-code';
+'use client';
+
+import { Instagram } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -12,15 +13,14 @@ export function Footer() {
             </p>
           </div>
           <div className="text-center">
-            <p className="text-sm mb-2 font-semibold">Acesse Rápido via QR Code</p>
-            <a 
-              href="https://guiadereservas.com.br/solar-das-gerais/info" 
+             <a 
+              href="https://www.instagram.com/pousadasolardasgeraisop" 
               target="_blank" 
               rel="noopener noreferrer"
-              aria-label="Link para informações da pousada via QR Code"
-              className="inline-block p-1 bg-white rounded-md hover:scale-105 transition-transform"
+              className="flex items-center gap-2 text-sm font-semibold hover:text-accent transition-colors"
             >
-              <QrCodeIcon className="h-20 w-20" />
+              <Instagram size={20} />
+              <span>@pousadasolardasgeraisop</span>
             </a>
           </div>
         </div>

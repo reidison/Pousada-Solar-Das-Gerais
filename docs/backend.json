@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "LodgeInfo": {
@@ -9,6 +10,10 @@
         "id": {
           "type": "string",
           "description": "Unique identifier for the Lodge Info entity."
+        },
+        "logoUrl": {
+            "type": "string",
+            "description": "URL for the lodge's logo."
         },
         "breakfastHours": {
           "type": "string",
@@ -49,6 +54,7 @@
       },
       "required": [
         "id",
+        "logoUrl",
         "breakfastHours",
         "breakfastLocation",
         "wifiName",
