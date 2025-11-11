@@ -6,7 +6,7 @@ import { InfoCard } from '@/components/info-card';
 import { BackToTop } from '@/components/back-to-top';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Coffee, Wifi, Check, Map, Phone, GlassWater, KeyRound } from 'lucide-react';
+import { Coffee, Wifi, Check, Map, Phone, GlassWater, KeyRound, PhoneCall, BookText } from 'lucide-react';
 
 export default function SolarInfoHubPage() {
   const minibarItems = [
@@ -109,6 +109,20 @@ export default function SolarInfoHubPage() {
             </TableBody>
           </Table>
         </div>
+      ),
+    },
+    {
+      icon: <PhoneCall size={28} />,
+      title: "Telefones Úteis",
+      content: (
+        <p className="text-sm">Em breve...</p>
+      ),
+    },
+    {
+      icon: <BookText size={28} />,
+      title: "Nosso Regulamento",
+      content: (
+        <p className="text-sm">Em breve...</p>
       ),
     },
   ];
