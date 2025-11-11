@@ -21,7 +21,7 @@ export function WelcomeMessage() {
                 setMessage(result.welcomeMessage);
             } catch (error) {
                 console.error("Failed to fetch personalized welcome message:", error);
-                setMessage("Preparamos estas informações para que sua experiência conosco seja perfeita.");
+                setMessage("Horários, comodidades e informações para aproveitar ao máximo sua experiência conosco.");
             }
         }
         fetchMessage();
