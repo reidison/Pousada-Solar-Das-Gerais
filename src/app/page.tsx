@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Coffee, Wifi, Check, Map, Phone, GlassWater, KeyRound, PhoneCall, BookText } from 'lucide-react';
 import { UsefulServicesModal } from '@/components/useful-services-modal';
+import { RegulationModal } from '@/components/regulation-modal';
 import { WhatsappIcon } from '@/components/icons/whatsapp-icon';
 
 export default function SolarInfoHubPage() {
@@ -119,7 +120,6 @@ export default function SolarInfoHubPage() {
       title: "Telefones Úteis",
       content: (
         <div className="text-sm text-center w-full space-y-2">
-          <p>Clique no botão abaixo para ver uma lista de serviços, comércios e contatos úteis em Ouro Preto.</p>
           <UsefulServicesModal />
         </div>
       ),
@@ -128,7 +128,9 @@ export default function SolarInfoHubPage() {
       icon: <BookText size={28} />,
       title: "Nosso Regulamento",
       content: (
-        <p className="text-sm">Em breve...</p>
+        <div className="text-sm text-center w-full space-y-2">
+            <RegulationModal />
+        </div>
       ),
     },
   ];
