@@ -72,7 +72,7 @@ export default function SolarInfoHubPage() {
         <>
           <p className="mb-4">Precisa de algo? Estamos à disposição no WhatsApp.</p>
           <Button asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
-            <a href="https://wa.me/5531999999999" target="_blank" rel="noopener noreferrer">
+            <a href="https://wa.me/55313105268" target="_blank" rel="noopener noreferrer">
               Falar pelo WhatsApp
             </a>
           </Button>
