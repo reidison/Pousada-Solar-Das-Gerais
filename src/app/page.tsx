@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Coffee, Wifi, Check, Map, Phone, GlassWater, KeyRound, PhoneCall, BookText } from 'lucide-react';
 import { UsefulServicesModal } from '@/components/useful-services-modal';
+import { WhatsappIcon } from '@/components/icons/whatsapp-icon';
 
 export default function SolarInfoHubPage() {
   const minibarItems = [
@@ -80,8 +81,9 @@ export default function SolarInfoHubPage() {
       content: (
         <>
           <p className="mb-4">Precisa de algo? Estamos à disposição no WhatsApp.</p>
-          <Button asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
+          <Button asChild className="bg-green-600 hover:bg-green-700 text-white">
             <a href="https://wa.me/55313105268" target="_blank" rel="noopener noreferrer">
+              <WhatsappIcon className="mr-2 h-5 w-5" />
               Falar pelo WhatsApp
             </a>
           </Button>
