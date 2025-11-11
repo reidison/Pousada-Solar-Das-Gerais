@@ -10,11 +10,19 @@ import { Coffee, Wifi, Check, Map, Phone, GlassWater, KeyRound } from 'lucide-re
 
 export default function SolarInfoHubPage() {
   const minibarItems = [
-    { item: 'Água Mineral 500ml', price: 'R$ 5,00' },
-    { item: 'Refrigerante (lata)', price: 'R$ 7,00' },
-    { item: 'Cerveja (long neck)', price: 'R$ 10,00' },
-    { item: 'Salgadinho', price: 'R$ 8,00' },
-    { item: 'Chocolate', price: 'R$ 6,00' },
+    { item: 'Batata Pringles 109g', price: 'R$ 20,00' },
+    { item: 'Batata Raiz do Bem 80g', price: 'R$ 10,00' },
+    { item: 'Pimentinha 100g', price: 'R$ 10,00' },
+    { item: 'Pele Pururuca 70g', price: 'R$ 10,00' },
+    { item: 'Barra de Chocolate 80g', price: 'R$ 10,00' },
+    { item: 'Biscoito LOOK 55g', price: 'R$ 10,00' },
+    { item: 'Biscoito Clube Social 23,5g', price: 'R$ 3,50' },
+    { item: 'Tridente 18g', price: 'R$ 5,00' },
+    { item: 'Garrafa de Vinho', price: 'R$ 80,00' },
+    { item: 'Lata de Cerveja', price: 'R$ 10,00' },
+    { item: 'Lata de Refrigerante', price: 'R$ 7,00' },
+    { item: 'Água s/ Gás', price: 'R$ 5,00' },
+    { item: 'Água c/ Gás', price: 'R$ 5,00' },
   ];
 
   const infoCards = [
