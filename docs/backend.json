@@ -59,6 +59,38 @@
         "minibarMenu",
         "welcomeMessage"
       ]
+    },
+    "ServiceCategory": {
+      "title": "Service Category",
+      "description": "A category for useful services, e.g., 'Pharmacies', 'Restaurants'.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the category."
+        }
+      },
+      "required": ["name"]
+    },
+    "ServiceItem": {
+      "title": "Service Item",
+      "description": "A specific service item with contact details.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the service or establishment."
+        },
+        "address": {
+          "type": "string",
+          "description": "The address of the service."
+        },
+        "phone": {
+          "type": "string",
+          "description": "The contact phone number for the service."
+        }
+      },
+      "required": ["name", "address", "phone"]
     }
   },
   "auth": {
@@ -79,8 +111,24 @@
           "description": "Stores general information about the lodge. A single document contains all lodge information. This simplifies fetching the configuration and also editing it.",
           "params": []
         }
+      },
+      {
+        "path": "/service_categories/{categoryId}",
+        "definition": {
+          "entityName": "ServiceCategory",
+          "schema": { "$ref": "#/backend/entities/ServiceCategory" },
+          "description": "Collection of service categories."
+        }
+      },
+      {
+        "path": "/service_categories/{categoryId}/items/{itemId}",
+        "definition": {
+          "entityName": "ServiceItem",
+          "schema": { "$ref": "#/backend/entities/ServiceItem" },
+          "description": "Sub-collection for service items within a category."
+        }
       }
     ],
-    "reasoning": "This design prioritizes simplicity and ease of management for lodge information. A single collection, `lodge_info`, is used to store the lodge's details. Each document within this collection represents a specific set of information, such as breakfast details, WiFi access, etc. A single document stores all information, which simplifies retrieval and updates. This structure avoids unnecessary complexity and allows for straightforward management of lodge information. The design ensures easy retrieval of information and simplifies the process of updating or modifying lodge details. The data structure focuses on storing lodge information efficiently, making it accessible for display and updates via the administrative interface."
+    "reasoning": "The design includes a single document for LodgeInfo for simplicity. For services, a `service_categories` collection allows for organizing services. Each category document can then have a sub-collection of `items`, which provides a structured and scalable way to manage useful contacts."
   }
 }
