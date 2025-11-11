@@ -12,19 +12,27 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 
 export function RegulationModal() {
   const [regulationText, setRegulationText] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const { toast } = useToast();
 
   const handleConfirm = () => {
     // Here you would typically save the regulationText to your database.
-    // For now, we'll just log it to the console.
     console.log('Regulamento Salvo:', regulationText);
-    // You might want to close the dialog after confirming.
+
+    toast({
+      title: 'Sucesso!',
+      description: 'O regulamento foi atualizado.',
+    });
+
+    setIsOpen(false); // Fecha o modal
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">
           Ler
@@ -34,7 +42,7 @@ export function RegulationModal() {
         <DialogHeader>
           <DialogTitle>Nosso Regulamento</DialogTitle>
           <DialogDescription>
-            Leia as regras da Pousada. Edite o texto abaixo para atualizar o regulamento.
+            Informações importantes para uma estadia tranquila e agradável para todos.
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
