@@ -148,7 +148,7 @@ export function UsefulServicesModal() {
                     Adicionar Categoria
                 </Button>
                 <Button variant="secondary" size="sm" onClick={handleImportRestaurants} disabled={isImporting}>
-                    {isImporting ? 'Importando...' : 'Importar Restaurantes (Exemplo)'}
+                    {isImporting ? 'Importando...' : 'Importar Restaurantes (Dados de Exemplo)'}
                 </Button>
               </div>
             )}
@@ -184,7 +184,7 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
 
   const handleDeleteCategory = async () => {
     if (!window.confirm(`Tem certeza que deseja excluir a categoria "${category.name}" e todos os seus itens?`)) return;
-    if (!categoryDocRef || !itemsRef) return;
+    if (!categoryDocRef || !itemsRef || !firestore) return;
     
     // Deletar subcoleção
     const itemsSnapshot = await getDocs(itemsRef);
