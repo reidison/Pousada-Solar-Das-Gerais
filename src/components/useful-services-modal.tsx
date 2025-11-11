@@ -18,9 +18,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, deleteDoc, writeBatch, getDocs, query, where } from 'firebase/firestore';
 import { Phone, PlusCircle, Trash2, Save, X, Edit } from 'lucide-react';
 import type { WithId } from '@/firebase';
+import { useToast } from "@/hooks/use-toast"
 
 interface ServiceItem {
   name: string;
@@ -32,10 +33,23 @@ interface ServiceCategory {
   name: string;
 }
 
+const restaurantsData = [
+    { name: 'Bené da Flauta', address: 'Rua São Francisco de Assis, 32 – Centro', phone: '(31) 3551-1036' },
+    { name: 'Casa do Ouvidor', address: 'Rua Conde de Bobadela (Rua Direita), 42 – Centro', phone: '(31) 3551-2141' },
+    { name: 'Restaurante Adega', address: 'Rua Teixeira Amaral, 24 – Centro Histórico', phone: '(31) 3551-4171' },
+    { name: 'Restaurante Conto de Reis', address: 'Rua Camilo de Brito, 21 – Centro', phone: '(31) 3551-5359' },
+    { name: 'O Passo Pizza Jazz', address: 'Rua São José, 56 – Centro', phone: '(31) 3552-5089' },
+    { name: 'Escadabaixo Bar Cozinha', address: 'Rua Conde de Bobadela, 122 – Centro', phone: '(31) 3551-5097' },
+    { name: 'Varanda 1921', address: 'Travessa Domingos Vidal, 80 – Bairro Rosário', phone: '(31) 3105-1493' },
+    { name: 'Dom Duke Restaurante e Pizzaria', address: 'Rua Barão de Camargos, 126 – Centro', phone: '(31) 99773-6969' },
+    { name: 'Tenente Pimenta Rock Bar', address: 'Rua Carlos Tomaz, 33A – Centro', phone: '(31) 98327-7362' },
+];
+
+
 export function UsefulServicesModal() {
   const firestore = useFirestore();
+  const { toast } = useToast();
 
-  // Memoize the collection reference
   const categoriesRef = useMemoFirebase(() => {
     if (!firestore) return null;
     return collection(firestore, 'service_categories');
@@ -45,6 +59,7 @@ export function UsefulServicesModal() {
 
   const [newCategoryName, setNewCategoryName] = useState('');
   const [isAddingCategory, setIsAddingCategory] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
 
   const handleAddCategory = async () => {
     if (newCategoryName.trim() === '' || !categoriesRef) return;
@@ -52,6 +67,45 @@ export function UsefulServicesModal() {
     setNewCategoryName('');
     setIsAddingCategory(false);
   };
+  
+  const handleImportRestaurants = async () => {
+    if (!firestore || !categoriesRef) return;
+
+    setIsImporting(true);
+    toast({ title: "Importando restaurantes...", description: "Por favor, aguarde." });
+
+    try {
+        const categoryName = "Restaurantes";
+        const q = query(categoriesRef, where("name", "==", categoryName));
+        const querySnapshot = await getDocs(q);
+
+        let categoryId;
+
+        if (querySnapshot.empty) {
+            const categoryDoc = await addDoc(categoriesRef, { name: categoryName });
+            categoryId = categoryDoc.id;
+        } else {
+            categoryId = querySnapshot.docs[0].id;
+        }
+
+        const itemsCollectionRef = collection(firestore, 'service_categories', categoryId, 'items');
+        const batch = writeBatch(firestore);
+
+        restaurantsData.forEach(restaurant => {
+            const newItemRef = doc(itemsCollectionRef);
+            batch.set(newItemRef, restaurant);
+        });
+
+        await batch.commit();
+
+        toast({ title: "Sucesso!", description: "Restaurantes importados com sucesso." });
+    } catch (error) {
+        console.error("Erro ao importar restaurantes:", error);
+        toast({ variant: "destructive", title: "Erro na importação", description: "Não foi possível importar os restaurantes." });
+    } finally {
+        setIsImporting(false);
+    }
+};
 
   return (
     <Dialog>
@@ -65,7 +119,7 @@ export function UsefulServicesModal() {
             Uma lista de contatos importantes em Ouro Preto para sua conveniência.
           </DialogDescription>
         </DialogHeader>
-        <div className="max-h-[60vh] overflow-y-auto pr-4">
+        <div className="max-h-[60vh] overflow-y-auto pr-4 space-y-4">
           {isLoadingCategories ? (
             <p>Carregando...</p>
           ) : (
@@ -75,7 +129,7 @@ export function UsefulServicesModal() {
               ))}
             </Accordion>
           )}
-          <div className="mt-4">
+          <div className="mt-4 border-t pt-4">
             {isAddingCategory ? (
               <div className="flex items-center gap-2">
                 <Input
@@ -88,10 +142,15 @@ export function UsefulServicesModal() {
                 <Button size="icon" variant="ghost" onClick={() => setIsAddingCategory(false)}><X size={16}/></Button>
               </div>
             ) : (
-              <Button variant="outline" size="sm" onClick={() => setIsAddingCategory(true)}>
-                <PlusCircle size={16} className="mr-2" />
-                Adicionar Categoria
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                 <Button variant="outline" size="sm" onClick={() => setIsAddingCategory(true)}>
+                    <PlusCircle size={16} className="mr-2" />
+                    Adicionar Categoria
+                </Button>
+                <Button variant="secondary" size="sm" onClick={handleImportRestaurants} disabled={isImporting}>
+                    {isImporting ? 'Importando...' : 'Importar Restaurantes (Exemplo)'}
+                </Button>
+              </div>
             )}
           </div>
         </div>
@@ -124,10 +183,16 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
   };
 
   const handleDeleteCategory = async () => {
-    if (!window.confirm(`Tem certeza que deseja excluir a categoria "${category.name}"?`)) return;
-    if (!categoryDocRef) return;
-    // Note: This does not delete subcollections in Firestore. For a complete solution,
-    // a backend function would be required to recursively delete subcollection documents.
+    if (!window.confirm(`Tem certeza que deseja excluir a categoria "${category.name}" e todos os seus itens?`)) return;
+    if (!categoryDocRef || !itemsRef) return;
+    
+    // Deletar subcoleção
+    const itemsSnapshot = await getDocs(itemsRef);
+    const batch = writeBatch(firestore);
+    itemsSnapshot.docs.forEach(doc => batch.delete(doc.ref));
+    await batch.commit();
+
+    // Deletar categoria
     await deleteDoc(categoryDocRef);
   };
   
