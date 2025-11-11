@@ -5,7 +5,7 @@ import { InfoCard } from '@/components/info-card';
 import { BackToTop } from '@/components/back-to-top';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Coffee, Wifi, Check, Map, Phone, GlassWater } from 'lucide-react';
+import { Coffee, Wifi, Check, Map, Phone, GlassWater, KeyRound } from 'lucide-react';
 
 export default function SolarInfoHubPage() {
   const minibarItems = [
@@ -41,13 +41,15 @@ export default function SolarInfoHubPage() {
       ),
     },
     {
-      icon: <Check size={28} />,
+      icon: <KeyRound size={28} />,
       title: "Acesso Principal",
       content: (
         <>
           <p>A porta principal utiliza uma senha eletrônica.</p>
           <p>Senha:</p>
-          <p className="font-bold text-lg text-primary">1234</p>
+          <p className="font-bold text-lg text-primary flex items-center justify-center gap-2">
+            0525 <Check size={20} className="text-green-600" />
+          </p>
         </>
       ),
     },
