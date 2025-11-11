@@ -1,0 +1,86 @@
+{
+  "entities": {
+    "LodgeInfo": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "LodgeInfo",
+      "type": "object",
+      "description": "Represents general information about the lodge, accessible to guests.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Lodge Info entity."
+        },
+        "breakfastHours": {
+          "type": "string",
+          "description": "Breakfast serving hours."
+        },
+        "breakfastLocation": {
+          "type": "string",
+          "description": "Breakfast location within the lodge."
+        },
+        "wifiName": {
+          "type": "string",
+          "description": "WiFi network name."
+        },
+        "wifiPassword": {
+          "type": "string",
+          "description": "WiFi password for guest access."
+        },
+        "mainDoorAccessCode": {
+          "type": "string",
+          "description": "Access code or password for the main door."
+        },
+        "cityTourSchedule": {
+          "type": "string",
+          "description": "Schedule and instructions for booking a city tour."
+        },
+        "whatsappNumber": {
+          "type": "string",
+          "description": "WhatsApp number for contacting the reception."
+        },
+        "minibarMenu": {
+          "type": "string",
+          "description": "Menu of available items in the minibar and their prices (stored as a string, e.g., JSON or CSV)."
+        },
+        "welcomeMessage": {
+          "type": "string",
+          "description": "Welcome message for the guests, customizable based on weather and other conditions."
+        }
+      },
+      "required": [
+        "id",
+        "breakfastHours",
+        "breakfastLocation",
+        "wifiName",
+        "wifiPassword",
+        "mainDoorAccessCode",
+        "cityTourSchedule",
+        "whatsappNumber",
+        "minibarMenu",
+        "welcomeMessage"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/lodge_info/main",
+        "definition": {
+          "entityName": "LodgeInfo",
+          "schema": {
+            "$ref": "#/backend/entities/LodgeInfo"
+          },
+          "description": "Stores general information about the lodge. A single document contains all lodge information. This simplifies fetching the configuration and also editing it.",
+          "params": []
+        }
+      }
+    ],
+    "reasoning": "This design prioritizes simplicity and ease of management for lodge information. A single collection, `lodge_info`, is used to store the lodge's details. Each document within this collection represents a specific set of information, such as breakfast details, WiFi access, etc. A single document stores all information, which simplifies retrieval and updates. This structure avoids unnecessary complexity and allows for straightforward management of lodge information. The design ensures easy retrieval of information and simplifies the process of updating or modifying lodge details. The data structure focuses on storing lodge information efficiently, making it accessible for display and updates via the administrative interface."
+  }
+}

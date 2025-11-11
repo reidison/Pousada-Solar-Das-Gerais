@@ -1,0 +1,33 @@
+/**
+ * @fileoverview Firestore Security Rules for the LodgeInfo entity.
+ *
+ * Core Philosophy:
+ * This ruleset provides public read access to lodge information while restricting write access.
+ *
+ * Data Structure:
+ * Lodge information is stored in a single document at `/lodge_info/main`.
+ *
+ * Key Security Decisions:
+ * - Lodge information is considered public and readable by all users (including unauthenticated users).
+ * - Write operations (create, update, delete) are denied to all users, as this information should only be managed through an administrative interface (not covered by these rules).
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Allows anyone to read the lodge information, but restricts writes.
+     * @path /lodge_info/main
+     * @allow (get, list) Any user can read the lodge info.
+     * @deny (create, update, delete) No user can modify the lodge info.
+     * @principle Allows public read access but restricts all writes.
+     */
+    match /lodge_info/main {
+      allow get: if true;
+      allow list: if true;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+  }
+}
