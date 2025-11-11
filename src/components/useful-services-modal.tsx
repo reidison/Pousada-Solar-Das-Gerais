@@ -16,33 +16,101 @@ import {
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Phone } from 'lucide-react';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, orderBy, query } from 'firebase/firestore';
-import { Skeleton } from './ui/skeleton';
 
-interface ServiceItem {
-  name: string;
-  address: string;
-  phone: string;
-}
-
-interface ServiceCategory {
-  category: string;
-  items: ServiceItem[];
-  order: number;
-}
-
+const serviceCategories = [
+  {
+    category: 'Farmácias',
+    items: [
+      {
+        name: 'Drogaria Brasil',
+        address: 'Endereço...',
+        phone: 'Telefone...',
+      },
+      {
+        name: 'Farmácia Araujo',
+        address: 'Praça Tiradentes, Ouro Preto',
+        phone: 'Telefone...',
+      },
+      {
+        name: 'Farmácia Perpétuo Socorro (Delivery)',
+        address: 'Rua Padre Rolim, Ouro Preto',
+        phone: 'Telefone...',
+      },
+    ],
+  },
+  {
+    category: 'Saúde',
+    items: [
+      {
+        name: 'Unimed',
+        address: 'Endereço...',
+        phone: 'Telefone...',
+      },
+      {
+        name: 'UPA Dom Orione',
+        address: 'Endereço...',
+        phone: 'Telefone...',
+      },
+    ],
+  },
+  {
+    category: 'Supermercados',
+    items: [
+      {
+        name: 'Supermercado Estrela da Barra',
+        address: 'Endereço...',
+        phone: 'Telefone...',
+      },
+    ],
+  },
+  {
+    category: 'Serviços',
+    items: [
+        {
+        name: 'Academia Powerfit',
+        address: 'Endereço...',
+        phone: 'Telefone...',
+      },
+      {
+        name: 'Agências Bancárias',
+        address: 'Centro, Ouro Preto',
+        phone: 'Vários',
+      },
+    ],
+  },
+    {
+    category: 'Apps de Mobilidade',
+    items: [
+      {
+        name: 'Pam Pam',
+        address: 'Aplicativo de transporte',
+        phone: 'Baixe na loja de apps',
+      },
+      {
+        name: '2V',
+        address: 'Aplicativo de transporte',
+        phone: 'Baixe na loja de apps',
+      },
+    ],
+  },
+  {
+    category: 'Cultura e Lazer',
+    items: [
+      {
+        name: 'Horários de Missa',
+        address: 'Consulte na recepção ou igrejas',
+        phone: 'N/A',
+      },
+      {
+        name: 'Shows e Eventos',
+        address: 'Consulte a agenda da cidade',
+        phone: 'N/A',
+      },
+    ],
+  },
+];
 
 export function UsefulServicesModal() {
-  const firestore = useFirestore();
-  
-  const serviceCategoriesQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(collection(firestore, 'service_categories'), orderBy('order'));
-  }, [firestore]);
-
-  const { data: serviceCategories, isLoading } = useCollection<ServiceCategory>(serviceCategoriesQuery);
-
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -56,36 +124,27 @@ export function UsefulServicesModal() {
           </DialogDescription>
         </DialogHeader>
         <div className="max-h-[60vh] overflow-y-auto pr-4">
-          {isLoading && (
-             <div className="space-y-4">
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-             </div>
-          )}
-          {serviceCategories && (
-            <Accordion type="single" collapsible className="w-full">
-              {serviceCategories.map((category) => (
-                <AccordionItem key={category.id} value={category.category}>
-                  <AccordionTrigger className="font-semibold">{category.category}</AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-4">
-                      {category.items.map((item) => (
-                        <div key={item.name} className="flex flex-col text-left text-sm p-2 rounded-md border border-transparent hover:border-border">
-                          <p className="font-medium text-primary">{item.name}</p>
-                          <p className="text-muted-foreground">{item.address}</p>
-                          <a href={`tel:${item.phone.replace(/\D/g, '')}`} className="text-accent flex items-center gap-2 mt-1 hover:underline">
-                            <Phone size={14} />
-                            <span>{item.phone}</span>
-                          </a>
-                        </div>
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          )}
+          <Accordion type="single" collapsible className="w-full">
+            {serviceCategories.map((category) => (
+              <AccordionItem key={category.category} value={category.category}>
+                <AccordionTrigger className="font-semibold">{category.category}</AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-4">
+                    {category.items.map((item) => (
+                      <div key={item.name} className="flex flex-col text-left text-sm p-2 rounded-md border border-transparent hover:border-border">
+                        <p className="font-medium text-primary">{item.name}</p>
+                        <p className="text-muted-foreground">{item.address}</p>
+                        <a href={`tel:${item.phone.replace(/\D/g, '')}`} className="text-accent flex items-center gap-2 mt-1 hover:underline">
+                          <Phone size={14} />
+                          <span>{item.phone}</span>
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
       </DialogContent>
     </Dialog>
