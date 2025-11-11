@@ -200,24 +200,24 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
     <AccordionItem value={category.id}>
       <AccordionTrigger>
         <div className="flex justify-between items-center w-full pr-2">
-            {isEditingCategory ? (
-                 <div className="flex items-center gap-2 flex-grow" onClick={(e) => e.stopPropagation()}>
-                    <Input 
-                        value={editedCategoryName}
-                        onChange={(e) => setEditedCategoryName(e.target.value)}
-                        className="h-8"
-                        onKeyDown={(e) => e.key === 'Enter' && handleUpdateCategory()}
-                    />
-                     <Button size="icon" variant="ghost" onClick={handleUpdateCategory}><Save size={16} /></Button>
-                     <Button size="icon" variant="ghost" onClick={() => setIsEditingCategory(false)}><X size={16} /></Button>
-                 </div>
-            ) : (
-                <span className="font-semibold">{category.name}</span>
-            )}
-            <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
-                {!isEditingCategory && <Button size="icon" variant="ghost" onClick={() => setIsEditingCategory(true)}><Edit size={16} /></Button>}
-                <Button size="icon" variant="ghost" onClick={handleDeleteCategory}><Trash2 size={16} className="text-destructive"/></Button>
+          {isEditingCategory ? (
+            <div className="flex items-center gap-2 flex-grow" onClick={(e) => e.stopPropagation()}>
+              <Input
+                value={editedCategoryName}
+                onChange={(e) => setEditedCategoryName(e.target.value)}
+                className="h-8"
+                onKeyDown={(e) => e.key === 'Enter' && handleUpdateCategory()}
+              />
+              <Button size="icon" variant="ghost" onClick={handleUpdateCategory}><Save size={16} /></Button>
+              <Button size="icon" variant="ghost" onClick={() => setIsEditingCategory(false)}><X size={16} /></Button>
             </div>
+          ) : (
+            <span className="font-semibold">{category.name}</span>
+          )}
+          <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
+            {!isEditingCategory && <Button size="icon" variant="ghost" onClick={() => setIsEditingCategory(true)}><Edit size={16} /></Button>}
+            <Button size="icon" variant="ghost" onClick={handleDeleteCategory}><Trash2 size={16} className="text-destructive" /></Button>
+          </div>
         </div>
       </AccordionTrigger>
       <AccordionContent>
