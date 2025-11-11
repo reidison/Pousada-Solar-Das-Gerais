@@ -18,7 +18,7 @@ export default function SolarInfoHubPage() {
     { item: 'Biscoito LOOK 55g', price: 'R$ 10,00' },
     { item: 'Biscoito Clube Social 23,5g', price: 'R$ 3,50' },
     { item: 'Tridente 18g', price: 'R$ 5,00' },
-    { item: 'Garrafa de Vinho', price: 'R$ 80,00' },
+    { item: 'Garrafa de Vinho', price: 'R$ 60,00' },
     { item: 'Lata de Cerveja', price: 'R$ 10,00' },
     { item: 'Lata de Refrigerante', price: 'R$ 7,00' },
     { item: 'Água s/ Gás', price: 'R$ 5,00' },
