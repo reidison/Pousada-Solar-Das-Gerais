@@ -1,3 +1,4 @@
+
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { WelcomeMessage } from '@/components/welcome-message';
@@ -47,8 +48,8 @@ export default function SolarInfoHubPage() {
         <>
           <p>A porta principal utiliza uma senha eletrônica.</p>
           <p>Senha:</p>
-          <p className="font-extrabold text-2xl text-primary flex items-center justify-center gap-0.5">
-            0525<Check size={28} className="text-green-600" strokeWidth={3.5} />
+          <p className="font-extrabold text-3xl text-primary flex items-center justify-center gap-0.5">
+            0525<Check size={36} className="text-green-600" strokeWidth={3.5} />
           </p>
         </>
       ),
@@ -59,7 +60,7 @@ export default function SolarInfoHubPage() {
       content: (
         <>
           <p>Passeio pelos pontos históricos.</p>
-          <p>Saídas diárias às <strong>09:00</strong>.</p>
+          <p>Saídas diárias às <strong>10:00</strong>.</p>
           <p className="text-sm mt-2">Agende na recepção com 1 dia de antecedência.</p>
         </>
       ),
