@@ -17,24 +17,28 @@ import {
 import { Button } from '@/components/ui/button';
 import { Phone } from 'lucide-react';
 
+// ÁREA DE EDIÇÃO:
+// Adicione ou altere as informações de endereço e telefone nos campos abaixo.
+// Para adicionar um novo item, copie e cole um bloco de chaves `{}`.
+// Para adicionar uma nova categoria, copie e cole um bloco de categoria inteiro.
 const serviceCategories = [
   {
     category: 'Farmácias',
     items: [
       {
         name: 'Drogaria Brasil',
-        address: 'Endereço...',
-        phone: 'Telefone...',
+        address: 'Insira o endereço aqui...',
+        phone: 'Insira o telefone aqui...',
       },
       {
         name: 'Farmácia Araujo',
         address: 'Praça Tiradentes, Ouro Preto',
-        phone: 'Telefone...',
+        phone: 'Insira o telefone aqui...',
       },
       {
         name: 'Farmácia Perpétuo Socorro (Delivery)',
         address: 'Rua Padre Rolim, Ouro Preto',
-        phone: 'Telefone...',
+        phone: 'Insira o telefone aqui...',
       },
     ],
   },
@@ -43,13 +47,13 @@ const serviceCategories = [
     items: [
       {
         name: 'Unimed',
-        address: 'Endereço...',
-        phone: 'Telefone...',
+        address: 'Insira o endereço aqui...',
+        phone: 'Insira o telefone aqui...',
       },
       {
         name: 'UPA Dom Orione',
-        address: 'Endereço...',
-        phone: 'Telefone...',
+        address: 'Insira o endereço aqui...',
+        phone: 'Insira o telefone aqui...',
       },
     ],
   },
@@ -58,8 +62,8 @@ const serviceCategories = [
     items: [
       {
         name: 'Supermercado Estrela da Barra',
-        address: 'Endereço...',
-        phone: 'Telefone...',
+        address: 'Insira o endereço aqui...',
+        phone: 'Insira o telefone aqui...',
       },
     ],
   },
@@ -68,8 +72,8 @@ const serviceCategories = [
     items: [
         {
         name: 'Academia Powerfit',
-        address: 'Endereço...',
-        phone: 'Telefone...',
+        address: 'Insira o endereço aqui...',
+        phone: 'Insira o telefone aqui...',
       },
       {
         name: 'Agências Bancárias',
@@ -109,6 +113,7 @@ const serviceCategories = [
     ],
   },
 ];
+// FIM DA ÁREA DE EDIÇÃO
 
 export function UsefulServicesModal() {
   return (
@@ -134,10 +139,17 @@ export function UsefulServicesModal() {
                       <div key={item.name} className="flex flex-col text-left text-sm p-2 rounded-md border border-transparent hover:border-border">
                         <p className="font-medium text-primary">{item.name}</p>
                         <p className="text-muted-foreground">{item.address}</p>
-                        <a href={`tel:${item.phone.replace(/\D/g, '')}`} className="text-accent flex items-center gap-2 mt-1 hover:underline">
-                          <Phone size={14} />
-                          <span>{item.phone}</span>
-                        </a>
+                        {item.phone && item.phone.match(/\d/) ? (
+                           <a href={`tel:${item.phone.replace(/\D/g, '')}`} className="text-accent flex items-center gap-2 mt-1 hover:underline">
+                            <Phone size={14} />
+                            <span>{item.phone}</span>
+                          </a>
+                        ) : (
+                          <p className="text-accent flex items-center gap-2 mt-1">
+                            <Phone size={14} />
+                            <span>{item.phone}</span>
+                          </p>
+                        )}
                       </div>
                     ))}
                   </div>
