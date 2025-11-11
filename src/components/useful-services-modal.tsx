@@ -148,7 +148,7 @@ export function UsefulServicesModal() {
                     Adicionar Categoria
                 </Button>
                 <Button variant="secondary" size="sm" onClick={handleImportRestaurants} disabled={isImporting}>
-                    {isImporting ? 'Importando...' : 'Importar Restaurantes (Dados de Exemplo)'}
+                    {isImporting ? 'Importando...' : 'Importar Listagem'}
                 </Button>
               </div>
             )}
@@ -282,12 +282,12 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
                 <p className="font-medium text-primary">{item.name}</p>
                 <p className="text-muted-foreground">{item.address}</p>
                  {item.phone && item.phone.match(/\d/) ? (
-                   <a href={`tel:${item.phone.replace(/\D/g, '')}`} className="text-accent flex items-center gap-2 mt-1 hover:underline">
+                   <a href={`tel:${item.phone.replace(/\D/g, '')}`} className="text-green-600 flex items-center gap-2 mt-1 hover:underline">
                     <Phone size={14} />
                     <span>{item.phone}</span>
                   </a>
                 ) : (
-                  <p className="text-accent flex items-center gap-2 mt-1">
+                  <p className="text-green-600 flex items-center gap-2 mt-1">
                     <Phone size={14} />
                     <span>{item.phone || 'N/A'}</span>
                   </p>
