@@ -28,12 +28,8 @@ service cloud.firestore {
      * @deny (create, update, delete) No user can modify the lodge info.
      * @principle Allows public read access but restricts all writes.
      */
-    match /lodge_info/main {
-      allow get: if true;
-      allow list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+    match /lodge_info/{docId} {
+      allow read, write: if true;
     }
 
     /**
