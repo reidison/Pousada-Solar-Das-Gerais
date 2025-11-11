@@ -1,0 +1,138 @@
+{
+  "entities": {
+    "GuestInfo": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "GuestInfo",
+      "type": "object",
+      "description": "Entity to store general information for guests at Pousada Solar das Gerais.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the GuestInfo entity."
+        },
+        "welcomeMessage": {
+          "type": "string",
+          "description": "Welcome message displayed to the guest."
+        },
+        "breakfastHours": {
+          "type": "string",
+          "description": "Breakfast hours of operation."
+        },
+        "breakfastLocation": {
+          "type": "string",
+          "description": "Location where breakfast is served."
+        },
+        "wifiNetworkName": {
+          "type": "string",
+          "description": "Name of the WiFi network."
+        },
+        "wifiPassword": {
+          "type": "string",
+          "description": "Password for the WiFi network."
+        },
+        "doorAccessCode": {
+          "type": "string",
+          "description": "Access code for the main door."
+        },
+        "cityTourSchedule": {
+          "type": "string",
+          "description": "Schedule and instructions for booking a city tour."
+        },
+        "receptionWhatsappNumber": {
+          "type": "string",
+          "description": "WhatsApp number for contacting the reception."
+        },
+        "minibarMenuId": {
+          "type": "string",
+          "description": "Reference to MinibarMenu. (Relationship: GuestInfo 1:1 MinibarMenu)"
+        }
+      },
+      "required": [
+        "id",
+        "welcomeMessage",
+        "breakfastHours",
+        "breakfastLocation",
+        "wifiNetworkName",
+        "wifiPassword",
+        "doorAccessCode",
+        "cityTourSchedule",
+        "receptionWhatsappNumber",
+        "minibarMenuId"
+      ]
+    },
+    "MinibarMenu": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "MinibarMenu",
+      "type": "object",
+      "description": "Entity to store the minibar menu with items and prices.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the MinibarMenu entity."
+        },
+        "items": {
+          "type": "array",
+          "description": "List of items available in the minibar.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "prices": {
+          "type": "array",
+          "description": "Prices corresponding to each item in the minibar.",
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "items",
+        "prices"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/guest_info/{guestInfoId}",
+        "definition": {
+          "entityName": "GuestInfo",
+          "schema": {
+            "$ref": "#/backend/entities/GuestInfo"
+          },
+          "description": "Stores general information for guests. Includes fields for welcome message, breakfast details, WiFi information, door access code, city tour schedule, reception contact, and a reference to the MinibarMenu.  The document ID '{guestInfoId}' serves as a unique identifier.",
+          "params": [
+            {
+              "name": "guestInfoId",
+              "description": "Unique identifier for the GuestInfo document."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/minibar_menus/{minibarMenuId}",
+        "definition": {
+          "entityName": "MinibarMenu",
+          "schema": {
+            "$ref": "#/backend/entities/MinibarMenu"
+          },
+          "description": "Stores minibar menu information, including items and prices.  The document ID '{minibarMenuId}' serves as a unique identifier.",
+          "params": [
+            {
+              "name": "minibarMenuId",
+              "description": "Unique identifier for the MinibarMenu document."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to securely store and manage general information for guests, including minibar menus.  The structure prioritizes authorization independence, clarity, and scalability. All user-generated content and configuration is stored in a single `guest_info` collection and related `minibar_menus` collection, ensuring a homogeneous security posture. This structure allows for straightforward security rules based on document existence or field values, avoiding complex hierarchical lookups (`get()` calls). Guest information is accessible via a unique identifier, and minibar menus are linked via a `minibarMenuId` which represents a 1:1 relationship, but they are stored separately to optimize data access patterns.  The separation of concerns allows for secure list operations (QAPs) on each collection individually."
+  }
+}
