@@ -49,8 +49,8 @@ service cloud.firestore {
      * @principle Allows public read access to useful services information.
      */
     match /service_categories/{serviceCategoryId} {
-      allow get, list: if true;
-      allow create, update, delete: if false;
+      allow read: if true;
+      allow write: if false;
     }
   }
 }
