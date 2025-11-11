@@ -110,7 +110,7 @@ export function UsefulServicesModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="mt-4">Ver/Editar Lista Completa</Button>
+        <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">Ver/Editar Lista Completa</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] md:sm:max-w-[600px]">
         <DialogHeader>
