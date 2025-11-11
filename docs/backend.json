@@ -74,22 +74,64 @@
           "type": "array",
           "description": "List of items available in the minibar.",
           "items": {
-            "type": "string"
-          }
-        },
-        "prices": {
-          "type": "array",
-          "description": "Prices corresponding to each item in the minibar.",
-          "items": {
-            "type": "number"
+            "type": "object",
+            "properties": {
+              "item": { "type": "string" },
+              "price": { "type": "string" }
+            },
+            "required": ["item", "price"]
           }
         }
       },
       "required": [
         "id",
-        "items",
-        "prices"
+        "items"
       ]
+    },
+    "ServiceItem": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ServiceItem",
+      "type": "object",
+      "description": "Represents a single useful service with its details.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the service or establishment."
+        },
+        "address": {
+          "type": "string",
+          "description": "The address of the service."
+        },
+        "phone": {
+          "type": "string",
+          "description": "The contact phone number for the service."
+        }
+      },
+      "required": ["name", "address", "phone"]
+    },
+    "ServiceCategory": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ServiceCategory",
+      "type": "object",
+      "description": "Represents a category of useful services.",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "The name of the service category (e.g., 'Farmácias')."
+        },
+        "order": {
+          "type": "number",
+          "description": "A number to determine the display order of the categories."
+        },
+        "items": {
+          "type": "array",
+          "description": "A list of services within this category.",
+          "items": {
+            "$ref": "#/entities/ServiceItem"
+          }
+        }
+      },
+      "required": ["category", "order", "items"]
     }
   },
   "auth": {
@@ -105,7 +147,7 @@
         "definition": {
           "entityName": "GuestInfo",
           "schema": {
-            "$ref": "#/backend/entities/GuestInfo"
+            "$ref": "#/entities/GuestInfo"
           },
           "description": "Stores general information for guests. Includes fields for welcome message, breakfast details, WiFi information, door access code, city tour schedule, reception contact, and a reference to the MinibarMenu.  The document ID '{guestInfoId}' serves as a unique identifier.",
           "params": [
@@ -121,7 +163,7 @@
         "definition": {
           "entityName": "MinibarMenu",
           "schema": {
-            "$ref": "#/backend/entities/MinibarMenu"
+            "$ref": "#/entities/MinibarMenu"
           },
           "description": "Stores minibar menu information, including items and prices.  The document ID '{minibarMenuId}' serves as a unique identifier.",
           "params": [
@@ -131,8 +173,24 @@
             }
           ]
         }
+      },
+      {
+        "path": "/service_categories/{serviceCategoryId}",
+        "definition": {
+          "entityName": "ServiceCategory",
+          "schema": {
+            "$ref": "#/entities/ServiceCategory"
+          },
+          "description": "Stores categories of useful services for guests. Each document represents a category like 'Farmácias' or 'Saúde' and contains a list of specific services.",
+          "params": [
+            {
+              "name": "serviceCategoryId",
+              "description": "Unique identifier for the ServiceCategory document."
+            }
+          ]
+        }
       }
     ],
-    "reasoning": "The Firestore structure is designed to securely store and manage general information for guests, including minibar menus.  The structure prioritizes authorization independence, clarity, and scalability. All user-generated content and configuration is stored in a single `guest_info` collection and related `minibar_menus` collection, ensuring a homogeneous security posture. This structure allows for straightforward security rules based on document existence or field values, avoiding complex hierarchical lookups (`get()` calls). Guest information is accessible via a unique identifier, and minibar menus are linked via a `minibarMenuId` which represents a 1:1 relationship, but they are stored separately to optimize data access patterns.  The separation of concerns allows for secure list operations (QAPs) on each collection individually."
+    "reasoning": "The Firestore structure is designed to securely store and manage general information for guests, including minibar menus and useful services. The structure prioritizes authorization independence, clarity, and scalability. All user-generated content and configuration is stored in separate collections (`guest_info`, `minibar_menus`, `service_categories`) to ensure a homogeneous security posture and optimize queries. This structure allows for straightforward security rules based on document existence or field values, avoiding complex hierarchical lookups (`get()` calls). Guest information is accessible via a unique identifier, minibar menus are linked via a `minibarMenuId`, and service categories are stored in their own collection for easy retrieval and management."
   }
 }

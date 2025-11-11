@@ -2,19 +2,16 @@
  * @fileOverview Firestore Security Rules for Pousada Solar das Gerais.
  *
  * Core Philosophy:
- * This ruleset provides open read access to guest information and minibar menus,
+ * This ruleset provides open read access to guest information, minibar menus, and service categories,
  * allowing any user (signed in or not) to retrieve this data. Writes are completely
  * disallowed to prevent unauthorized modifications, as this is considered static
  * data managed internally. This is suitable for a system where guest information
- * and minibar menus are intended to be publicly available.
+ * and service details are intended to be publicly available.
  *
  * Data Structure:
  * - /guest_info/{guestInfoId}: Stores general information for guests.
  * - /minibar_menus/{minibarMenuId}: Stores minibar menu information.
- *
- * Key Security Decisions:
- * - Open Read Access: Both `guest_info` and `minibar_menus` collections are readable by anyone.
- * - No Write Access: No create, update, or delete operations are allowed on either collection.
+ * - /service_categories/{serviceCategoryId}: Stores categories of useful services.
  */
 rules_version = '2';
 service cloud.firestore {
@@ -40,6 +37,18 @@ service cloud.firestore {
      * @principle Allows public read access to minibar menus.
      */
     match /minibar_menus/{minibarMenuId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Allows anyone to read service categories, but prevents all writes.
+     * @path /service_categories/{serviceCategoryId}
+     * @allow (get, list) Any user can read service categories.
+     * @deny (create, update, delete) No user can create, update, or delete service categories.
+     * @principle Allows public read access to useful services information.
+     */
+    match /service_categories/{serviceCategoryId} {
       allow get, list: if true;
       allow create, update, delete: if false;
     }
