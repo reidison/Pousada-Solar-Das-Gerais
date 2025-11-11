@@ -7,6 +7,7 @@ import { BackToTop } from '@/components/back-to-top';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Coffee, Wifi, Check, Map, Phone, GlassWater, KeyRound, PhoneCall, BookText } from 'lucide-react';
+import { UsefulServicesModal } from '@/components/useful-services-modal';
 
 export default function SolarInfoHubPage() {
   const minibarItems = [
@@ -56,8 +57,8 @@ export default function SolarInfoHubPage() {
         <>
           <p>A porta principal utiliza uma senha eletrônica.</p>
           <p>Senha:</p>
-          <p className="font-extrabold text-3xl text-primary flex items-center justify-center gap-0.5">
-            0525<Check size={36} className="text-green-600" strokeWidth={3.5} />
+          <p className="font-extrabold text-3xl text-primary flex items-center justify-center gap-1">
+            0525<Check size={40} className="text-green-600" strokeWidth={4} />
           </p>
         </>
       ),
@@ -113,20 +114,11 @@ export default function SolarInfoHubPage() {
     },
     {
       icon: <PhoneCall size={28} />,
-      title: "Serviços e Locais Úteis",
+      title: "Telefones Úteis",
       content: (
-        <div className="text-sm text-left w-full space-y-2">
-          <p>• Farmácia Drogaria Brasil</p>
-          <p>• Farmácia Araújo (Praça Tiradentes)</p>
-          <p>• Farmácia Perpétuo Socorro (Delivery)</p>
-          <p>• Unimed</p>
-          <p>• UPA Dom Orione</p>
-          <p>• Supermercado Estela da Barra</p>
-          <p>• Academia Powerfit</p>
-          <p>• Horários de Missas</p>
-          <p>• Agências Bancárias</p>
-          <p>• App de mobilidade: Pam Pam, 2V</p>
-          <p>• Programação de Shows</p>
+        <div className="text-sm text-center w-full space-y-2">
+          <p>Clique no botão abaixo para ver uma lista de serviços, comércios e contatos úteis em Ouro Preto.</p>
+          <UsefulServicesModal />
         </div>
       ),
     },
