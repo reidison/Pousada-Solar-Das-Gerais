@@ -17,7 +17,7 @@ export function Footer() {
               href="https://www.instagram.com/pousadasolardasgeraisop" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm font-semibold hover:text-accent transition-colors"
+              className="flex items-center gap-2 text-[10px] font-semibold hover:text-accent transition-colors"
             >
               <Instagram size={20} />
               <span>@pousadasolardasgeraisop</span>
