@@ -22,8 +22,6 @@ export function Header() {
           <Logo src={logoUrl} className="h-16 w-auto" />
         </div>
       </div>
-      {/* Decorative border */}
-      <div className="h-1 bg-gradient-to-r from-transparent via-accent to-transparent"></div>
     </header>
   );
 }
