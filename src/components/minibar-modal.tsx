@@ -119,9 +119,9 @@ export function MinibarModal() {
               ) : items?.map((item) => (
                 <EditableItemRow key={item.id} item={item} />
               ))}
+              <AddItemForm />
             </TableBody>
           </Table>
-          <AddItemForm />
         </div>
         <div className="mt-4 border-t pt-4">
             <Button variant="secondary" size="sm" onClick={handleImportDefault} disabled={isImporting}>
@@ -220,12 +220,14 @@ function AddItemForm() {
 
     if (!isAdding) {
         return (
-            <div className='mt-4'>
-                <Button variant="ghost" size="sm" className="w-full justify-start" onClick={() => setIsAdding(true)}>
-                    <PlusCircle size={16} className="mr-2" />
-                    Adicionar Item
-                </Button>
-            </div>
+             <TableRow>
+                <TableCell colSpan={3}>
+                    <Button variant="ghost" size="sm" className="w-full justify-start" onClick={() => setIsAdding(true)}>
+                        <PlusCircle size={16} className="mr-2" />
+                        Adicionar Item
+                    </Button>
+                </TableCell>
+             </TableRow>
         );
     }
 
