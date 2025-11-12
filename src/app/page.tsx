@@ -136,11 +136,6 @@ export default function SolarInfoHubPage() {
     <div className="bg-background text-foreground flex min-h-screen flex-col font-body">
       <Header />
       <main className="container mx-auto flex-grow px-4 py-8 pt-28 md:pt-32 relative">
-        <div className="absolute top-4 left-4 h-8 w-8 border-l-2 border-t-2 border-primary/40 rounded-tl-lg"></div>
-        <div className="absolute top-4 right-4 h-8 w-8 border-r-2 border-t-2 border-primary/40 rounded-tr-lg"></div>
-        <div className="absolute bottom-4 left-4 h-8 w-8 border-l-2 border-b-2 border-primary/40 rounded-bl-lg"></div>
-        <div className="absolute bottom-4 right-4 h-8 w-8 border-r-2 border-b-2 border-primary/40 rounded-br-lg"></div>
-        
         <WelcomeMessage />
         
         <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
