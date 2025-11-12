@@ -9,6 +9,5 @@ export interface LodgeInfo {
     mainDoorAccessCode: string;
     cityTourSchedule: string;
     whatsappNumber: string;
-    minibarMenu: string;
     welcomeMessage: string;
 }

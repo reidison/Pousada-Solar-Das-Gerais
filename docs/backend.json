@@ -43,10 +43,6 @@
           "type": "string",
           "description": "WhatsApp number for contacting the reception."
         },
-        "minibarMenu": {
-          "type": "string",
-          "description": "Menu of available items in the minibar and their prices (stored as a string, e.g., JSON or CSV)."
-        },
         "welcomeMessage": {
           "type": "string",
           "description": "Welcome message for the guests, customizable based on weather and other conditions."
@@ -62,7 +58,6 @@
         "mainDoorAccessCode",
         "cityTourSchedule",
         "whatsappNumber",
-        "minibarMenu",
         "welcomeMessage"
       ]
     },
@@ -97,6 +92,22 @@
         }
       },
       "required": ["name", "address", "phone"]
+    },
+    "MinibarItem": {
+      "title": "Minibar Item",
+      "description": "An item available in the minibar.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the minibar item."
+        },
+        "price": {
+          "type": "string",
+          "description": "The price of the item, formatted as a string (e.g., 'R$ 10,00')."
+        }
+      },
+      "required": ["name", "price"]
     }
   },
   "auth": {
@@ -133,8 +144,16 @@
           "schema": { "$ref": "#/backend/entities/ServiceItem" },
           "description": "Sub-collection for service items within a category."
         }
+      },
+      {
+        "path": "/minibar_items/{itemId}",
+        "definition": {
+          "entityName": "MinibarItem",
+          "schema": { "$ref": "#/backend/entities/MinibarItem" },
+          "description": "Collection of items available in the minibar."
+        }
       }
     ],
-    "reasoning": "The design includes a single document for LodgeInfo for simplicity. For services, a `service_categories` collection allows for organizing services. Each category document can then have a sub-collection of `items`, which provides a structured and scalable way to manage useful contacts."
+    "reasoning": "The design includes a single document for LodgeInfo for simplicity. For services, a `service_categories` collection allows for organizing services. Each category document can then have a sub-collection of `items`, which provides a structured and scalable way to manage useful contacts. A separate collection for `minibar_items` allows for easy management of the minibar inventory."
   }
 }

@@ -10,10 +10,11 @@
  * - Lodge information: A single document at `/lodge_info/main`.
  * - Service Categories: A collection at `/service_categories`.
  * - Service Items: A sub-collection at `/service_categories/{categoryId}/items`.
+ * - Minibar Items: A collection at `/minibar_items`.
  *
  * Key Security Decisions:
  * - Lodge information is public and readable by all users. Writes are denied.
- * - Service categories and items are publicly readable and writable.
+ * - Service categories, items, and minibar items are publicly readable and writable.
  *   - **WARNING:** This is for initial development only. In a production environment,
  *     write access should be restricted to authenticated administrators.
  */
@@ -45,6 +46,17 @@ service cloud.firestore {
       match /items/{itemId} {
         allow read, write: if true;
       }
+    }
+    
+    /**
+     * @description Public access for minibar items.
+     * **WARNING:** Write rules are open for development. Secure this before production.
+     * @path /minibar_items/{itemId}
+     * @allow (read, write) Anyone can read or write to minibar items.
+     * @principle Simplifies development by allowing direct client-side management.
+     */
+    match /minibar_items/{itemId} {
+       allow read, write: if true;
     }
   }
 }

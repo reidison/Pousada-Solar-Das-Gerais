@@ -7,10 +7,9 @@ import { InfoCard } from '@/components/info-card';
 import { BackToTop } from '@/components/back-to-top';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Coffee, Wifi, Check, Map, Phone, GlassWater, KeyRound, PhoneCall, BookText } from 'lucide-react';
 import { UsefulServicesModal } from '@/components/useful-services-modal';
+import { MinibarModal } from '@/components/minibar-modal';
 import { RegulationModal } from '@/components/regulation-modal';
 import { WhatsappIcon } from '@/components/icons/whatsapp-icon';
 import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
@@ -24,29 +23,6 @@ export default function SolarInfoHubPage() {
     [firestore]
   );
   const { data: lodgeInfo, isLoading } = useDoc<LodgeInfo>(lodgeInfoRef);
-  
-  const defaultMinibarMenu = `Batata Pringles 109g;R$ 20,00
-Batata Raiz do Bem 80g;R$ 10,00
-Pimentinha 100g;R$ 10,00
-Pele Pururuca 70g;R$ 10,00
-Barra de Chocolate 80g;R$ 10,00
-Biscoito LOOK 55g;R$ 10,00
-Biscoito Clube Social 23,5g;R$ 3,50
-Tridente 18g;R$ 5,00
-Garrafa de Vinho;R$ 80,00
-Lata de Cerveja;R$ 10,00
-Lata de Refrigerante;R$ 7,00
-Água s/ Gás;R$ 5,00
-Água c/ Gás;R$ 5,00`;
-
-  const minibarMenuData = lodgeInfo?.minibarMenu || defaultMinibarMenu;
-
-  const minibarItems = minibarMenuData
-    ? minibarMenuData.split('\n').map(item => {
-        const [name, price] = item.split(';');
-        return { item: name, price: price };
-      })
-    : [];
 
   const infoCards = [
     {
@@ -133,42 +109,7 @@ Lata de Refrigerante;R$ 7,00
       icon: <GlassWater size={28} />,
       title: "Frigobar",
       content: (
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">
-              Ver a lista
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Itens do Frigobar</DialogTitle>
-            </DialogHeader>
-            <div className="w-full text-sm max-h-[60vh] overflow-y-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-left font-semibold text-primary/80">Item</TableHead>
-                    <TableHead className="text-right font-semibold text-primary/80">Valor</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {isLoading ? (
-                    <TableRow><TableCell colSpan={2} className="text-center">Carregando...</TableCell></TableRow>
-                  ) : minibarItems.length > 0 ? (
-                    minibarItems.map((item, index) => (
-                      item.item && <TableRow key={index}>
-                        <TableCell className="text-left py-2">{item.item}</TableCell>
-                        <TableCell className="text-right py-2">{item.price}</TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow><TableCell colSpan={2} className="text-center">Nenhum item no frigobar.</TableCell></TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <MinibarModal />
       ),
     },
     {
