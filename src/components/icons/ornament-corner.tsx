@@ -8,16 +8,16 @@ export function OrnamentCorner(props: SVGProps<SVGSVGElement>) {
       viewBox="0 0 100 100"
       fill="none"
       stroke="currentColor"
-      strokeWidth="4"
+      strokeWidth="2.5"
       strokeLinecap="round"
       strokeLinejoin="round"
       {...props}
     >
-      <path d="M 2 50 Q 50 50, 50 2" />
-      <path d="M 25 50 Q 50 40, 55 25" />
-      <path d="M 50 25 Q 40 30, 25 22" />
-      <circle cx="2" cy="50" r="4" fill="currentColor" stroke="none" />
-      <circle cx="50" cy="2" r="4" fill="currentColor" stroke="none" />
+      <path d="M 98 50 C 70 50, 50 70, 50 98" />
+      <path d="M 85 50 C 75 55, 65 65, 58 75" />
+      <path d="M 98 63 C 90 65, 80 75, 75 85" />
+      <circle cx="50" cy="98" r="3" fill="currentColor" stroke="none" />
+      <circle cx="98" cy="50" r="3" fill="currentColor" stroke="none" />
     </svg>
   );
 }
