@@ -13,16 +13,17 @@ export function Header() {
   );
   const { data: lodgeInfo } = useDoc<LodgeInfo>(lodgeInfoRef);
 
-  // Use o logo da Imgur como padrão, ou o do banco de dados se existir.
   const logoUrl = lodgeInfo?.logoUrl || "https://i.imgur.com/jRjiohM.png";
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-white border-b">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-white shadow-sm">
       <div className="container mx-auto px-4 h-20 flex items-center justify-center text-center sm:justify-start sm:text-left">
         <div className="flex items-center gap-3">
           <Logo src={logoUrl} className="h-16 w-auto" />
         </div>
       </div>
+      {/* Decorative border */}
+      <div className="h-1 bg-gradient-to-r from-transparent via-accent to-transparent"></div>
     </header>
   );
 }
