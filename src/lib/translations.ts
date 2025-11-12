@@ -121,7 +121,7 @@ export const translations: Record<Locale, Translation> = {
       },
       mainAccess: {
         title: "Acesso Principal",
-        line1: "A porta principal utiliza uma senha eletrônica.",
+        line1: "A porta da recepção utiliza uma senha eletrônica.",
         line2: "Senha:",
       },
       cityTour: {
@@ -219,7 +219,7 @@ export const translations: Record<Locale, Translation> = {
       },
       mainAccess: {
         title: "Main Access",
-        line1: "The main door uses an electronic password.",
+        line1: "The reception door uses an electronic password.",
         line2: "Password:",
       },
       cityTour: {
