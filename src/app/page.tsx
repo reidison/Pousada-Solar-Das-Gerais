@@ -75,7 +75,7 @@ export default function SolarInfoHubPage() {
           <p>{translations.infoCards.mainAccess.line1}</p>
           <p>{translations.infoCards.mainAccess.line2}</p>
           <p className="font-extrabold text-3xl text-primary flex items-center justify-center gap-1">
-            {lodgeInfo?.mainDoorAccessCode || '...'}
+            0525
             <Check size={40} className="text-green-600" strokeWidth={4} />
           </p>
         </>
