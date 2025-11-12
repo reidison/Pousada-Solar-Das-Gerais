@@ -13,12 +13,15 @@ export function ColonialCorner(props: SVGProps<SVGSVGElement>) {
       strokeLinejoin="round"
       {...props}
     >
-      <path d="M 20 5 C 10 5 5 10 5 20" />
-      <path d="M 5 20 Q 5 50 25 50" />
-      <path d="M 25 50 C 40 50 40 40 50 25" />
-      <path d="M 50 25 Q 50 5 80 5" />
-      <path d="M 50 25 C 60 30 75 35 75 45 S 65 60 50 75" />
-      <path d="M 25 50 C 30 60 35 75 45 75 S 60 65 75 50" />
+      <path d="M 95 50 C 95 75 75 95 50 95" />
+      <path d="M 50 95 Q 20 95 20 70" />
+      <path d="M 20 70 C 20 50 30 50 30 50" />
+      <path d="M 50 95 C 70 95 80 85 80 70" />
+      <path d="M 80 70 Q 80 60 70 60" />
+      <path d="M 80 70 C 90 70 90 60 90 60" />
+      <path d="M 30 50 C 5 50 5 5 50 5" />
+      <path d="M 50 5 C 70 5 80 20 80 20" />
+      <path d="M 50 5 C 50 25 35 25 35 25" />
     </svg>
   );
 }
