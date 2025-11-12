@@ -6,6 +6,8 @@ import { WelcomeMessage } from '@/components/welcome-message';
 import { InfoCard } from '@/components/info-card';
 import { BackToTop } from '@/components/back-to-top';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Coffee, Wifi, Check, Map, Phone, GlassWater, KeyRound, PhoneCall, BookText } from 'lucide-react';
 import { UsefulServicesModal } from '@/components/useful-services-modal';
@@ -35,23 +37,40 @@ export default function SolarInfoHubPage() {
       icon: <Coffee size={28} />,
       title: "Café da Manhã",
       content: (
-        <>
-          <p>Servido diariamente das</p>
-          <p className="font-bold text-lg text-primary">{lodgeInfo?.breakfastHours || 'Carregando...'}</p>
-          <p className="text-sm">Local: {lodgeInfo?.breakfastLocation || 'Carregando...'}</p>
-        </>
+        isLoading ? (
+          <div className="flex flex-col items-center gap-2">
+            <Skeleton className="h-4 w-40" />
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="h-4 w-36" />
+          </div>
+        ) : (
+          <>
+            <p>Servido diariamente das</p>
+            <p className="font-bold text-lg text-primary">{lodgeInfo?.breakfastHours}</p>
+            <p className="text-sm">Local: {lodgeInfo?.breakfastLocation}</p>
+          </>
+        )
       ),
     },
     {
       icon: <Wifi size={28} />,
       title: "Wi-Fi",
       content: (
-        <>
-          <p>Rede:</p>
-          <p className="font-bold text-lg text-primary">{lodgeInfo?.wifiName || 'Carregando...'}</p>
-          <p>Senha:</p>
-          <p className="font-bold text-lg text-primary">{lodgeInfo?.wifiPassword || 'Carregando...'}</p>
-        </>
+        isLoading ? (
+          <div className="flex flex-col items-center gap-2">
+            <Skeleton className="h-4 w-16" />
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="h-4 w-12" />
+            <Skeleton className="h-6 w-28" />
+          </div>
+        ) : (
+          <>
+            <p>Rede:</p>
+            <p className="font-bold text-lg text-primary">{lodgeInfo?.wifiName}</p>
+            <p>Senha:</p>
+            <p className="font-bold text-lg text-primary">{lodgeInfo?.wifiPassword}</p>
+          </>
+        )
       ),
     },
     {
@@ -72,9 +91,11 @@ export default function SolarInfoHubPage() {
       icon: <Map size={28} />,
       title: "City Tour",
       content: (
-        <>
-          <p>{lodgeInfo?.cityTourSchedule || 'Carregando...'}</p>
-        </>
+        isLoading ? (
+          <Skeleton className="h-8 w-48" />
+        ) : (
+          <p>{lodgeInfo?.cityTourSchedule}</p>
+        )
       ),
     },
     {
@@ -96,26 +117,42 @@ export default function SolarInfoHubPage() {
       icon: <GlassWater size={28} />,
       title: "Frigobar",
       content: (
-        <div className="w-full text-sm">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-left font-semibold text-primary/80">Item</TableHead>
-                <TableHead className="text-right font-semibold text-primary/80">Valor</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <TableRow><TableCell colSpan={2} className="text-center">Carregando...</TableCell></TableRow>
-              ) : minibarItems.map((item) => (
-                <TableRow key={item.item}>
-                  <TableCell className="text-left py-2">{item.item}</TableCell>
-                  <TableCell className="text-right py-2">{item.price}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">
+              Ver a lista
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Itens do Frigobar</DialogTitle>
+            </DialogHeader>
+            <div className="w-full text-sm max-h-[60vh] overflow-y-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-left font-semibold text-primary/80">Item</TableHead>
+                    <TableHead className="text-right font-semibold text-primary/80">Valor</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                    <TableRow><TableCell colSpan={2} className="text-center">Carregando...</TableCell></TableRow>
+                  ) : minibarItems.length > 0 ? (
+                    minibarItems.map((item, index) => (
+                      item.item && <TableRow key={index}>
+                        <TableCell className="text-left py-2">{item.item}</TableCell>
+                        <TableCell className="text-right py-2">{item.price}</TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow><TableCell colSpan={2} className="text-center">Nenhum item no frigobar.</TableCell></TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </DialogContent>
+        </Dialog>
       ),
     },
     {
