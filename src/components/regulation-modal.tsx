@@ -13,11 +13,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/contexts/language-context';
 
 export function RegulationModal() {
   const [regulationText, setRegulationText] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
+  const { translations } = useLanguage();
 
   const handleConfirm = () => {
     // Here you would typically save the regulationText to your database.
@@ -35,7 +37,7 @@ export function RegulationModal() {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">
-          Ler
+          {translations.infoCards.regulation.button}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">

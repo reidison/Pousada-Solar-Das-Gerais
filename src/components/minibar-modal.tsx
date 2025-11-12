@@ -17,6 +17,7 @@ import { PlusCircle, Trash2, Save, X, Edit, Loader2 } from 'lucide-react';
 import type { WithId } from '@/firebase';
 import { useToast } from "@/hooks/use-toast";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useLanguage } from '@/contexts/language-context';
 
 
 interface MinibarItem {
@@ -44,6 +45,7 @@ const defaultMinibarItems = [
 export function MinibarModal() {
   const firestore = useFirestore();
   const { toast } = useToast();
+  const { translations } = useLanguage();
 
   const itemsRef = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -66,7 +68,6 @@ export function MinibarModal() {
     try {
         const batch = writeBatch(firestore);
         
-        // Delete all existing items
         if(items) {
             items.forEach(item => {
                 const docRef = doc(itemsRef, item.id);
@@ -74,7 +75,6 @@ export function MinibarModal() {
             });
         }
         
-        // Add default items
         defaultMinibarItems.forEach(item => {
             const newItemRef = doc(itemsRef);
             batch.set(newItemRef, item);
@@ -95,7 +95,7 @@ export function MinibarModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">Ver a lista</Button>
+        <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">{translations.infoCards.minibar.button}</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] md:sm:max-w-[600px]">
         <DialogHeader>

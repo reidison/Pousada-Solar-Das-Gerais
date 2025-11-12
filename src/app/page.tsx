@@ -15,9 +15,11 @@ import { WhatsappIcon } from '@/components/icons/whatsapp-icon';
 import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import type { LodgeInfo } from '@/types/lodge-info';
+import { useLanguage } from '@/contexts/language-context';
 
 export default function SolarInfoHubPage() {
   const firestore = useFirestore();
+  const { translations } = useLanguage();
   const lodgeInfoRef = useMemoFirebase(
     () => (firestore ? doc(firestore, 'lodge_info', 'main') : null),
     [firestore]
@@ -27,7 +29,7 @@ export default function SolarInfoHubPage() {
   const infoCards = [
     {
       icon: <Coffee size={28} />,
-      title: "Café da Manhã",
+      title: translations.infoCards.breakfast.title,
       content: (
         isLoading ? (
           <div className="flex flex-col items-center gap-2">
@@ -37,16 +39,16 @@ export default function SolarInfoHubPage() {
           </div>
         ) : (
           <>
-            <p>Servido diariamente das</p>
+            <p>{translations.infoCards.breakfast.line1}</p>
             <p className="font-bold text-lg text-primary">{lodgeInfo?.breakfastHours}</p>
-            <p className="text-sm">Local: {lodgeInfo?.breakfastLocation}</p>
+            <p className="text-sm">{translations.infoCards.breakfast.line2} {lodgeInfo?.breakfastLocation}</p>
           </>
         )
       ),
     },
     {
       icon: <Wifi size={28} />,
-      title: "Wi-Fi",
+      title: translations.infoCards.wifi.title,
       content: (
         isLoading ? (
           <div className="flex flex-col items-center gap-2">
@@ -57,9 +59,9 @@ export default function SolarInfoHubPage() {
           </div>
         ) : (
           <>
-            <p>Rede:</p>
+            <p>{translations.infoCards.wifi.line1}</p>
             <p className="font-bold text-lg text-primary">{lodgeInfo?.wifiName}</p>
-            <p>Senha:</p>
+            <p>{translations.infoCards.wifi.line2}</p>
             <p className="font-bold text-lg text-primary">{lodgeInfo?.wifiPassword}</p>
           </>
         )
@@ -67,11 +69,11 @@ export default function SolarInfoHubPage() {
     },
     {
       icon: <KeyRound size={28} />,
-      title: "Acesso Principal",
+      title: translations.infoCards.mainAccess.title,
       content: (
         <>
-          <p>A porta principal utiliza uma senha eletrônica.</p>
-          <p>Senha:</p>
+          <p>{translations.infoCards.mainAccess.line1}</p>
+          <p>{translations.infoCards.mainAccess.line2}</p>
           <p className="font-extrabold text-3xl text-primary flex items-center justify-center gap-1">
             {lodgeInfo?.mainDoorAccessCode || '...'}
             <Check size={40} className="text-green-600" strokeWidth={4} />
@@ -81,7 +83,7 @@ export default function SolarInfoHubPage() {
     },
     {
       icon: <Map size={28} />,
-      title: "City Tour",
+      title: translations.infoCards.cityTour.title,
       content: (
         isLoading ? (
           <Skeleton className="h-8 w-48" />
@@ -92,14 +94,14 @@ export default function SolarInfoHubPage() {
     },
     {
       icon: <Phone size={28} />,
-      title: "Fale com a Recepção",
+      title: translations.infoCards.reception.title,
       content: (
         <>
-          <p className="mb-4">Precisa de algo? Estamos à disposição no WhatsApp.</p>
+          <p className="mb-4">{translations.infoCards.reception.line1}</p>
           <Button asChild className="bg-primary text-primary-foreground hover:bg-green-600">
             <a href={`https://wa.me/${lodgeInfo?.whatsappNumber || ''}`} target="_blank" rel="noopener noreferrer">
               <WhatsappIcon className="mr-2 h-5 w-5" />
-              Falar pelo WhatsApp
+              {translations.infoCards.reception.button}
             </a>
           </Button>
         </>
@@ -107,14 +109,14 @@ export default function SolarInfoHubPage() {
     },
     {
       icon: <GlassWater size={28} />,
-      title: "Frigobar",
+      title: translations.infoCards.minibar.title,
       content: (
         <MinibarModal />
       ),
     },
     {
       icon: <PhoneCall size={28} />,
-      title: "Telefones Úteis",
+      title: translations.infoCards.usefulPhones.title,
       content: (
         <div className="text-sm text-center w-full space-y-2">
           <UsefulServicesModal />
@@ -123,7 +125,7 @@ export default function SolarInfoHubPage() {
     },
     {
       icon: <BookText size={28} />,
-      title: "Nosso Regulamento",
+      title: translations.infoCards.regulation.title,
       content: (
         <div className="text-sm text-center w-full space-y-2">
             <RegulationModal />

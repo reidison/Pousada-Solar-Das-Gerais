@@ -21,7 +21,8 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, writeBatch, getDocs, query, where } from 'firebase/firestore';
 import { Phone, PlusCircle, Trash2, Save, X, Edit } from 'lucide-react';
 import type { WithId } from '@/firebase';
-import { useToast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from '@/contexts/language-context';
 
 interface ServiceItem {
   name: string;
@@ -49,6 +50,7 @@ const restaurantsData = [
 export function UsefulServicesModal() {
   const firestore = useFirestore();
   const { toast } = useToast();
+  const { translations } = useLanguage();
 
   const categoriesRef = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -110,7 +112,7 @@ export function UsefulServicesModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">Ver Lista Completa</Button>
+        <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">{translations.infoCards.usefulPhones.button}</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] md:sm:max-w-[600px]">
         <DialogHeader>
