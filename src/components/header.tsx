@@ -17,7 +17,7 @@ export function Header() {
   const logoUrl = lodgeInfo?.logoUrl || "https://i.imgur.com/jRjiohM.png";
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-background border-b">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-white border-b">
       <div className="container mx-auto px-4 h-20 flex items-center justify-center text-center sm:justify-start sm:text-left">
         <div className="flex items-center gap-3">
           <Logo src={logoUrl} className="h-16 w-auto" />
