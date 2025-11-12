@@ -13,8 +13,8 @@ export function Header() {
   );
   const { data: lodgeInfo } = useDoc<LodgeInfo>(lodgeInfoRef);
 
-  // Use o logo local como padrão enquanto os dados carregam ou se não houver URL
-  const logoUrl = lodgeInfo?.logoUrl || "/logo.png";
+  // Use o logo da Imgur como padrão, ou o do banco de dados se existir.
+  const logoUrl = lodgeInfo?.logoUrl || "https://i.imgur.com/gO08oua.png";
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-sm border-b">
