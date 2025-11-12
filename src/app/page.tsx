@@ -25,8 +25,24 @@ export default function SolarInfoHubPage() {
   );
   const { data: lodgeInfo, isLoading } = useDoc<LodgeInfo>(lodgeInfoRef);
   
-  const minibarItems = lodgeInfo?.minibarMenu
-    ? lodgeInfo.minibarMenu.split('\n').map(item => {
+  const defaultMinibarMenu = `Batata Pringles 109g;R$ 20,00
+Batata Raiz do Bem 80g;R$ 10,00
+Pimentinha 100g;R$ 10,00
+Pele Pururuca 70g;R$ 10,00
+Barra de Chocolate 80g;R$ 10,00
+Biscoito LOOK 55g;R$ 10,00
+Biscoito Clube Social 23,5g;R$ 3,50
+Tridente 18g;R$ 5,00
+Garrafa de Vinho;R$ 80,00
+Lata de Cerveja;R$ 10,00
+Lata de Refrigerante;R$ 7,00
+Água s/ Gás;R$ 5,00
+Água c/ Gás;R$ 5,00`;
+
+  const minibarMenuData = lodgeInfo?.minibarMenu || defaultMinibarMenu;
+
+  const minibarItems = minibarMenuData
+    ? minibarMenuData.split('\n').map(item => {
         const [name, price] = item.split(';');
         return { item: name, price: price };
       })
