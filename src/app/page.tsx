@@ -43,9 +43,9 @@ export default function SolarInfoHubPage() {
       content: (
           <>
             <p>{translations.infoCards.wifi.line1}</p>
-            <p>{translations.infoCards.wifi.networkName}</p>
+            <p className="font-bold text-sm">{translations.infoCards.wifi.networkName}</p>
             <p>{translations.infoCards.wifi.line2}</p>
-            <p>{translations.infoCards.wifi.password}</p>
+            <p className="font-bold text-sm">{translations.infoCards.wifi.password}</p>
           </>
       ),
     },
@@ -56,7 +56,7 @@ export default function SolarInfoHubPage() {
         <>
           <p>{translations.infoCards.mainAccess.line1}</p>
           <p>{translations.infoCards.mainAccess.line2}</p>
-          <p className="font-extrabold text-3xl text-primary flex items-center justify-center gap-1">
+          <p className="text-3xl text-primary flex items-center justify-center gap-1">
             0525
             <Check size={40} className="text-green-600" strokeWidth={4} />
           </p>
