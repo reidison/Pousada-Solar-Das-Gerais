@@ -9,7 +9,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex items-center gap-3 text-center md:text-left">
             <p className="text-sm">
-              &copy; {new Date().getFullYear()} Pousada Solar das Gerais. <br className="sm:hidden" /> 2025
+              &copy; {new Date().getFullYear()} Pousada Solar das Gerais.
             </p>
           </div>
           <div className="text-center">
