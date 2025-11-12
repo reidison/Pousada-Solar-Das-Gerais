@@ -15,7 +15,9 @@ export type Translation = {
     wifi: {
       title: string;
       line1: string;
+      networkName: string;
       line2: string;
+      password: string;
     };
     mainAccess: {
       title: string;
@@ -24,6 +26,7 @@ export type Translation = {
     };
     cityTour: {
       title: string;
+      schedule: string;
     };
     reception: {
       title: string;
@@ -112,7 +115,9 @@ export const translations: Record<Locale, Translation> = {
       wifi: {
         title: "Wi-Fi",
         line1: "Rede:",
+        networkName: "pousada solar das gerais",
         line2: "Senha:",
+        password: "pousada2023",
       },
       mainAccess: {
         title: "Acesso Principal",
@@ -121,6 +126,7 @@ export const translations: Record<Locale, Translation> = {
       },
       cityTour: {
         title: "City Tour",
+        schedule: "Saídas às 10h da Praça Tiradentes. É importante o agendamento na recepção.",
       },
       reception: {
         title: "Fale com a Recepção",
@@ -207,7 +213,9 @@ export const translations: Record<Locale, Translation> = {
       wifi: {
         title: "Wi-Fi",
         line1: "Network:",
+        networkName: "pousada solar das gerais",
         line2: "Password:",
+        password: "pousada2023",
       },
       mainAccess: {
         title: "Main Access",
@@ -216,6 +224,7 @@ export const translations: Record<Locale, Translation> = {
       },
       cityTour: {
         title: "City Tour",
+        schedule: "Departures at 10 am from Praça Tiradentes. It is important to schedule at the reception.",
       },
       reception: {
         title: "Contact Reception",

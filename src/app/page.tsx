@@ -50,21 +50,12 @@ export default function SolarInfoHubPage() {
       icon: <Wifi size={28} />,
       title: translations.infoCards.wifi.title,
       content: (
-        isLoading ? (
-          <div className="flex flex-col items-center gap-2">
-            <Skeleton className="h-4 w-16" />
-            <Skeleton className="h-6 w-32" />
-            <Skeleton className="h-4 w-12" />
-            <Skeleton className="h-6 w-28" />
-          </div>
-        ) : (
           <>
             <p>{translations.infoCards.wifi.line1}</p>
-            <p className="font-bold text-lg text-primary">{lodgeInfo?.wifiName}</p>
+            <p className="font-bold text-lg text-primary">{translations.infoCards.wifi.networkName}</p>
             <p>{translations.infoCards.wifi.line2}</p>
-            <p className="font-bold text-lg text-primary">{lodgeInfo?.wifiPassword}</p>
+            <p className="font-bold text-lg text-primary">{translations.infoCards.wifi.password}</p>
           </>
-        )
       ),
     },
     {
@@ -85,11 +76,7 @@ export default function SolarInfoHubPage() {
       icon: <Map size={28} />,
       title: translations.infoCards.cityTour.title,
       content: (
-        isLoading ? (
-          <Skeleton className="h-8 w-48" />
-        ) : (
-          <p>{lodgeInfo?.cityTourSchedule}</p>
-        )
+        <p>{translations.infoCards.cityTour.schedule}</p>
       ),
     },
     {
