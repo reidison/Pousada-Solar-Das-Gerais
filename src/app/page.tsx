@@ -52,9 +52,9 @@ export default function SolarInfoHubPage() {
       content: (
           <>
             <p>{translations.infoCards.wifi.line1}</p>
-            <p className="font-bold text-lg text-primary">{translations.infoCards.wifi.networkName}</p>
+            <p>{translations.infoCards.wifi.networkName}</p>
             <p>{translations.infoCards.wifi.line2}</p>
-            <p className="font-bold text-lg text-primary">{translations.infoCards.wifi.password}</p>
+            <p>{translations.infoCards.wifi.password}</p>
           </>
       ),
     },
