@@ -20,14 +20,16 @@ export function RegulationModal() {
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
   const { translations } = useLanguage();
+  const t = translations.regulationModal;
+  const tInfoCard = translations.infoCards.regulation;
 
   const handleConfirm = () => {
     // Here you would typically save the regulationText to your database.
     console.log('Regulamento Salvo:', regulationText);
 
     toast({
-      title: 'Sucesso!',
-      description: 'O regulamento foi atualizado.',
+      title: t.successToastTitle,
+      description: t.successToastDescription,
     });
 
     setIsOpen(false); // Fecha o modal
@@ -37,26 +39,26 @@ export function RegulationModal() {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">
-          {translations.infoCards.regulation.button}
+          {tInfoCard.button}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Nosso Regulamento</DialogTitle>
+          <DialogTitle>{t.title}</DialogTitle>
           <DialogDescription>
-            Importante: leia nossas orientações para a sua estadia
+            {t.description}
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
           <Textarea
-            placeholder="Insira o texto do regulamento aqui..."
+            placeholder={t.placeholder}
             value={regulationText}
             onChange={(e) => setRegulationText(e.target.value)}
             className="min-h-[300px]"
           />
         </div>
         <DialogFooter>
-          <Button onClick={handleConfirm}>Confirmar</Button>
+          <Button onClick={handleConfirm}>{t.confirmButton}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

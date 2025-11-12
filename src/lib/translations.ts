@@ -43,6 +43,58 @@ export type Translation = {
       button: string;
     };
   };
+  minibarModal: {
+    title: string;
+    description: string;
+    tableHeaderItem: string;
+    tableHeaderPrice: string;
+    loading: string;
+    addItemButton: string;
+    addItemNamePlaceholder: string;
+    addItemPricePlaceholder: string;
+    importButton: string;
+    importingButton: string;
+    importToastTitle: string;
+    importToastDescription: string;
+    importSuccessToastTitle: string;
+    importSuccessToastDescription: string;
+    importErrorToastTitle: string;
+    importErrorToastDescription: string;
+    deleteConfirm: (itemName: string) => string;
+    replaceConfirm: string;
+  };
+  regulationModal: {
+    title: string;
+    description: string;
+    placeholder: string;
+    confirmButton: string;
+    successToastTitle: string;
+    successToastDescription: string;
+  };
+  usefulServicesModal: {
+    title: string;
+    description: string;
+    loading: string;
+    addCategoryButton: string;
+    newCategoryPlaceholder: string;
+    importButton: string;
+    importingButton: string;
+    deleteCategoryConfirm: (categoryName: string) => string;
+    saveButton: string;
+    cancelButton: string;
+    addServiceButton: string;
+    addServiceItemNamePlaceholder: string;
+    addServiceItemAddressPlaceholder: string;
+    addServiceItemPhonePlaceholder: string;
+    importToastTitle: string;
+    importToastDescription: string;
+    importSuccessToastTitle: string;
+    importSuccessToastDescription: string;
+    importErrorToastTitle: string;
+    importErrorToastDescription: string;
+    deleteConfirm: (itemName: string) => string;
+    phoneNotAvailable: string;
+  };
 };
 
 export const translations: Record<Locale, Translation> = {
@@ -88,6 +140,58 @@ export const translations: Record<Locale, Translation> = {
         button: "Ler",
       },
     },
+    minibarModal: {
+      title: 'Itens do Frigobar',
+      description: 'Confira os itens disponíveis no frigobar.',
+      tableHeaderItem: 'Item',
+      tableHeaderPrice: 'Preço',
+      loading: 'Carregando...',
+      addItemButton: 'Adicionar Item',
+      addItemNamePlaceholder: 'Nome do item',
+      addItemPricePlaceholder: 'Preço',
+      importButton: 'Importar Lista Padrão',
+      importingButton: 'Importando...',
+      importToastTitle: 'Importando itens...',
+      importToastDescription: 'Por favor, aguarde.',
+      importSuccessToastTitle: 'Sucesso!',
+      importSuccessToastDescription: 'Itens do frigobar importados com sucesso.',
+      importErrorToastTitle: 'Erro na importação',
+      importErrorToastDescription: 'Não foi possível importar a lista de itens.',
+      deleteConfirm: (itemName) => `Tem certeza que deseja excluir "${itemName}"?`,
+      replaceConfirm: 'Isso substituirá todos os itens existentes. Deseja continuar?',
+    },
+    regulationModal: {
+      title: 'Nosso Regulamento',
+      description: 'Importante: leia nossas orientações para a sua estadia',
+      placeholder: 'Insira o texto do regulamento aqui...',
+      confirmButton: 'Confirmar',
+      successToastTitle: 'Sucesso!',
+      successToastDescription: 'O regulamento foi atualizado.',
+    },
+    usefulServicesModal: {
+      title: 'Serviços e Contatos Úteis',
+      description: 'Uma lista de contatos importantes em Ouro Preto para sua conveniência.',
+      loading: 'Carregando...',
+      addCategoryButton: 'Adicionar Categoria',
+      newCategoryPlaceholder: 'Nome da nova categoria',
+      importButton: 'Importar Listagem',
+      importingButton: 'Importando...',
+      deleteCategoryConfirm: (categoryName) => `Tem certeza que deseja excluir a categoria "${categoryName}" e todos os seus itens?`,
+      saveButton: 'Salvar',
+      cancelButton: 'Cancelar',
+      addServiceButton: 'Adicionar Serviço',
+      addServiceItemNamePlaceholder: 'Nome do serviço',
+      addServiceItemAddressPlaceholder: 'Endereço',
+      addServiceItemPhonePlaceholder: 'Telefone',
+      importToastTitle: 'Importando restaurantes...',
+      importToastDescription: 'Por favor, aguarde.',
+      importSuccessToastTitle: 'Sucesso!',
+      importSuccessToastDescription: 'Restaurantes importados com sucesso.',
+      importErrorToastTitle: 'Erro na importação',
+      importErrorToastDescription: 'Não foi possível importar os restaurantes.',
+      deleteConfirm: (itemName) => `Tem certeza que deseja excluir "${itemName}"?`,
+      phoneNotAvailable: 'N/A',
+    },
   },
   en: {
     welcomeMessage: {
@@ -130,6 +234,58 @@ export const translations: Record<Locale, Translation> = {
         title: "Our Regulations",
         button: "Read",
       },
+    },
+    minibarModal: {
+      title: 'Minibar Items',
+      description: 'Check the items available in the minibar.',
+      tableHeaderItem: 'Item',
+      tableHeaderPrice: 'Price',
+      loading: 'Loading...',
+      addItemButton: 'Add Item',
+      addItemNamePlaceholder: 'Item name',
+      addItemPricePlaceholder: 'Price',
+      importButton: 'Import Default List',
+      importingButton: 'Importing...',
+      importToastTitle: 'Importing items...',
+      importToastDescription: 'Please wait.',
+      importSuccessToastTitle: 'Success!',
+      importSuccessToastDescription: 'Minibar items imported successfully.',
+      importErrorToastTitle: 'Import Error',
+      importErrorToastDescription: 'Could not import the item list.',
+      deleteConfirm: (itemName) => `Are you sure you want to delete "${itemName}"?`,
+      replaceConfirm: 'This will replace all existing items. Do you want to continue?',
+    },
+    regulationModal: {
+      title: 'Our Regulations',
+      description: 'Important: read our guidelines for your stay',
+      placeholder: 'Enter the regulation text here...',
+      confirmButton: 'Confirm',
+      successToastTitle: 'Success!',
+      successToastDescription: 'The regulations have been updated.',
+    },
+    usefulServicesModal: {
+      title: 'Useful Services and Contacts',
+      description: 'A list of important contacts in Ouro Preto for your convenience.',
+      loading: 'Loading...',
+      addCategoryButton: 'Add Category',
+      newCategoryPlaceholder: 'New category name',
+      importButton: 'Import List',
+      importingButton: 'Importing...',
+      deleteCategoryConfirm: (categoryName) => `Are you sure you want to delete the category "${categoryName}" and all its items?`,
+      saveButton: 'Save',
+      cancelButton: 'Cancel',
+      addServiceButton: 'Add Service',
+      addServiceItemNamePlaceholder: 'Service name',
+      addServiceItemAddressPlaceholder: 'Address',
+      addServiceItemPhonePlaceholder: 'Phone',
+      importToastTitle: 'Importing restaurants...',
+      importToastDescription: 'Please wait.',
+      importSuccessToastTitle: 'Success!',
+      importSuccessToastDescription: 'Restaurants imported successfully.',
+      importErrorToastTitle: 'Import Error',
+      importErrorToastDescription: 'Could not import restaurants.',
+      deleteConfirm: (itemName) => `Are you sure you want to delete "${itemName}"?`,
+      phoneNotAvailable: 'N/A',
     },
   },
 };

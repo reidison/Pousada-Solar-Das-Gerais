@@ -51,6 +51,8 @@ export function UsefulServicesModal() {
   const firestore = useFirestore();
   const { toast } = useToast();
   const { translations } = useLanguage();
+  const t = translations.usefulServicesModal;
+  const tInfoCard = translations.infoCards.usefulPhones;
 
   const categoriesRef = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -74,7 +76,7 @@ export function UsefulServicesModal() {
     if (!firestore || !categoriesRef) return;
 
     setIsImporting(true);
-    toast({ title: "Importando restaurantes...", description: "Por favor, aguarde." });
+    toast({ title: t.importToastTitle, description: t.importToastDescription });
 
     try {
         const categoryName = "Restaurantes";
@@ -100,10 +102,10 @@ export function UsefulServicesModal() {
 
         await batch.commit();
 
-        toast({ title: "Sucesso!", description: "Restaurantes importados com sucesso." });
+        toast({ title: t.importSuccessToastTitle, description: t.importSuccessToastDescription });
     } catch (error) {
         console.error("Erro ao importar restaurantes:", error);
-        toast({ variant: "destructive", title: "Erro na importação", description: "Não foi possível importar os restaurantes." });
+        toast({ variant: "destructive", title: t.importErrorToastTitle, description: t.importErrorToastDescription });
     } finally {
         setIsImporting(false);
     }
@@ -112,18 +114,18 @@ export function UsefulServicesModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">{translations.infoCards.usefulPhones.button}</Button>
+        <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">{tInfoCard.button}</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] md:sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Serviços e Contatos Úteis</DialogTitle>
+          <DialogTitle>{t.title}</DialogTitle>
           <DialogDescription>
-            Uma lista de contatos importantes em Ouro Preto para sua conveniência.
+            {t.description}
           </DialogDescription>
         </DialogHeader>
         <div className="max-h-[60vh] overflow-y-auto pr-4 space-y-4">
           {isLoadingCategories ? (
-            <p>Carregando...</p>
+            <p>{t.loading}</p>
           ) : (
             <Accordion type="multiple" className="w-full">
               {categories?.map((category) => (
@@ -137,7 +139,7 @@ export function UsefulServicesModal() {
                 <Input
                   value={newCategoryName}
                   onChange={(e) => setNewCategoryName(e.target.value)}
-                  placeholder="Nome da nova categoria"
+                  placeholder={t.newCategoryPlaceholder}
                   onKeyDown={(e) => e.key === 'Enter' && handleAddCategory()}
                 />
                 <Button size="icon" onClick={handleAddCategory}><Save size={16}/></Button>
@@ -147,10 +149,10 @@ export function UsefulServicesModal() {
               <div className="flex flex-wrap gap-2">
                  <Button variant="outline" size="sm" onClick={() => setIsAddingCategory(true)}>
                     <PlusCircle size={16} className="mr-2" />
-                    Adicionar Categoria
+                    {t.addCategoryButton}
                 </Button>
                 <Button variant="secondary" size="sm" onClick={handleImportRestaurants} disabled={isImporting}>
-                    {isImporting ? 'Importando...' : 'Importar Listagem'}
+                    {isImporting ? t.importingButton : t.importButton}
                 </Button>
               </div>
             )}
@@ -163,6 +165,9 @@ export function UsefulServicesModal() {
 
 function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
   const firestore = useFirestore();
+  const { translations } = useLanguage();
+  const t = translations.usefulServicesModal;
+
   const categoryDocRef = useMemoFirebase(() => {
     if (!firestore) return null;
     return doc(firestore, 'service_categories', category.id);
@@ -185,7 +190,7 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
   };
 
   const handleDeleteCategory = async () => {
-    if (!window.confirm(`Tem certeza que deseja excluir a categoria "${category.name}" e todos os seus itens?`)) return;
+    if (!window.confirm(t.deleteCategoryConfirm(category.name))) return;
     if (!categoryDocRef || !itemsRef || !firestore) return;
     
     // Deletar subcoleção
@@ -224,7 +229,7 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
       </AccordionTrigger>
       <AccordionContent>
         <div className="space-y-2">
-          {isLoadingItems ? <p>Carregando...</p> : items?.map((item) => (
+          {isLoadingItems ? <p>{t.loading}</p> : items?.map((item) => (
             <ServiceListItem key={item.id} categoryId={category.id} item={item} />
           ))}
           <AddItemForm categoryId={category.id} />
@@ -236,6 +241,9 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
 
 function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithId<ServiceItem> }) {
     const firestore = useFirestore();
+    const { translations } = useLanguage();
+    const t = translations.usefulServicesModal;
+
     const itemDocRef = useMemoFirebase(() => {
         if (!firestore) return null;
         return doc(firestore, 'service_categories', categoryId, 'items', item.id);
@@ -255,7 +263,7 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
     };
 
     const handleDelete = async () => {
-        if (!window.confirm(`Tem certeza que deseja excluir "${item.name}"?`)) return;
+        if (!window.confirm(t.deleteConfirm(item.name))) return;
         if (!itemDocRef) return;
         await deleteDoc(itemDocRef);
     };
@@ -267,12 +275,12 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
     if (isEditing) {
         return (
             <div className="flex flex-col text-left text-sm p-2 rounded-md border border-border space-y-2">
-                <Input placeholder="Nome" value={editedItem.name} onChange={e => handleInputChange('name', e.target.value)} />
-                <Input placeholder="Endereço" value={editedItem.address} onChange={e => handleInputChange('address', e.target.value)} />
-                <Input placeholder="Telefone" value={editedItem.phone} onChange={e => handleInputChange('phone', e.target.value)} />
+                <Input placeholder={t.addServiceItemNamePlaceholder} value={editedItem.name} onChange={e => handleInputChange('name', e.target.value)} />
+                <Input placeholder={t.addServiceItemAddressPlaceholder} value={editedItem.address} onChange={e => handleInputChange('address', e.target.value)} />
+                <Input placeholder={t.addServiceItemPhonePlaceholder} value={editedItem.phone} onChange={e => handleInputChange('phone', e.target.value)} />
                 <div className="flex justify-end gap-2">
-                    <Button size="sm" onClick={handleUpdate}><Save size={16} className="mr-1"/> Salvar</Button>
-                    <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>Cancelar</Button>
+                    <Button size="sm" onClick={handleUpdate}><Save size={16} className="mr-1"/> {t.saveButton}</Button>
+                    <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>{t.cancelButton}</Button>
                 </div>
             </div>
         );
@@ -291,7 +299,7 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
                 ) : (
                   <p className="text-green-600 flex items-center gap-2 mt-1">
                     <Phone size={14} />
-                    <span>{item.phone || 'N/A'}</span>
+                    <span>{item.phone || t.phoneNotAvailable}</span>
                   </p>
                 )}
             </div>
@@ -305,6 +313,9 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
 
 function AddItemForm({ categoryId }: { categoryId: string }) {
     const firestore = useFirestore();
+    const { translations } = useLanguage();
+    const t = translations.usefulServicesModal;
+
     const itemsRef = useMemoFirebase(() => {
         if (!firestore) return null;
         return collection(firestore, 'service_categories', categoryId, 'items');
@@ -328,19 +339,19 @@ function AddItemForm({ categoryId }: { categoryId: string }) {
         return (
             <Button variant="ghost" size="sm" className="mt-2 w-full justify-start" onClick={() => setIsAdding(true)}>
                 <PlusCircle size={16} className="mr-2" />
-                Adicionar Serviço
+                {t.addServiceButton}
             </Button>
         );
     }
 
     return (
          <div className="flex flex-col text-left text-sm p-2 rounded-md border border-border mt-4 space-y-2">
-            <Input placeholder="Nome do serviço" value={newItem.name} onChange={e => handleInputChange('name', e.target.value)} />
-            <Input placeholder="Endereço" value={newItem.address} onChange={e => handleInputChange('address', e.target.value)} />
-            <Input placeholder="Telefone" value={newItem.phone} onChange={e => handleInputChange('phone', e.target.value)} />
+            <Input placeholder={t.addServiceItemNamePlaceholder} value={newItem.name} onChange={e => handleInputChange('name', e.target.value)} />
+            <Input placeholder={t.addServiceItemAddressPlaceholder} value={newItem.address} onChange={e => handleInputChange('address', e.target.value)} />
+            <Input placeholder={t.addServiceItemPhonePlaceholder} value={newItem.phone} onChange={e => handleInputChange('phone', e.target.value)} />
             <div className="flex justify-end gap-2">
-                <Button size="sm" onClick={handleAdd}><Save size={16} className="mr-1"/> Adicionar</Button>
-                <Button size="sm" variant="ghost" onClick={() => setIsAdding(false)}>Cancelar</Button>
+                <Button size="sm" onClick={handleAdd}><Save size={16} className="mr-1"/> {t.saveButton}</Button>
+                <Button size="sm" variant="ghost" onClick={() => setIsAdding(false)}>{t.cancelButton}</Button>
             </div>
         </div>
     );

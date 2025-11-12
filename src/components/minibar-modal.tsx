@@ -46,6 +46,7 @@ export function MinibarModal() {
   const firestore = useFirestore();
   const { toast } = useToast();
   const { translations } = useLanguage();
+  const t = translations.minibarModal;
 
   const itemsRef = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -58,12 +59,12 @@ export function MinibarModal() {
 
   const handleImportDefault = async () => {
     if (!firestore || !itemsRef) return;
-    if (items && items.length > 0 && !window.confirm("Isso substituirá todos os itens existentes. Deseja continuar?")) {
+    if (items && items.length > 0 && !window.confirm(t.replaceConfirm)) {
         return;
     }
 
     setIsImporting(true);
-    toast({ title: "Importando itens...", description: "Por favor, aguarde." });
+    toast({ title: t.importToastTitle, description: t.importToastDescription });
 
     try {
         const batch = writeBatch(firestore);
@@ -82,10 +83,10 @@ export function MinibarModal() {
 
         await batch.commit();
 
-        toast({ title: "Sucesso!", description: "Itens do frigobar importados com sucesso." });
+        toast({ title: t.importSuccessToastTitle, description: t.importSuccessToastDescription });
     } catch (error) {
         console.error("Erro ao importar itens do frigobar:", error);
-        toast({ variant: "destructive", title: "Erro na importação", description: "Não foi possível importar a lista de itens." });
+        toast({ variant: "destructive", title: t.importErrorToastTitle, description: t.importErrorToastDescription });
     } finally {
         setIsImporting(false);
     }
@@ -99,23 +100,23 @@ export function MinibarModal() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] md:sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Itens do Frigobar</DialogTitle>
+          <DialogTitle>{t.title}</DialogTitle>
           <DialogDescription>
-            Confira os itens disponíveis no frigobar.
+            {t.description}
           </DialogDescription>
         </DialogHeader>
         <div className="max-h-[60vh] overflow-y-auto pr-4">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Item</TableHead>
-                <TableHead className="text-right">Preço</TableHead>
+                <TableHead>{t.tableHeaderItem}</TableHead>
+                <TableHead className="text-right">{t.tableHeaderPrice}</TableHead>
                 <TableHead className="w-[100px] text-right"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow><TableCell colSpan={3} className="text-center">Carregando...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={3} className="text-center">{t.loading}</TableCell></TableRow>
               ) : items?.map((item) => (
                 <EditableItemRow key={item.id} item={item} />
               ))}
@@ -126,7 +127,7 @@ export function MinibarModal() {
         <div className="mt-4 border-t pt-4">
             <Button variant="secondary" size="sm" onClick={handleImportDefault} disabled={isImporting}>
                 {isImporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                {isImporting ? 'Importando...' : 'Importar Lista Padrão'}
+                {isImporting ? t.importingButton : t.importButton}
             </Button>
         </div>
       </DialogContent>
@@ -137,6 +138,8 @@ export function MinibarModal() {
 
 function EditableItemRow({ item }: { item: WithId<MinibarItem> }) {
     const firestore = useFirestore();
+    const { translations } = useLanguage();
+    const t = translations.minibarModal;
     const itemDocRef = useMemoFirebase(() => {
         if (!firestore) return null;
         return doc(firestore, 'minibar_items', item.id);
@@ -155,7 +158,7 @@ function EditableItemRow({ item }: { item: WithId<MinibarItem> }) {
     };
 
     const handleDelete = async () => {
-        if (!window.confirm(`Tem certeza que deseja excluir "${item.name}"?`)) return;
+        if (!window.confirm(t.deleteConfirm(item.name))) return;
         if (!itemDocRef) return;
         await deleteDoc(itemDocRef);
     };
@@ -199,6 +202,8 @@ function EditableItemRow({ item }: { item: WithId<MinibarItem> }) {
 
 function AddItemForm() {
     const firestore = useFirestore();
+    const { translations } = useLanguage();
+    const t = translations.minibarModal;
     const itemsRef = useMemoFirebase(() => {
         if (!firestore) return null;
         return collection(firestore, 'minibar_items');
@@ -224,7 +229,7 @@ function AddItemForm() {
                 <TableCell colSpan={3}>
                     <Button variant="ghost" size="sm" className="w-full justify-start" onClick={() => setIsAdding(true)}>
                         <PlusCircle size={16} className="mr-2" />
-                        Adicionar Item
+                        {t.addItemButton}
                     </Button>
                 </TableCell>
              </TableRow>
@@ -234,10 +239,10 @@ function AddItemForm() {
     return (
          <TableRow>
             <TableCell>
-                <Input placeholder="Nome do item" value={newItem.name} onChange={e => handleInputChange('name', e.target.value)} />
+                <Input placeholder={t.addItemNamePlaceholder} value={newItem.name} onChange={e => handleInputChange('name', e.target.value)} />
             </TableCell>
             <TableCell className='text-right'>
-                <Input placeholder="Preço" className="text-right" value={newItem.price} onChange={e => handleInputChange('price', e.target.value)} />
+                <Input placeholder={t.addItemPricePlaceholder} className="text-right" value={newItem.price} onChange={e => handleInputChange('price', e.target.value)} />
             </TableCell>
             <TableCell className="text-right">
                 <div className="flex justify-end gap-2">
