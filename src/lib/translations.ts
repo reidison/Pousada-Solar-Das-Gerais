@@ -109,8 +109,8 @@ export const translations: Record<Locale, Translation> = {
     infoCards: {
       breakfast: {
         title: "Café da Manhã",
-        line1: "Servido diariamente das",
-        line2: "Local:",
+        line1: "Servido diariamente das 7:30h às 10h",
+        line2: "Local: Salão de Café",
       },
       wifi: {
         title: "Wi-Fi",
@@ -207,8 +207,8 @@ export const translations: Record<Locale, Translation> = {
     infoCards: {
       breakfast: {
         title: "Breakfast",
-        line1: "Served daily from",
-        line2: "Location:",
+        line1: "Served daily from 7:30 am to 10:00 am",
+        line2: "Location: Breakfast Room",
       },
       wifi: {
         title: "Wi-Fi",

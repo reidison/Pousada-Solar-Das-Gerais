@@ -31,19 +31,10 @@ export default function SolarInfoHubPage() {
       icon: <Coffee size={28} />,
       title: translations.infoCards.breakfast.title,
       content: (
-        isLoading ? (
-          <div className="flex flex-col items-center gap-2">
-            <Skeleton className="h-4 w-40" />
-            <Skeleton className="h-6 w-32" />
-            <Skeleton className="h-4 w-36" />
-          </div>
-        ) : (
-          <>
-            <p>{translations.infoCards.breakfast.line1}</p>
-            <p className="font-bold text-lg text-primary">{lodgeInfo?.breakfastHours}</p>
-            <p className="text-sm">{translations.infoCards.breakfast.line2} {lodgeInfo?.breakfastLocation}</p>
-          </>
-        )
+        <>
+          <p>{translations.infoCards.breakfast.line1}</p>
+          <p>{translations.infoCards.breakfast.line2}</p>
+        </>
       ),
     },
     {
