@@ -173,12 +173,12 @@ function SlideEditor({ slide }: { slide: WithId<CityTourSlide> }) {
 
   return (
     <div className="flex flex-col h-full p-1">
-      <div className="flex-grow overflow-y-auto space-y-4">
+      <div className="flex-grow overflow-y-auto space-y-4 p-2">
         <Textarea
           placeholder={t.placeholder}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          className="min-h-[150px] text-base"
+          className="min-h-[150px] text-base resize-none"
         />
         <div className="space-y-3">
           <div className="flex justify-between items-center">
@@ -212,7 +212,7 @@ function SlideEditor({ slide }: { slide: WithId<CityTourSlide> }) {
           ))}
         </div>
       </div>
-      <div className="flex-shrink-0 flex justify-between items-center pt-4 border-t">
+      <div className="flex-shrink-0 flex justify-between items-center pt-4 mt-2 border-t">
         <AlertDialog>
             <AlertDialogTrigger asChild>
                  <Button variant="destructive" size="sm">
