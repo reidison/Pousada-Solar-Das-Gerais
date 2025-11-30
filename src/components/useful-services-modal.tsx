@@ -10,6 +10,17 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -18,7 +29,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, addDoc, doc, updateDoc, deleteDoc, writeBatch, getDocs, query, where } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, deleteDoc, writeBatch, getDocs } from 'firebase/firestore';
 import { Phone, PlusCircle, Trash2, Save, X, Edit } from 'lucide-react';
 import type { WithId } from '@/firebase';
 import { useToast } from "@/hooks/use-toast";
@@ -43,7 +54,7 @@ const defaultServicesData = [
     ]
   },
   {
-    category: "Mecânica e Postos de Combustíveis",
+    category: "Postos de Combustíveis",
     items: [
       { name: "Posto Shell", address: "Rod. dos Inconfidentes, 782", phone: "(31) 3551-1589" }
     ]
@@ -283,6 +294,11 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
     const [isEditing, setIsEditing] = useState(false);
     const [editedItem, setEditedItem] = useState(item);
 
+    const handleDelete = async () => {
+        if (!itemDocRef) return;
+        await deleteDoc(itemDocRef);
+    };
+
     const handleUpdate = async () => {
         if (!itemDocRef) return;
         await updateDoc(itemDocRef, {
@@ -293,16 +309,11 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
         setIsEditing(false);
     };
 
-    const handleDelete = async () => {
-        const itemNameToConfirm = editedItem.name || t.untitledItem;
-        if (!window.confirm(t.deleteConfirm(itemNameToConfirm))) return;
-        if (!itemDocRef) return;
-        await deleteDoc(itemDocRef);
-    };
-
     const handleInputChange = (field: keyof ServiceItem, value: string) => {
         setEditedItem(prev => ({...prev, [field]: value }));
     }
+    
+    const itemNameToConfirm = editedItem.name || t.untitledItem;
 
     if (isEditing) {
         return (
@@ -319,11 +330,11 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
     }
 
     return (
-         <div className="flex justify-between items-start text-left text-sm p-2 rounded-md border border-transparent hover:border-border group">
+        <div className="flex justify-between items-start text-left text-sm p-2 rounded-md border border-transparent hover:border-border group">
             <div className="flex-grow">
                 <p className="font-medium text-primary">{item.name || <span className="italic text-muted-foreground">{t.untitledItem}</span>}</p>
                 <p className="text-muted-foreground">{item.address}</p>
-                 {item.phone && item.phone.match(/\d/) ? (
+                {item.phone && item.phone.match(/\d/) ? (
                    <a href={`tel:${item.phone.replace(/\D/g, '')}`} className="text-green-600 flex items-center gap-2 mt-1 hover:underline">
                     <Phone size={14} />
                     <span>{item.phone}</span>
@@ -337,11 +348,28 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
             </div>
             <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
                 <Button size="icon" variant="ghost" onClick={() => setIsEditing(true)}><Edit size={16} /></Button>
-                <Button size="icon" variant="ghost" onClick={handleDelete}><Trash2 size={16} className="text-destructive"/></Button>
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button size="icon" variant="ghost"><Trash2 size={16} className="text-destructive"/></Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Excluir {itemNameToConfirm} da lista definitivamente?
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction onClick={handleDelete}>Sim</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </div>
         </div>
     );
 }
+
 
 function AddItemForm({ categoryId }: { categoryId: string }) {
     const firestore = useFirestore();
