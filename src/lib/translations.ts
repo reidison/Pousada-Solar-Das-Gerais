@@ -84,6 +84,19 @@ export type Translation = {
     confirmButton: string;
     successToastTitle: string;
     successToastDescription: string;
+    addSlideButton: string;
+    deleteSlideButton: string;
+    saveChangesButton: string;
+    savingButton: string;
+    imagesTitle: string;
+    addImageButton: string;
+    imageUrlPlaceholder: string;
+    saveSuccessToastTitle: string;
+    saveErrorToastTitle: string;
+    deleteSuccessToastTitle: string;
+    deleteErrorToastTitle: string;
+    deleteConfirmTitle: string;
+    deleteConfirmDescription: string;
   };
   usefulServicesModal: {
     title: string;
@@ -196,10 +209,23 @@ export const translations: Record<Locale, Translation> = {
     cityTourModal: {
       title: 'Programação do City Tour',
       description: 'Edite aqui a programação e informações sobre o city tour.',
-      placeholder: 'Insira aqui as informações sobre a programação do City Tour...',
+      placeholder: 'Descreva este ponto do passeio...',
       confirmButton: 'Salvar Alterações',
       successToastTitle: 'Sucesso!',
       successToastDescription: 'A programação do City Tour foi atualizada.',
+      addSlideButton: 'Adicionar Slide',
+      deleteSlideButton: 'Excluir Slide',
+      saveChangesButton: 'Salvar Alterações',
+      savingButton: 'Salvando...',
+      imagesTitle: 'Imagens',
+      addImageButton: 'Adicionar Imagem',
+      imageUrlPlaceholder: 'URL da imagem...',
+      saveSuccessToastTitle: 'Slide salvo com sucesso!',
+      saveErrorToastTitle: 'Erro ao salvar o slide.',
+      deleteSuccessToastTitle: 'Slide excluído com sucesso!',
+      deleteErrorToastTitle: 'Erro ao excluir o slide.',
+      deleteConfirmTitle: 'Confirmar Exclusão',
+      deleteConfirmDescription: 'Tem certeza que deseja excluir este slide? Esta ação não pode ser desfeita.',
     },
     usefulServicesModal: {
       title: 'Serviços e Contatos Úteis',
@@ -310,10 +336,23 @@ export const translations: Record<Locale, Translation> = {
     cityTourModal: {
       title: 'City Tour Schedule',
       description: 'Edit the city tour schedule and information here.',
-      placeholder: 'Enter the City Tour schedule information here...',
+      placeholder: 'Describe this part of the tour...',
       confirmButton: 'Save Changes',
       successToastTitle: 'Success!',
       successToastDescription: 'The City Tour schedule has been updated.',
+      addSlideButton: 'Add Slide',
+      deleteSlideButton: 'Delete Slide',
+      saveChangesButton: 'Save Changes',
+      savingButton: 'Saving...',
+      imagesTitle: 'Images',
+      addImageButton: 'Add Image',
+      imageUrlPlaceholder: 'Image URL...',
+      saveSuccessToastTitle: 'Slide saved successfully!',
+      saveErrorToastTitle: 'Error saving slide.',
+      deleteSuccessToastTitle: 'Slide deleted successfully!',
+      deleteErrorToastTitle: 'Error deleting slide.',
+      deleteConfirmTitle: 'Confirm Deletion',
+      deleteConfirmDescription: 'Are you sure you want to delete this slide? This action cannot be undone.',
     },
     usefulServicesModal: {
       title: 'Useful Services and Contacts',

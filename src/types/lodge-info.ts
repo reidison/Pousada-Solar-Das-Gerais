@@ -7,7 +7,6 @@ export interface LodgeInfo {
     wifiName: string;
     wifiPassword: string;
     mainDoorAccessCode: string;
-    cityTourSchedule: string;
     whatsappNumber: string;
     welcomeMessage: string;
 }

@@ -35,10 +35,6 @@
           "type": "string",
           "description": "Access code or password for the main door."
         },
-        "cityTourSchedule": {
-          "type": "string",
-          "description": "Schedule and instructions for booking a city tour."
-        },
         "whatsappNumber": {
           "type": "string",
           "description": "WhatsApp number for contacting the reception."
@@ -56,7 +52,6 @@
         "wifiName",
         "wifiPassword",
         "mainDoorAccessCode",
-        "cityTourSchedule",
         "whatsappNumber",
         "welcomeMessage"
       ]
@@ -108,6 +103,30 @@
         }
       },
       "required": ["name", "price"]
+    },
+    "CityTourSlide": {
+      "title": "City Tour Slide",
+      "description": "A slide for the city tour carousel, containing text and images.",
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "Descriptive text for the tour slide."
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          },
+          "description": "A list of image URLs for the slide."
+        },
+        "order": {
+            "type": "number",
+            "description": "The display order of the slide."
+        }
+      },
+      "required": ["text", "images", "order"]
     }
   },
   "auth": {
@@ -152,8 +171,16 @@
           "schema": { "$ref": "#/backend/entities/MinibarItem" },
           "description": "Collection of items available in the minibar."
         }
+      },
+      {
+        "path": "/city_tour_slides/{slideId}",
+        "definition": {
+          "entityName": "CityTourSlide",
+          "schema": { "$ref": "#/backend/entities/CityTourSlide" },
+          "description": "Collection of slides for the city tour feature."
+        }
       }
     ],
-    "reasoning": "The design includes a single document for LodgeInfo for simplicity. For services, a `service_categories` collection allows for organizing services. Each category document can then have a sub-collection of `items`, which provides a structured and scalable way to manage useful contacts. A separate collection for `minibar_items` allows for easy management of the minibar inventory."
+    "reasoning": "The design includes a single document for LodgeInfo for simplicity. For services, a `service_categories` collection allows for organizing services. Each category document can then have a sub-collection of `items`, which provides a structured and scalable way to manage useful contacts. A separate collection for `minibar_items` allows for easy management of the minibar inventory. A `city_tour_slides` collection is added to manage the content of the city tour carousel in a structured manner."
   }
 }
