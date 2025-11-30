@@ -229,7 +229,7 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
   return (
     <AccordionItem value={category.id}>
       <div className="flex items-center w-full group">
-        <AccordionTrigger className="flex-grow hover:no-underline flex-1">
+        <AccordionTrigger className="flex-grow hover:no-underline flex-1 py-2 pr-2">
             {isEditingCategory ? (
               <div className="flex items-center gap-2 flex-grow mr-2" onClick={(e) => e.stopPropagation()}>
                 <Input
@@ -319,8 +319,8 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
     }
 
     return (
-         <div className="flex justify-between items-center text-left text-sm p-2 rounded-md border border-transparent hover:border-border group">
-            <div>
+         <div className="flex justify-between items-start text-left text-sm p-2 rounded-md border border-transparent hover:border-border group">
+            <div className="flex-grow">
                 <p className="font-medium text-primary">{item.name || <span className="italic text-muted-foreground">{t.untitledItem}</span>}</p>
                 <p className="text-muted-foreground">{item.address}</p>
                  {item.phone && item.phone.match(/\d/) ? (
@@ -335,7 +335,7 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
                   </p>
                 )}
             </div>
-            <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
                 <Button size="icon" variant="ghost" onClick={() => setIsEditing(true)}><Edit size={16} /></Button>
                 <Button size="icon" variant="ghost" onClick={handleDelete}><Trash2 size={16} className="text-destructive"/></Button>
             </div>
