@@ -190,7 +190,8 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
   };
 
   const handleDeleteCategory = async () => {
-    if (!window.confirm(t.deleteCategoryConfirm(category.name))) return;
+    const categoryNameToConfirm = category.name || 'sem título';
+    if (!window.confirm(t.deleteCategoryConfirm(categoryNameToConfirm))) return;
     if (!categoryDocRef || !itemsRef || !firestore) return;
     
     try {
@@ -207,22 +208,25 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
   
   return (
     <AccordionItem value={category.id}>
-      <div className="flex items-center w-full">
-        <AccordionTrigger className="flex-grow">
+      <div className="flex items-center w-full group">
+        <AccordionTrigger className="flex-grow hover:no-underline">
             {isEditingCategory ? (
               <div className="flex items-center gap-2 flex-grow mr-2" onClick={(e) => e.stopPropagation()}>
                 <Input
                   value={editedCategoryName}
                   onChange={(e) => setEditedCategoryName(e.target.value)}
                   className="h-8"
-                  onKeyDown={(e) => e.key === 'Enter' && handleUpdateCategory()}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleUpdateCategory();
+                    if (e.key === 'Escape') setIsEditingCategory(false);
+                  }}
                 />
               </div>
             ) : (
-              <span className="font-semibold">{category.name}</span>
+              <span className="font-semibold">{category.name || <span className="italic text-muted-foreground">Sem título</span>}</span>
             )}
         </AccordionTrigger>
-        <div className="flex items-center gap-1 pl-2">
+        <div className="flex items-center gap-1 pl-2 opacity-0 group-hover:opacity-100 transition-opacity focus-within:opacity-100">
             {isEditingCategory ? (
                 <>
                     <Button size="icon" variant="ghost" onClick={handleUpdateCategory}><Save size={16} /></Button>
@@ -270,7 +274,8 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
     };
 
     const handleDelete = async () => {
-        if (!window.confirm(t.deleteConfirm(item.name))) return;
+        const itemNameToConfirm = editedItem.name || 'item sem nome';
+        if (!window.confirm(t.deleteConfirm(itemNameToConfirm))) return;
         if (!itemDocRef) return;
         await deleteDoc(itemDocRef);
     };
@@ -296,7 +301,7 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
     return (
          <div className="flex justify-between items-center text-left text-sm p-2 rounded-md border border-transparent hover:border-border group">
             <div>
-                <p className="font-medium text-primary">{item.name}</p>
+                <p className="font-medium text-primary">{item.name || <span className="italic text-muted-foreground">N/A</span>}</p>
                 <p className="text-muted-foreground">{item.address}</p>
                  {item.phone && item.phone.match(/\d/) ? (
                    <a href={`tel:${item.phone.replace(/\D/g, '')}`} className="text-green-600 flex items-center gap-2 mt-1 hover:underline">
@@ -304,7 +309,7 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
                     <span>{item.phone}</span>
                   </a>
                 ) : (
-                  <p className="text-green-600 flex items-center gap-2 mt-1">
+                  <p className="text-muted-foreground flex items-center gap-2 mt-1">
                     <Phone size={14} />
                     <span>{item.phone || t.phoneNotAvailable}</span>
                   </p>
@@ -332,7 +337,11 @@ function AddItemForm({ categoryId }: { categoryId: string }) {
     const [isAdding, setIsAdding] = useState(false);
 
     const handleAdd = async () => {
-        if (newItem.name.trim() === '' || !itemsRef) return;
+        if (!itemsRef) return;
+        if (newItem.name.trim() === '' && newItem.address.trim() === '' && newItem.phone.trim() === '') {
+            setIsAdding(false);
+            return;
+        }
         await addDoc(itemsRef, newItem);
         setNewItem({ name: '', address: '', phone: '' });
         setIsAdding(false);
