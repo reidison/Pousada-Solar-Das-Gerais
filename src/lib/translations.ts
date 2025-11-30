@@ -63,8 +63,11 @@ export type Translation = {
     importSuccessToastDescription: string;
     importErrorToastTitle: string;
     importErrorToastDescription: string;
+    deleteConfirmTitle: string;
     deleteConfirm: (itemName: string) => string;
     replaceConfirm: string;
+    deleteButton: string;
+    cancelButton: string;
   };
   regulationModal: {
     title: string;
@@ -85,6 +88,7 @@ export type Translation = {
     deleteCategoryConfirm: (categoryName: string) => string;
     saveButton: string;
     cancelButton: string;
+    deleteButton: string;
     addServiceButton: string;
     addServiceItemNamePlaceholder: string;
     addServiceItemAddressPlaceholder: string;
@@ -95,6 +99,7 @@ export type Translation = {
     importSuccessToastDescription: string;
     importErrorToastTitle: string;
     importErrorToastDescription: string;
+    deleteConfirmTitle: string;
     deleteConfirm: (itemName: string) => string;
     phoneNotAvailable: string;
     untitledCategory: string;
@@ -166,8 +171,11 @@ export const translations: Record<Locale, Translation> = {
       importSuccessToastDescription: 'Itens do frigobar importados com sucesso.',
       importErrorToastTitle: 'Erro na importação',
       importErrorToastDescription: 'Não foi possível importar a lista de itens.',
+      deleteConfirmTitle: 'Confirmar Exclusão',
       deleteConfirm: (itemName) => `Tem certeza que deseja excluir "${itemName}"?`,
       replaceConfirm: 'Isso substituirá todos os itens existentes. Deseja continuar?',
+      deleteButton: 'Sim',
+      cancelButton: 'Cancelar',
     },
     regulationModal: {
       title: 'Nosso Regulamento',
@@ -188,6 +196,7 @@ export const translations: Record<Locale, Translation> = {
       deleteCategoryConfirm: (categoryName) => `Tem certeza que deseja excluir a categoria "${categoryName}" e todos os seus itens?`,
       saveButton: 'Salvar',
       cancelButton: 'Cancelar',
+      deleteButton: 'Sim',
       addServiceButton: 'Adicionar Serviço',
       addServiceItemNamePlaceholder: 'Nome do serviço',
       addServiceItemAddressPlaceholder: 'Endereço',
@@ -198,7 +207,8 @@ export const translations: Record<Locale, Translation> = {
       importSuccessToastDescription: 'Serviços importados com sucesso.',
       importErrorToastTitle: 'Erro na importação',
       importErrorToastDescription: 'Não foi possível importar a lista de serviços.',
-      deleteConfirm: (itemName) => `Tem certeza que deseja excluir "${itemName}"?`,
+      deleteConfirmTitle: 'Confirmar Exclusão',
+      deleteConfirm: (itemName) => `Excluir ${itemName} da lista definitivamente?`,
       phoneNotAvailable: 'N/A',
       untitledCategory: 'Categoria sem título',
       untitledItem: 'Item sem nome',
@@ -267,8 +277,11 @@ export const translations: Record<Locale, Translation> = {
       importSuccessToastDescription: 'Minibar items imported successfully.',
       importErrorToastTitle: 'Import Error',
       importErrorToastDescription: 'Could not import the item list.',
+      deleteConfirmTitle: 'Confirm Deletion',
       deleteConfirm: (itemName) => `Are you sure you want to delete "${itemName}"?`,
       replaceConfirm: 'This will replace all existing items. Do you want to continue?',
+      deleteButton: 'Yes',
+      cancelButton: 'Cancel',
     },
     regulationModal: {
       title: 'Our Regulations',
@@ -289,6 +302,7 @@ export const translations: Record<Locale, Translation> = {
       deleteCategoryConfirm: (categoryName) => `Are you sure you want to delete the category "${categoryName}" and all its items?`,
       saveButton: 'Save',
       cancelButton: 'Cancel',
+      deleteButton: 'Yes',
       addServiceButton: 'Add Service',
       addServiceItemNamePlaceholder: 'Service name',
       addServiceItemAddressPlaceholder: 'Address',
@@ -299,7 +313,8 @@ export const translations: Record<Locale, Translation> = {
       importSuccessToastDescription: 'Services imported successfully.',
       importErrorToastTitle: 'Import Error',
       importErrorToastDescription: 'Could not import the service list.',
-      deleteConfirm: (itemName) => `Are you sure you want to delete "${itemName}"?`,
+      deleteConfirmTitle: 'Confirm Deletion',
+      deleteConfirm: (itemName) => `Permanently delete ${itemName} from the list?`,
       phoneNotAvailable: 'N/A',
       untitledCategory: 'Untitled category',
       untitledItem: 'Untitled item',

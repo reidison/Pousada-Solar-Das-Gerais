@@ -54,7 +54,7 @@ const defaultServicesData = [
     ]
   },
   {
-    category: "Postos de Combustíveis",
+    category: "Mecânica e Postos de Combustíveis",
     items: [
       { name: "Posto Shell", address: "Rod. dos Inconfidentes, 782", phone: "(31) 3551-1589" }
     ]
@@ -354,14 +354,14 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                         <AlertDialogHeader>
-                            <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+                            <AlertDialogTitle>{translations.usefulServicesModal.deleteConfirmTitle}</AlertDialogTitle>
                             <AlertDialogDescription>
-                                Excluir {itemNameToConfirm} da lista definitivamente?
+                                {translations.usefulServicesModal.deleteConfirm(itemNameToConfirm)}
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                            <AlertDialogAction onClick={handleDelete}>Sim</AlertDialogAction>
+                            <AlertDialogCancel>{translations.usefulServicesModal.cancelButton}</AlertDialogCancel>
+                            <AlertDialogAction onClick={handleDelete}>{translations.usefulServicesModal.deleteButton}</AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
