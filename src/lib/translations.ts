@@ -180,7 +180,7 @@ export const translations: Record<Locale, Translation> = {
     regulationModal: {
       title: 'Nosso Regulamento',
       description: 'Importante: leia nossas orientações para a sua estadia',
-      placeholder: 'Insira o texto do regulamento aqui...',
+      placeholder: 'text area',
       confirmButton: 'Confirmar',
       successToastTitle: 'Sucesso!',
       successToastDescription: 'O regulamento foi atualizado.',
@@ -286,7 +286,7 @@ export const translations: Record<Locale, Translation> = {
     regulationModal: {
       title: 'Our Regulations',
       description: 'Important: read our guidelines for your stay',
-      placeholder: 'Enter the regulation text here...',
+      placeholder: 'text area',
       confirmButton: 'Confirm',
       successToastTitle: 'Success!',
       successToastDescription: 'The regulations have been updated.',
