@@ -221,8 +221,6 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
   };
 
   const handleDeleteCategory = async () => {
-    const categoryNameToConfirm = category.name || t.untitledCategory;
-    if (!window.confirm(t.deleteCategoryConfirm(categoryNameToConfirm))) return;
     if (!categoryDocRef || !itemsRef || !firestore) return;
     
     try {
@@ -237,6 +235,8 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
     }
   };
   
+  const categoryNameToConfirm = category.name || t.untitledCategory;
+
   return (
     <AccordionItem value={category.id}>
       <div className="flex items-center w-full group">
@@ -266,7 +266,23 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
             ) : (
                 <Button size="icon" variant="ghost" onClick={() => setIsEditingCategory(true)}><Edit size={16} /></Button>
             )}
-            <Button size="icon" variant="ghost" onClick={handleDeleteCategory}><Trash2 size={16} className="text-destructive" /></Button>
+             <AlertDialog>
+                <AlertDialogTrigger asChild>
+                    <Button size="icon" variant="ghost"><Trash2 size={16} className="text-destructive"/></Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>{t.deleteConfirmTitle}</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            {t.deleteCategoryConfirm(categoryNameToConfirm)}
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>{t.cancelButton}</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDeleteCategory}>{t.deleteButton}</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
       </div>
       <AccordionContent>
@@ -354,14 +370,14 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                         <AlertDialogHeader>
-                            <AlertDialogTitle>{translations.usefulServicesModal.deleteConfirmTitle}</AlertDialogTitle>
+                            <AlertDialogTitle>{t.deleteConfirmTitle}</AlertDialogTitle>
                             <AlertDialogDescription>
-                                {translations.usefulServicesModal.deleteConfirm(itemNameToConfirm)}
+                                {t.deleteConfirm(itemNameToConfirm)}
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                            <AlertDialogCancel>{translations.usefulServicesModal.cancelButton}</AlertDialogCancel>
-                            <AlertDialogAction onClick={handleDelete}>{translations.usefulServicesModal.deleteButton}</AlertDialogAction>
+                            <AlertDialogCancel>{t.cancelButton}</AlertDialogCancel>
+                            <AlertDialogAction onClick={handleDelete}>{t.deleteButton}</AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
