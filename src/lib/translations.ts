@@ -26,7 +26,7 @@ export type Translation = {
     };
     cityTour: {
       title: string;
-      schedule: string;
+      button: string;
     };
     reception: {
       title: string;
@@ -70,6 +70,14 @@ export type Translation = {
     cancelButton: string;
   };
   regulationModal: {
+    title: string;
+    description: string;
+    placeholder: string;
+    confirmButton: string;
+    successToastTitle: string;
+    successToastDescription: string;
+  };
+  cityTourModal: {
     title: string;
     description: string;
     placeholder: string;
@@ -134,7 +142,7 @@ export const translations: Record<Locale, Translation> = {
       },
       cityTour: {
         title: "City Tour",
-        schedule: "Saídas às 10h da Praça Tiradentes. É importante o agendamento na recepção.",
+        button: "Ver a programação",
       },
       reception: {
         title: "Fale com a Recepção",
@@ -184,6 +192,14 @@ export const translations: Record<Locale, Translation> = {
       confirmButton: 'Confirmar',
       successToastTitle: 'Sucesso!',
       successToastDescription: 'O regulamento foi atualizado.',
+    },
+    cityTourModal: {
+      title: 'Programação do City Tour',
+      description: 'Edite aqui a programação e informações sobre o city tour.',
+      placeholder: 'Insira aqui as informações sobre a programação do City Tour...',
+      confirmButton: 'Salvar Alterações',
+      successToastTitle: 'Sucesso!',
+      successToastDescription: 'A programação do City Tour foi atualizada.',
     },
     usefulServicesModal: {
       title: 'Serviços e Contatos Úteis',
@@ -240,7 +256,7 @@ export const translations: Record<Locale, Translation> = {
       },
       cityTour: {
         title: "City Tour",
-        schedule: "Departures at 10 am from Praça Tiradentes. It is important to schedule at the reception.",
+        button: "View schedule",
       },
       reception: {
         title: "Contact Reception",
@@ -290,6 +306,14 @@ export const translations: Record<Locale, Translation> = {
       confirmButton: 'Confirm',
       successToastTitle: 'Success!',
       successToastDescription: 'The regulations have been updated.',
+    },
+    cityTourModal: {
+      title: 'City Tour Schedule',
+      description: 'Edit the city tour schedule and information here.',
+      placeholder: 'Enter the City Tour schedule information here...',
+      confirmButton: 'Save Changes',
+      successToastTitle: 'Success!',
+      successToastDescription: 'The City Tour schedule has been updated.',
     },
     usefulServicesModal: {
       title: 'Useful Services and Contacts',
