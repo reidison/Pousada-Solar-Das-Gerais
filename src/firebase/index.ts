@@ -10,22 +10,7 @@ export function initializeFirebase() {
   if (getApps().length > 0) {
     return getSdks(getApp());
   }
-
-  // When not in a production environment, always use the explicit config.
-  if (process.env.NODE_ENV !== 'production') {
-    const firebaseApp = initializeApp(firebaseConfig);
-    return getSdks(firebaseApp);
-  }
-
-  // In production, attempt automatic initialization first for App Hosting.
-  let firebaseApp;
-  try {
-    firebaseApp = initializeApp();
-  } catch (e) {
-    console.warn('Automatic Firebase initialization failed. Falling back to firebaseConfig.', e);
-    firebaseApp = initializeApp(firebaseConfig);
-  }
-
+  const firebaseApp = initializeApp(firebaseConfig);
   return getSdks(firebaseApp);
 }
 
