@@ -34,16 +34,26 @@ interface ServiceCategory {
   name: string;
 }
 
-const restaurantsData = [
-    { name: 'Bené da Flauta', address: 'Rua São Francisco de Assis, 32 – Centro', phone: '(31) 3551-1036' },
-    { name: 'Casa do Ouvidor', address: 'Rua Conde de Bobadela (Rua Direita), 42 – Centro', phone: '(31) 3551-2141' },
-    { name: 'Restaurante Adega', address: 'Rua Teixeira Amaral, 24 – Centro Histórico', phone: '(31) 3551-4171' },
-    { name: 'Restaurante Conto de Reis', address: 'Rua Camilo de Brito, 21 – Centro', phone: '(31) 3551-5359' },
-    { name: 'O Passo Pizza Jazz', address: 'Rua São José, 56 – Centro', phone: '(31) 3552-5089' },
-    { name: 'Escadabaixo Bar Cozinha', address: 'Rua Conde de Bobadela, 122 – Centro', phone: '(31) 3551-5097' },
-    { name: 'Varanda 1921', address: 'Travessa Domingos Vidal, 80 – Bairro Rosário', phone: '(31) 3105-1493' },
-    { name: 'Dom Duke Restaurante e Pizzaria', address: 'Rua Barão de Camargos, 126 – Centro', phone: '(31) 99773-6969' },
-    { name: 'Tenente Pimenta Rock Bar', address: 'Rua Carlos Tomaz, 33A – Centro', phone: '(31) 98327-7362' },
+const defaultServicesData = [
+  {
+    category: "Farmácias",
+    items: [
+      { name: "Farmácia", address: "R. São José, 115 - Centro", phone: "(31) 3551-1763" },
+      { name: "Drogaria Araújo", address: "Praça Tiradentes, 53 - Centro", phone: "(31) 3551-1925" },
+    ]
+  },
+  {
+    category: "Mecânica e Postos de Combustíveis",
+    items: [
+      { name: "Posto Shell", address: "Rod. dos Inconfidentes, 782", phone: "(31) 3551-1589" }
+    ]
+  },
+  {
+    category: "Hospitais",
+    items: [
+      { name: "Santa Casa da Misericórdia", address: "R. Dr. Alves de Brito, 147 - Centro", phone: "(31) 3551-1144" },
+    ]
+  }
 ];
 
 
@@ -72,39 +82,49 @@ export function UsefulServicesModal() {
     setIsAddingCategory(false);
   };
   
-  const handleImportRestaurants = async () => {
+  const handleImportDefaultServices = async () => {
     if (!firestore || !categoriesRef) return;
+
+    if (categories && categories.length > 0 && !window.confirm(t.replaceConfirm)) {
+        return;
+    }
+
 
     setIsImporting(true);
     toast({ title: t.importToastTitle, description: t.importToastDescription });
 
     try {
-        const categoryName = "Restaurantes";
-        const q = query(categoriesRef, where("name", "==", categoryName));
-        const querySnapshot = await getDocs(q);
-
-        let categoryId;
-
-        if (querySnapshot.empty) {
-            const categoryDoc = await addDoc(categoriesRef, { name: categoryName });
-            categoryId = categoryDoc.id;
-        } else {
-            categoryId = querySnapshot.docs[0].id;
-        }
-
-        const itemsCollectionRef = collection(firestore, 'service_categories', categoryId, 'items');
         const batch = writeBatch(firestore);
 
-        restaurantsData.forEach(restaurant => {
-            const newItemRef = doc(itemsCollectionRef);
-            batch.set(newItemRef, restaurant);
-        });
+        // Delete existing categories and their items
+        if (categories) {
+            for (const category of categories) {
+                const itemsCollectionRef = collection(firestore, 'service_categories', category.id, 'items');
+                const itemsSnapshot = await getDocs(itemsCollectionRef);
+                itemsSnapshot.docs.forEach(doc => batch.delete(doc.ref));
+                
+                const categoryDocRef = doc(firestore, 'service_categories', category.id);
+                batch.delete(categoryDocRef);
+            }
+        }
+        
+        // Add default services
+        for (const service of defaultServicesData) {
+            const categoryDocRef = doc(categoriesRef);
+            batch.set(categoryDocRef, { name: service.category });
+            
+            const itemsCollectionRef = collection(firestore, 'service_categories', categoryDocRef.id, 'items');
+            service.items.forEach(item => {
+                const newItemRef = doc(itemsCollectionRef);
+                batch.set(newItemRef, item);
+            });
+        }
 
         await batch.commit();
 
         toast({ title: t.importSuccessToastTitle, description: t.importSuccessToastDescription });
     } catch (error) {
-        console.error("Erro ao importar restaurantes:", error);
+        console.error("Erro ao importar serviços:", error);
         toast({ variant: "destructive", title: t.importErrorToastTitle, description: t.importErrorToastDescription });
     } finally {
         setIsImporting(false);
@@ -151,7 +171,7 @@ export function UsefulServicesModal() {
                     <PlusCircle size={16} className="mr-2" />
                     {t.addCategoryButton}
                 </Button>
-                <Button variant="secondary" size="sm" onClick={handleImportRestaurants} disabled={isImporting}>
+                <Button variant="secondary" size="sm" onClick={handleImportDefaultServices} disabled={isImporting}>
                     {isImporting ? t.importingButton : t.importButton}
                 </Button>
               </div>
@@ -190,7 +210,7 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
   };
 
   const handleDeleteCategory = async () => {
-    const categoryNameToConfirm = category.name || 'sem título';
+    const categoryNameToConfirm = category.name || t.untitledCategory;
     if (!window.confirm(t.deleteCategoryConfirm(categoryNameToConfirm))) return;
     if (!categoryDocRef || !itemsRef || !firestore) return;
     
@@ -209,7 +229,7 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
   return (
     <AccordionItem value={category.id}>
       <div className="flex items-center w-full group">
-        <AccordionTrigger className="flex-grow hover:no-underline">
+        <AccordionTrigger className="flex-grow hover:no-underline flex-1">
             {isEditingCategory ? (
               <div className="flex items-center gap-2 flex-grow mr-2" onClick={(e) => e.stopPropagation()}>
                 <Input
@@ -223,10 +243,10 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
                 />
               </div>
             ) : (
-              <span className="font-semibold">{category.name || <span className="italic text-muted-foreground">Sem título</span>}</span>
+              <span className="font-semibold text-left">{category.name || <span className="italic text-muted-foreground">{t.untitledCategory}</span>}</span>
             )}
         </AccordionTrigger>
-        <div className="flex items-center gap-1 pl-2 opacity-0 group-hover:opacity-100 transition-opacity focus-within:opacity-100">
+        <div className="flex items-center gap-1 pl-2">
             {isEditingCategory ? (
                 <>
                     <Button size="icon" variant="ghost" onClick={handleUpdateCategory}><Save size={16} /></Button>
@@ -274,7 +294,7 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
     };
 
     const handleDelete = async () => {
-        const itemNameToConfirm = editedItem.name || 'item sem nome';
+        const itemNameToConfirm = editedItem.name || t.untitledItem;
         if (!window.confirm(t.deleteConfirm(itemNameToConfirm))) return;
         if (!itemDocRef) return;
         await deleteDoc(itemDocRef);
@@ -301,7 +321,7 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
     return (
          <div className="flex justify-between items-center text-left text-sm p-2 rounded-md border border-transparent hover:border-border group">
             <div>
-                <p className="font-medium text-primary">{item.name || <span className="italic text-muted-foreground">N/A</span>}</p>
+                <p className="font-medium text-primary">{item.name || <span className="italic text-muted-foreground">{t.untitledItem}</span>}</p>
                 <p className="text-muted-foreground">{item.address}</p>
                  {item.phone && item.phone.match(/\d/) ? (
                    <a href={`tel:${item.phone.replace(/\D/g, '')}`} className="text-green-600 flex items-center gap-2 mt-1 hover:underline">

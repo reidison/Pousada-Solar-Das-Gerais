@@ -97,6 +97,9 @@ export type Translation = {
     importErrorToastDescription: string;
     deleteConfirm: (itemName: string) => string;
     phoneNotAvailable: string;
+    untitledCategory: string;
+    untitledItem: string;
+    replaceConfirm: string;
   };
 };
 
@@ -180,7 +183,7 @@ export const translations: Record<Locale, Translation> = {
       loading: 'Carregando...',
       addCategoryButton: 'Adicionar Categoria',
       newCategoryPlaceholder: 'Nome da nova categoria',
-      importButton: 'Importar Listagem',
+      importButton: 'Importar Lista Padrão',
       importingButton: 'Importando...',
       deleteCategoryConfirm: (categoryName) => `Tem certeza que deseja excluir a categoria "${categoryName}" e todos os seus itens?`,
       saveButton: 'Salvar',
@@ -189,14 +192,17 @@ export const translations: Record<Locale, Translation> = {
       addServiceItemNamePlaceholder: 'Nome do serviço',
       addServiceItemAddressPlaceholder: 'Endereço',
       addServiceItemPhonePlaceholder: 'Telefone',
-      importToastTitle: 'Importando restaurantes...',
+      importToastTitle: 'Importando lista...',
       importToastDescription: 'Por favor, aguarde.',
       importSuccessToastTitle: 'Sucesso!',
-      importSuccessToastDescription: 'Restaurantes importados com sucesso.',
+      importSuccessToastDescription: 'Serviços importados com sucesso.',
       importErrorToastTitle: 'Erro na importação',
-      importErrorToastDescription: 'Não foi possível importar os restaurantes.',
+      importErrorToastDescription: 'Não foi possível importar a lista de serviços.',
       deleteConfirm: (itemName) => `Tem certeza que deseja excluir "${itemName}"?`,
       phoneNotAvailable: 'N/A',
+      untitledCategory: 'Categoria sem título',
+      untitledItem: 'Item sem nome',
+      replaceConfirm: 'Isso substituirá todas as categorias e itens existentes. Deseja continuar?',
     },
   },
   en: {
@@ -278,7 +284,7 @@ export const translations: Record<Locale, Translation> = {
       loading: 'Loading...',
       addCategoryButton: 'Add Category',
       newCategoryPlaceholder: 'New category name',
-      importButton: 'Import List',
+      importButton: 'Import Default List',
       importingButton: 'Importing...',
       deleteCategoryConfirm: (categoryName) => `Are you sure you want to delete the category "${categoryName}" and all its items?`,
       saveButton: 'Save',
@@ -287,14 +293,17 @@ export const translations: Record<Locale, Translation> = {
       addServiceItemNamePlaceholder: 'Service name',
       addServiceItemAddressPlaceholder: 'Address',
       addServiceItemPhonePlaceholder: 'Phone',
-      importToastTitle: 'Importing restaurants...',
+      importToastTitle: 'Importing list...',
       importToastDescription: 'Please wait.',
       importSuccessToastTitle: 'Success!',
-      importSuccessToastDescription: 'Restaurants imported successfully.',
+      importSuccessToastDescription: 'Services imported successfully.',
       importErrorToastTitle: 'Import Error',
-      importErrorToastDescription: 'Could not import restaurants.',
+      importErrorToastDescription: 'Could not import the service list.',
       deleteConfirm: (itemName) => `Are you sure you want to delete "${itemName}"?`,
       phoneNotAvailable: 'N/A',
+      untitledCategory: 'Untitled category',
+      untitledItem: 'Untitled item',
+      replaceConfirm: 'This will replace all existing categories and items. Do you want to continue?',
     },
   },
 };
