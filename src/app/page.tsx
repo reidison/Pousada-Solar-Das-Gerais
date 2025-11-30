@@ -4,7 +4,6 @@ import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { WelcomeMessage } from '@/components/welcome-message';
 import { InfoCard } from '@/components/info-card';
-import { BackToTop } from '@/components/back-to-top';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Coffee, Wifi, Check, Map, Phone, GlassWater, KeyRound, PhoneCall, BookText } from 'lucide-react';
@@ -55,7 +54,9 @@ export default function SolarInfoHubPage() {
       content: (
         <>
           <p>{translations.infoCards.mainAccess.line1}</p>
-          <p>{translations.infoCards.mainAccess.line2}</p>
+          <p className="font-bold text-lg text-primary">
+            {translations.infoCards.mainAccess.line2}
+          </p>
           <p className="text-3xl text-primary flex items-center justify-center gap-1">
             0525
             <Check size={40} className="text-green-600" strokeWidth={4} />
@@ -127,7 +128,6 @@ export default function SolarInfoHubPage() {
         </div>
       </main>
       <Footer />
-      <BackToTop />
     </div>
   );
 }
