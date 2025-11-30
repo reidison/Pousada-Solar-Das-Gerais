@@ -205,7 +205,7 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
   
   return (
     <AccordionItem value={category.id}>
-      <div className="flex items-center w-full group">
+      <div className="flex items-center w-full">
         <AccordionTrigger className="flex-grow">
             {isEditingCategory ? (
               <div className="flex items-center gap-2 flex-grow mr-2" onClick={(e) => e.stopPropagation()}>
