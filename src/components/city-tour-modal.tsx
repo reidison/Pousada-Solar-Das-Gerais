@@ -172,7 +172,7 @@ function SlideEditor({ slide }: { slide: WithId<CityTourSlide> }) {
   }
 
   return (
-    <div className="flex flex-col h-full gap-4 p-1">
+    <div className="flex flex-col h-full p-1">
       <div className="flex-grow overflow-y-auto pr-4 space-y-4">
         <Textarea
           placeholder={t.placeholder}
