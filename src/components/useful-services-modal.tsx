@@ -193,14 +193,16 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
     if (!window.confirm(t.deleteCategoryConfirm(category.name))) return;
     if (!categoryDocRef || !itemsRef || !firestore) return;
     
-    // Deletar subcoleção
-    const itemsSnapshot = await getDocs(itemsRef);
-    const batch = writeBatch(firestore);
-    itemsSnapshot.docs.forEach(doc => batch.delete(doc.ref));
-    await batch.commit();
+    try {
+      const itemsSnapshot = await getDocs(itemsRef);
+      const batch = writeBatch(firestore);
+      itemsSnapshot.docs.forEach(doc => batch.delete(doc.ref));
+      await batch.commit();
 
-    // Deletar categoria
-    await deleteDoc(categoryDocRef);
+      await deleteDoc(categoryDocRef);
+    } catch(e) {
+      console.error("Error deleting category and its items:", e);
+    }
   };
   
   return (
