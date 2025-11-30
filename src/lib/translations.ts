@@ -131,7 +131,7 @@ export const translations: Record<Locale, Translation> = {
       reception: {
         title: "Fale com a Recepção",
         line1: "Precisa de algo? Estamos à disposição no WhatsApp.",
-        button: "Falar pelo WhatsApp",
+        button: "Atendimento",
       },
       minibar: {
         title: "Frigobar",
@@ -229,7 +229,7 @@ export const translations: Record<Locale, Translation> = {
       reception: {
         title: "Contact Reception",
         line1: "Need anything? We are available on WhatsApp.",
-        button: "Chat on WhatsApp",
+        button: "Support",
       },
       minibar: {
         title: "Minibar",
