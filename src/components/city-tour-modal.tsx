@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import {
   Dialog,
@@ -9,12 +9,8 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
+  DialogDescription,
 } from '@/components/ui/dialog';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from '@/components/ui/carousel';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -24,17 +20,17 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/language-context';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, addDoc, doc, updateDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, deleteDoc, query, orderBy, writeBatch } from 'firebase/firestore';
 import type { WithId } from '@/firebase';
 import { Plus, Trash2, ImagePlus, Loader2, X } from 'lucide-react';
 import { ImageUploader } from '@/components/image-uploader';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface CityTourSlide {
   text: string;
@@ -53,17 +49,84 @@ export function CityTourModal() {
     () => (firestore ? query(collection(firestore, 'city_tour_slides'), orderBy('order')) : null),
     [firestore]
   );
-  const { data: slides, isLoading } = useCollection<CityTourSlide>(slidesRef);
+  const { data: initialSlides, isLoading } = useCollection<CityTourSlide>(slidesRef);
+
+  const [slides, setSlides] = useState<WithId<CityTourSlide>[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (initialSlides) {
+      setSlides(initialSlides);
+    }
+  }, [initialSlides]);
+
+  const handleSlideChange = (id: string, updatedSlide: Partial<CityTourSlide>) => {
+    setSlides(prevSlides =>
+      prevSlides.map(s => (s.id === id ? { ...s, ...updatedSlide } : s))
+    );
+  };
   
-  const handleAddSlide = async () => {
-    if (!firestore) return;
-    const newOrder = slides ? slides.length : 0;
-    await addDoc(collection(firestore, 'city_tour_slides'), {
+  const handleAddSlide = () => {
+    const newOrder = slides.length > 0 ? Math.max(...slides.map(s => s.order)) + 1 : 0;
+    const newSlide: WithId<CityTourSlide> = {
+      id: `new-${Date.now()}`,
       text: '',
       images: [],
       order: newOrder,
-    });
+    };
+    setSlides(prevSlides => [...prevSlides, newSlide]);
   };
+  
+  const handleDeleteSlide = (id: string) => {
+    setSlides(prevSlides => prevSlides.filter(s => s.id !== id));
+  };
+  
+  const handleSaveChanges = async () => {
+    if (!firestore) return;
+    setIsSaving(true);
+    
+    const batch = writeBatch(firestore);
+    
+    // Determine which slides were deleted
+    const initialIds = new Set(initialSlides?.map(s => s.id));
+    const currentIds = new Set(slides.map(s => s.id));
+    const deletedIds = [...initialIds].filter(id => !currentIds.has(id));
+
+    deletedIds.forEach(id => {
+        const docRef = doc(firestore, 'city_tour_slides', id);
+        batch.delete(docRef);
+    });
+
+    // Update existing and add new slides
+    slides.forEach((slide, index) => {
+      const finalSlideData = {
+        text: slide.text,
+        images: slide.images,
+        order: index, // Re-order based on current position
+      };
+
+      if (slide.id.startsWith('new-')) {
+        // This is a new slide, create it
+        const docRef = doc(collection(firestore, 'city_tour_slides'));
+        batch.set(docRef, finalSlideData);
+      } else {
+        // This is an existing slide, update it
+        const docRef = doc(firestore, 'city_tour_slides', slide.id);
+        batch.update(docRef, finalSlideData);
+      }
+    });
+
+    try {
+      await batch.commit();
+      toast({ title: t.saveSuccessToastTitle });
+    } catch (e) {
+      console.error(e);
+      toast({ title: t.saveErrorToastTitle, variant: 'destructive' });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -75,34 +138,34 @@ export function CityTourModal() {
       <DialogContent className="max-w-3xl w-full h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{t.title}</DialogTitle>
+          <DialogDescription>{t.description}</DialogDescription>
         </DialogHeader>
-        <div className="flex-grow overflow-hidden relative py-4">
+
+        <div className="flex-grow overflow-y-auto space-y-6 p-1 pr-4">
           {isLoading ? (
             <div className="flex items-center justify-center h-full">
               <Loader2 className="h-8 w-8 animate-spin" />
             </div>
           ) : (
-            <Carousel
-              opts={{
-                align: 'start',
-                loop: false,
-              }}
-              className="w-full h-full"
-            >
-              <CarouselContent className="h-full">
-                {slides?.map((slide) => (
-                  <CarouselItem key={slide.id} className="h-full basis-full">
-                    <SlideEditor slide={slide} />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
+            slides.map((slide) => (
+              <SlideEditor 
+                key={slide.id} 
+                slide={slide} 
+                onChange={handleSlideChange}
+                onDelete={handleDeleteSlide}
+              />
+            ))
           )}
         </div>
-        <DialogFooter className="border-t pt-4">
-          <Button onClick={handleAddSlide} variant="outline">
+
+        <DialogFooter className="border-t pt-4 flex-shrink-0 flex justify-between w-full">
+           <Button onClick={handleAddSlide} variant="outline" size="sm">
             <Plus className="mr-2 h-4 w-4" />
             {t.addSlideButton}
+          </Button>
+          <Button onClick={handleSaveChanges} disabled={isSaving}>
+            {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isSaving ? t.savingButton : t.saveChangesButton}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -110,103 +173,43 @@ export function CityTourModal() {
   );
 }
 
-function SlideEditor({ slide }: { slide: WithId<CityTourSlide> }) {
-  const firestore = useFirestore();
-  const { toast } = useToast();
+interface SlideEditorProps {
+    slide: WithId<CityTourSlide>;
+    onChange: (id: string, updatedSlide: Partial<CityTourSlide>) => void;
+    onDelete: (id: string) => void;
+}
+
+function SlideEditor({ slide, onChange, onDelete }: SlideEditorProps) {
   const { translations } = useLanguage();
   const t = translations.cityTourModal;
-  const slideRef = useMemoFirebase(
-    () => (firestore ? doc(firestore, 'city_tour_slides', slide.id) : null),
-    [firestore, slide.id]
-  );
 
-  const [text, setText] = useState(slide.text);
-  const [images, setImages] = useState<string[]>(slide.images);
-  const [isSaving, setIsSaving] = useState(false);
-
-  const handleSave = async () => {
-    if (!slideRef) return;
-    setIsSaving(true);
-    try {
-      await updateDoc(slideRef, { text, images });
-      toast({ title: t.saveSuccessToastTitle });
-    } catch (e) {
-      toast({ title: t.saveErrorToastTitle, variant: 'destructive' });
-      console.error(e);
-    } finally {
-      setIsSaving(false);
-    }
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onChange(slide.id, { text: e.target.value });
   };
   
-  const handleDelete = async () => {
-    if(!slideRef) return;
-    try {
-        await deleteDoc(slideRef);
-        toast({ title: t.deleteSuccessToastTitle });
-    } catch (e) {
-        toast({ title: t.deleteErrorToastTitle, variant: 'destructive' });
-        console.error(e);
-    }
-  }
-
-  const handleImageChange = (index: number, value: string) => {
-    const newImages = [...images];
-    newImages[index] = value;
-    setImages(newImages);
+  const handleImageChange = (index: number, newUrl: string) => {
+    const newImages = [...slide.images];
+    newImages[index] = newUrl;
+    onChange(slide.id, { images: newImages });
   };
   
   const addImageField = () => {
-    if(images.length < 3) {
-        setImages([...images, '']);
+    if (slide.images.length < 3) {
+      onChange(slide.id, { images: [...slide.images, ''] });
     }
-  }
-  
+  };
+
   const removeImageField = (index: number) => {
-    const newImages = images.filter((_, i) => i !== index);
-    setImages(newImages);
-  }
+    const newImages = slide.images.filter((_, i) => i !== index);
+    onChange(slide.id, { images: newImages });
+  };
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-grow space-y-4 overflow-y-auto p-1">
-        <Textarea
-          placeholder={t.placeholder}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          className="min-h-[150px] text-base resize-none"
-        />
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-sm font-medium">{t.imagesTitle} ({images.length}/3)</h3>
-            <Button size="sm" variant="ghost" onClick={addImageField} disabled={images.length >= 3}>
-                <ImagePlus className="mr-2 h-4 w-4"/>
-                {t.addImageButton}
-            </Button>
-          </div>
-          {images.map((url, index) => (
-            <div key={index} className="relative group/uploader">
-              <ImageUploader
-                imageUrl={url}
-                onImageUrlChange={(newUrl) => handleImageChange(index, newUrl)}
-              />
-              <Button 
-                variant="destructive" 
-                size="icon" 
-                className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover/uploader:opacity-100 transition-opacity"
-                onClick={() => removeImageField(index)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="flex-shrink-0 flex justify-between items-center pt-4 mt-2 border-t">
+    <Card className="p-4 relative group/slide">
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                 <Button variant="destructive" size="sm">
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    {t.deleteSlideButton}
+                <Button variant="destructive" size="icon" className="absolute -top-3 -right-3 h-7 w-7 rounded-full opacity-0 group-hover/slide:opacity-100 transition-opacity">
+                    <Trash2 className="h-4 w-4" />
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -216,15 +219,46 @@ function SlideEditor({ slide }: { slide: WithId<CityTourSlide> }) {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>{translations.usefulServicesModal.cancelButton}</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDelete}>{translations.usefulServicesModal.deleteButton}</AlertDialogAction>
+                    <AlertDialogAction onClick={() => onDelete(slide.id)}>
+                      {translations.usefulServicesModal.deleteButton}
+                    </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-        <Button onClick={handleSave} disabled={isSaving}>
-          {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {isSaving ? t.savingButton : t.saveChangesButton}
-        </Button>
-      </div>
-    </div>
+
+        <CardContent className="p-0 space-y-4">
+            <Textarea
+              placeholder={t.placeholder}
+              value={slide.text}
+              onChange={handleTextChange}
+              className="min-h-[120px] text-base resize-none"
+            />
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-sm font-medium">{t.imagesTitle} ({slide.images.length}/3)</h3>
+                <Button size="sm" variant="ghost" onClick={addImageField} disabled={slide.images.length >= 3}>
+                    <ImagePlus className="mr-2 h-4 w-4"/>
+                    {t.addImageButton}
+                </Button>
+              </div>
+              {slide.images.map((url, index) => (
+                <div key={index} className="relative group/uploader">
+                  <ImageUploader
+                    imageUrl={url}
+                    onImageUrlChange={(newUrl) => handleImageChange(index, newUrl)}
+                  />
+                  <Button 
+                    variant="destructive" 
+                    size="icon" 
+                    className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover/uploader:opacity-100 transition-opacity"
+                    onClick={() => removeImageField(index)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+        </CardContent>
+    </Card>
   );
 }
