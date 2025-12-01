@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState, useRef, ChangeEvent } from 'react';
+import React, { useState, useRef, ChangeEvent, useMemo } from 'react';
 import { useCollection, useFirebase, useMemoFirebase, useUser } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, writeBatch, getDocs, orderBy, query } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Trash2, ArrowLeft, ChevronLeft, ChevronRight, Upload, Loader2 } from 'lucide-react';
+import { Trash2, ArrowLeft, Upload, Loader2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
@@ -25,7 +24,6 @@ export default function CityTourPage() {
   const { user } = useUser();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
 
   const slidesRef = useMemoFirebase(
@@ -34,64 +32,69 @@ export default function CityTourPage() {
   );
 
   const { data: slides, isLoading: isLoadingSlides } = useCollection<CityTourSlide>(slidesRef);
-
-  const activeSlide = slides?.[currentSlide];
-
-  const goNext = () => {
-    if (!slides) return;
-    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-  };
-
-  const goPrev = () => {
-    if (!slides) return;
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
-  };
+  
+  // Combine all images from all slides into a single array for the grid
+  const allImages = useMemo(() => {
+    return slides?.flatMap(slide => slide.images.map(imgUrl => ({ imgUrl, slideId: slide.id }))) ?? [];
+  }, [slides]);
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    if (!storage || !firestore || !activeSlide || !user) {
+    if (!storage || !firestore || !user) {
       toast({ title: 'Erro', description: 'Serviços do Firebase não estão prontos.', variant: 'destructive' });
       return;
     }
 
     const file = event.target.files?.[0];
     if (!file) return;
+    
+    // If no slides exist, create one.
+    let targetSlide = slides?.[0];
+    if (!targetSlide) {
+        const newSlideRef = await addDoc(collection(firestore, 'city_tour_slides'), {
+            text: "Imagens da galeria",
+            images: [],
+            order: 1
+        });
+        targetSlide = { id: newSlideRef.id, text: "Imagens da galeria", images: [], order: 1 };
+    }
 
-    if (activeSlide.images.length >= 3) {
-      toast({ title: "Limite alcançado", description: "Máximo de 3 imagens por slide.", variant: 'destructive' });
+    if (targetSlide.images.length >= 20) { // Increased limit for a gallery
+      toast({ title: "Limite alcançado", description: "Máximo de 20 imagens na galeria.", variant: 'destructive' });
       return;
     }
 
     setIsUploading(true);
 
     try {
-      const storageRef = ref(storage, `city-tour-slides/${activeSlide.id}/${Date.now()}_${file.name}`);
+      const storageRef = ref(storage, `city-tour-images/${targetSlide.id}/${Date.now()}_${file.name}`);
       const uploadResult = await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(uploadResult.ref);
 
-      const newImages = [...activeSlide.images, downloadURL];
-      await updateDoc(doc(firestore, 'city_tour_slides', activeSlide.id), { images: newImages });
+      const newImages = [...targetSlide.images, downloadURL];
+      await updateDoc(doc(firestore, 'city_tour_slides', targetSlide.id), { images: newImages });
 
       toast({ title: 'Imagem adicionada com sucesso!' });
     } catch (error) {
       console.error("Erro no upload da imagem:", error);
-      toast({ title: 'Erro ao enviar imagem', description: 'Não foi possível fazer o upload da imagem. Tente novamente.', variant: 'destructive' });
+      toast({ title: 'Erro ao enviar imagem', description: 'Não foi possível fazer o upload da imagem. Verifique as permissões do Storage.', variant: 'destructive' });
     } finally {
       setIsUploading(false);
-      // Reset file input
       if(fileInputRef.current) {
         fileInputRef.current.value = '';
       }
     }
   };
 
-  const removeImage = async (imgUrl: string) => {
-    if (!firestore || !activeSlide) return;
+  const removeImage = async (imgUrlToRemove: string, slideId: string) => {
+    if (!firestore) return;
+    
+    const slideToUpdate = slides?.find(s => s.id === slideId);
+    if (!slideToUpdate) return;
 
-    const newImages = activeSlide.images.filter((img) => img !== imgUrl);
-    await updateDoc(doc(firestore, 'city_tour_slides', activeSlide.id), { images: newImages });
+    const newImages = slideToUpdate.images.filter((img) => img !== imgUrlToRemove);
+    await updateDoc(doc(firestore, 'city_tour_slides', slideId), { images: newImages });
     
     // Note: This does not delete the image from Firebase Storage to avoid complexity.
-    // A production app might need a cleanup function for orphaned images.
     toast({ title: 'Imagem removida!' });
   };
 
@@ -99,24 +102,15 @@ export default function CityTourPage() {
     if (!firestore) return;
 
     const batch = writeBatch(firestore);
-    const docs = await getDocs(collection(firestore, "city_tour_slides"));
-
-    docs.forEach(d => batch.delete(d.ref));
-    // Also consider deleting files from Storage, which requires more complex logic.
-
+    const docsSnapshot = await getDocs(collection(firestore, "city_tour_slides"));
+    docsSnapshot.forEach(d => batch.delete(d.ref));
+    
+    // You should also delete the files in Storage, but that requires more complex logic (e.g., a Cloud Function).
+    
     await batch.commit();
-    setCurrentSlide(0);
     toast({ title: "Galeria excluída!" });
   };
 
-  const createFirst = async () => {
-    if (!firestore) return;
-    await addDoc(collection(firestore, 'city_tour_slides'), {
-      text: "Primeiro slide! Adicione imagens abaixo.",
-      images: [],
-      order: 1
-    });
-  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -125,63 +119,51 @@ export default function CityTourPage() {
         Voltar
       </Link>
 
-      <h1 className="text-3xl font-bold mb-2">City Tour – Carrossel</h1>
+      <h1 className="text-3xl font-bold mb-2">City Tour – Galeria de Imagens</h1>
+      <p className="text-muted-foreground mb-8">Veja e gerencie as imagens da galeria.</p>
 
-      {!slides || slides.length === 0 ? (
-        <div className="p-8 border rounded-lg text-center">
-          <p className="mb-4">{isLoadingSlides ? 'Carregando slides...' : 'Nenhum slide.'}</p>
-          {!isLoadingSlides && <Button onClick={createFirst}>Criar primeiro slide</Button>}
-        </div>
-      ) : (
-        <Card className="overflow-hidden">
-          <CardContent className="p-0">
-            <div className="relative h-80 md:h-96 bg-black flex items-center justify-center">
-              <div className="flex gap-4 p-4 overflow-x-auto">
-                {activeSlide?.images.map((url, index) => (
-                  <div key={url} className="relative flex-shrink-0">
-                    <Image
-                      src={url}
-                      width={208}
-                      height={208}
-                      className="w-52 h-52 object-cover rounded-lg shadow-md"
-                      alt={`Imagem do Slide ${currentSlide + 1} - ${index + 1}`}
-                    />
-                    <button
-                      onClick={() => removeImage(url)}
-                      className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 transition-opacity hover:opacity-80"
-                      aria-label="Remover imagem"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                ))}
-                {activeSlide?.images.length === 0 && (
-                  <p className="text-white text-sm opacity-80">Nenhuma imagem neste slide</p>
-                )}
-              </div>
-              {slides.length > 1 && (
-                <>
-                  <button onClick={goPrev} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md">
-                    <ChevronLeft />
-                  </button>
-                  <button onClick={goNext} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md">
-                    <ChevronRight />
-                  </button>
-                </>
-              )}
-            </div>
-            <div className="p-4 border-t">
-              <p className="font-semibold">Slide {currentSlide + 1}/{slides.length}</p>
-              <p className="text-muted-foreground mt-1">{activeSlide?.text}</p>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+
+      <Card>
+        <CardContent className="p-4 md:p-6">
+            {isLoadingSlides ? (
+                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {[...Array(4)].map((_, i) => <div key={i} className="aspect-square bg-muted rounded-lg animate-pulse" />)}
+                 </div>
+            ) : allImages.length === 0 ? (
+                <div className="p-8 border rounded-lg text-center bg-background">
+                    <p className="mb-4">Nenhuma imagem na galeria.</p>
+                    <p className="text-sm text-muted-foreground">Use o botão "Adicionar Imagem" para começar.</p>
+                </div>
+            ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {allImages.map(({ imgUrl, slideId }) => (
+                        <div key={imgUrl} className="relative group aspect-square">
+                             <Image
+                                src={imgUrl}
+                                alt="Imagem do City Tour"
+                                fill
+                                className="object-cover rounded-lg"
+                                sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                            />
+                            <button
+                                onClick={() => removeImage(imgUrl, slideId)}
+                                className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                aria-label="Remover imagem"
+                            >
+                                <Trash2 size={16} />
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </CardContent>
+      </Card>
+     
 
       <div className="mt-8 p-6 border rounded-lg bg-card">
         <h3 className="font-semibold mb-4">Gerenciar galeria</h3>
         <div className="flex flex-wrap gap-4">
-          <Button onClick={() => fileInputRef.current?.click()} disabled={isUploading || !activeSlide}>
+          <Button onClick={() => fileInputRef.current?.click()} disabled={isUploading || !user}>
             {isUploading ? <Loader2 className="mr-2 animate-spin" /> : <Upload className="mr-2" />}
             {isUploading ? 'Enviando...' : 'Adicionar Imagem'}
           </Button>
@@ -192,11 +174,12 @@ export default function CityTourPage() {
             className="hidden"
             accept="image/png, image/jpeg, image/gif"
           />
-          <Button variant="destructive" onClick={deleteGallery} disabled={!slides || slides.length === 0}>
+          <Button variant="destructive" onClick={deleteGallery} disabled={allImages.length === 0}>
             <Trash2 className="mr-2" />
             Excluir galeria inteira
           </Button>
         </div>
+        {!user && <p className="text-xs text-muted-foreground mt-2">Carregando usuário para permitir upload...</p>}
       </div>
     </div>
   );
