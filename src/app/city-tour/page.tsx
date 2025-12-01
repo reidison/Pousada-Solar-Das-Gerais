@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, addDoc, doc, updateDoc, deleteDoc, writeBatch, getDocs, orderBy, query } from 'firebase/firestore';
+import React, { useState, useEffect, ChangeEvent } from 'react';
+import { useCollection, useFirestore, useMemoFirebase, useFirebase } from '@/firebase';
+import { collection, addDoc, doc, updateDoc, writeBatch, getDocs, orderBy, query } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Trash2, ArrowLeft, ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
+import { Loader2, Trash2, ArrowLeft, ChevronLeft, ChevronRight, Image as ImageIcon, Upload } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   AlertDialog,
@@ -29,7 +30,7 @@ interface CityTourSlide {
 }
 
 export default function CityTourPage() {
-  const firestore = useFirestore();
+  const { firestore, storage } = useFirebase();
   const { toast } = useToast();
 
   const slidesRef = useMemoFirebase(
@@ -39,7 +40,14 @@ export default function CityTourPage() {
   const { data: slides, isLoading } = useCollection<CityTourSlide>(slidesRef);
 
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [newImageUrl, setNewImageUrl] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+
+  useEffect(() => {
+    if (slides && slides.length > 0 && currentSlide >= slides.length) {
+      setCurrentSlide(0);
+    }
+  }, [slides, currentSlide]);
+
 
   const goToNext = () => {
     setCurrentSlide((prev) => (slides && prev === slides.length - 1 ? 0 : prev + 1));
@@ -49,21 +57,41 @@ export default function CityTourPage() {
     setCurrentSlide((prev) => (slides && prev === 0 ? slides.length - 1 : prev - 1));
   };
   
-  const addImage = async () => {
-      if (!firestore || !slides || !slides[currentSlide] || !newImageUrl.trim()) return;
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (!storage || !firestore || !slides || !slides[currentSlide] || !event.target.files || event.target.files.length === 0) {
+      return;
+    }
+
+    const file = event.target.files[0];
+    const slide = slides[currentSlide];
+
+    setIsUploading(true);
+    toast({ title: 'Enviando imagem...' });
+
+    try {
+      // Create a storage reference
+      const storageRef = ref(storage, `city-tour-slides/${slide.id}/${file.name}`);
       
-      const slide = slides[currentSlide];
-      const updatedImages = [newImageUrl.trim()]; 
+      // Upload file
+      const uploadResult = await uploadBytes(storageRef, file);
+      
+      // Get download URL
+      const downloadURL = await getDownloadURL(uploadResult.ref);
+
+      // Update Firestore document
+      const updatedImages = [downloadURL];
       const slideRef = doc(firestore, 'city_tour_slides', slide.id);
-      
-      try {
-          await updateDoc(slideRef, { images: updatedImages });
-          setNewImageUrl("");
-          toast({ title: 'Imagem adicionada!' });
-      } catch (error) {
-          console.error("Erro ao adicionar imagem:", error);
-          toast({ title: "Erro ao salvar a imagem", variant: 'destructive' });
-      }
+      await updateDoc(slideRef, { images: updatedImages });
+
+      toast({ title: 'Imagem adicionada com sucesso!' });
+    } catch (error) {
+      console.error("Erro ao fazer upload da imagem:", error);
+      toast({ title: "Erro ao salvar a imagem", variant: 'destructive' });
+    } finally {
+      setIsUploading(false);
+      // Reset file input
+      event.target.value = '';
+    }
   };
 
   const deleteAllImages = async () => {
@@ -72,13 +100,18 @@ export default function CityTourPage() {
     try {
       const batch = writeBatch(firestore);
       const slidesSnapshot = await getDocs(collection(firestore, 'city_tour_slides'));
+      
       if (slidesSnapshot.empty) {
         toast({ title: "A galeria já está vazia." });
         return;
       }
+      
       slidesSnapshot.docs.forEach((doc) => {
+        // Here you would also delete files from storage, which is more complex and requires listing files.
+        // For now, we just delete the firestore docs.
         batch.delete(doc.ref);
       });
+      
       await batch.commit();
       setCurrentSlide(0); 
       toast({ title: "Galeria excluída com sucesso!" });
@@ -86,6 +119,21 @@ export default function CityTourPage() {
       console.error("Erro ao excluir galeria:", error);
       toast({ title: "Erro ao excluir a galeria.", variant: "destructive" });
     }
+  };
+  
+  const createFirstSlide = async () => {
+      if (!firestore) return;
+      try {
+          await addDoc(collection(firestore, 'city_tour_slides'), {
+              text: 'Este é o seu primeiro slide. Edite o texto e adicione uma imagem!',
+              images: [],
+              order: 1,
+          });
+          toast({title: 'Primeiro slide criado!'});
+      } catch (error) {
+          console.error("Erro ao criar o primeiro slide:", error);
+          toast({ title: "Erro ao criar slide.", variant: "destructive" });
+      }
   };
 
   if (isLoading) {
@@ -107,7 +155,6 @@ export default function CityTourPage() {
         <Card id="carousel-container" className="carousel overflow-hidden">
           <CardContent className="p-0">
             <div className="relative">
-              {/* Carousel Display */}
               <div id="carousel-images" className="carousel-images relative h-64 md:h-96 bg-muted flex items-center justify-center">
                  {activeSlide.images && activeSlide.images.length > 0 ? (
                     <Image 
@@ -115,7 +162,6 @@ export default function CityTourPage() {
                       alt={`Slide ${currentSlide + 1}`} 
                       fill
                       style={{ objectFit: 'contain' }}
-                      unoptimized
                     />
                  ) : (
                     <div className="text-muted-foreground flex flex-col items-center">
@@ -125,7 +171,6 @@ export default function CityTourPage() {
                  )}
               </div>
 
-              {/* Carousel Navigation */}
               <div className="absolute top-1/2 left-2 right-2 flex -translate-y-1/2 transform justify-between">
                 <Button id="prev-btn" size="icon" variant="secondary" onClick={goToPrev} className="rounded-full h-10 w-10">
                   <ChevronLeft />
@@ -144,25 +189,28 @@ export default function CityTourPage() {
       ) : (
         <div className="flex flex-col items-center justify-center text-center py-16 px-4 border-2 border-dashed rounded-lg">
             <p className="text-lg font-medium">Nenhum slide na programação do City Tour.</p>
-            <p className="text-muted-foreground mt-2">Use os controles abaixo para começar a criar sua galeria.</p>
+            <p className="text-muted-foreground mt-2">Crie o primeiro slide para começar a montar sua galeria.</p>
+            <Button onClick={createFirstSlide} className="mt-4">Criar Primeiro Slide</Button>
         </div>
       )}
 
-      {/* Botões de gerenciamento */}
       <div className="mt-8 p-6 border rounded-lg bg-card">
         <h3 className="font-semibold mb-4">Gerenciar Galeria</h3>
         <div className="flex flex-col sm:flex-row gap-4">
-          <Input
-            id="image-url"
-            type="text"
-            placeholder="Cole aqui a URL da imagem do Imgur"
-            value={newImageUrl}
-            onChange={(e) => setNewImageUrl(e.target.value)}
-            disabled={!slides || slides.length === 0}
-          />
-          <Button onClick={addImage} disabled={!slides || slides.length === 0}>
-            Adicionar imagem
+          <Button asChild variant="outline" disabled={!slides || slides.length === 0 || isUploading}>
+            <label htmlFor="image-upload">
+              {isUploading ? <Loader2 size={16} className="mr-2 animate-spin" /> : <Upload size={16} className="mr-2" />}
+              {isUploading ? 'Enviando...' : 'Enviar Imagem'}
+            </label>
           </Button>
+          <Input 
+            id="image-upload"
+            type="file"
+            accept="image/png, image/jpeg, image/gif"
+            className="hidden"
+            onChange={handleFileChange}
+            disabled={!slides || slides.length === 0 || isUploading}
+          />
           <AlertDialog>
             <AlertDialogTrigger asChild>
                 <Button variant="destructive" disabled={!slides || slides.length === 0}>
