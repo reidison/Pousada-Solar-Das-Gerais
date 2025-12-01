@@ -7,19 +7,21 @@ import { ImagePlus } from 'lucide-react';
 import { useLanguage } from '@/contexts/language-context';
 
 function MediaPreview({ url }: { url: string }) {
+  const { translations } = useLanguage();
+
   if (!url) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-muted-foreground bg-muted rounded-md">
         <ImagePlus size={24} />
         <span className="text-xs mt-1 text-center px-2">
-          Cole uma URL de imagem direta
+          {translations.cityTourModal.imageUrlPlaceholder}
         </span>
       </div>
     );
   }
 
-  // Use a tag <img> padrão para contornar problemas de otimização do Next.js com URLs sem extensão.
-  // Isso é mais flexível para fontes como o Imgur.
+  // Use a tag <img> padrão para contornar problemas com URLs sem extensão (como as do Imgur).
+  // Isso é mais flexível.
   return (
     <img
       src={url}
