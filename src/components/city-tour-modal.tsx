@@ -124,6 +124,12 @@ function SlideEditor({ slide }: { slide: WithId<CityTourSlide> }) {
   const [images, setImages] = useState<string[]>(slide.images);
   const [isSaving, setIsSaving] = useState(false);
 
+  useEffect(() => {
+    setText(slide.text);
+    setImages(slide.images);
+  }, [slide]);
+
+
   const handleSave = async () => {
     if (!slideRef) return;
     setIsSaving(true);
@@ -175,7 +181,7 @@ function SlideEditor({ slide }: { slide: WithId<CityTourSlide> }) {
           onChange={(e) => setText(e.target.value)}
           className="min-h-[150px] text-base resize-none"
         />
-        <div className="space-y-3">
+        <div className="space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-sm font-medium">{t.imagesTitle} ({images.length}/3)</h3>
             <Button size="sm" variant="ghost" onClick={addImageField} disabled={images.length >= 3}>
@@ -184,13 +190,18 @@ function SlideEditor({ slide }: { slide: WithId<CityTourSlide> }) {
             </Button>
           </div>
           {images.map((url, index) => (
-            <div key={index} className="flex items-center gap-2">
+            <div key={index} className="relative group/uploader">
               <ImageUploader
                 imageUrl={url}
                 onImageUrlChange={(newUrl) => handleImageChange(index, newUrl)}
               />
-              <Button variant="ghost" size="icon" onClick={() => removeImageField(index)}>
-                <X className="h-4 w-4 text-muted-foreground" />
+              <Button 
+                variant="destructive" 
+                size="icon" 
+                className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover/uploader:opacity-100 transition-opacity"
+                onClick={() => removeImageField(index)}
+              >
+                <X className="h-4 w-4" />
               </Button>
             </div>
           ))}

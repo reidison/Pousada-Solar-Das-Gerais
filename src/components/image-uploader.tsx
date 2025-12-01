@@ -15,21 +15,14 @@ const isImage = (url: string) => /\.(jpeg|jpg|gif|png|webp)(\?.*)?$/i.test(url);
 const isVideo = (url: string) => /\.(mp4|webm)(\?.*)?$/i.test(url);
 
 function MediaPreview({ url }: { url: string }) {
-    if (!url) {
-        return (
-            <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
-                <ImagePlus size={24} />
-            </div>
-        );
-    }
-    
     if (isImage(url)) {
       return (
         <Image 
             src={url} 
             alt="Image preview" 
             fill 
-            style={{ objectFit: 'cover' }}
+            style={{ objectFit: 'contain' }}
+            className="rounded-md"
         />
       );
     }
@@ -42,16 +35,17 @@ function MediaPreview({ url }: { url: string }) {
             autoPlay 
             muted 
             loop 
-            className="w-full h-full object-cover" 
+            className="w-full h-full object-contain rounded-md"
         />
       );
     }
   
-    // If the URL is not empty but not a valid media type, show a warning
     return (
-        <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-2 text-center">
-          <FileWarning size={24} />
-          <span className="text-xs mt-1">URL inválida ou formato não suportado</span>
+        <div className="flex flex-col items-center justify-center h-full text-muted-foreground bg-muted rounded-md">
+          { url ? <FileWarning size={24} /> : <ImagePlus size={24} /> }
+          <span className="text-xs mt-1 text-center px-2">
+            { url ? "URL inválida ou formato não suportado" : "Cole uma URL de imagem ou vídeo" }
+          </span>
         </div>
     );
 }
@@ -61,10 +55,7 @@ export function ImageUploader({ imageUrl, onImageUrlChange }: ImageUploaderProps
   const t = translations.cityTourModal;
 
   return (
-    <div className="flex-grow flex items-center gap-2">
-      <div className="flex-shrink-0 w-20 h-20 bg-muted rounded-md overflow-hidden relative group">
-        <MediaPreview url={imageUrl} />
-      </div>
+    <div className="w-full space-y-2">
       <Input
         type="text"
         placeholder={t.imageUrlPlaceholder}
@@ -72,6 +63,9 @@ export function ImageUploader({ imageUrl, onImageUrlChange }: ImageUploaderProps
         onChange={(e) => onImageUrlChange(e.target.value)}
         className="flex-grow"
       />
+      <div className="w-full h-[200px] bg-muted/50 rounded-lg overflow-hidden relative">
+        <MediaPreview url={imageUrl} />
+      </div>
     </div>
   );
 }
