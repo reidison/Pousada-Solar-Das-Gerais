@@ -3,12 +3,58 @@
 import React from 'react';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
-import { ImagePlus } from 'lucide-react';
+import { ImagePlus, Film, FileWarning } from 'lucide-react';
 import { useLanguage } from '@/contexts/language-context';
 
 interface ImageUploaderProps {
   imageUrl: string;
   onImageUrlChange: (newUrl: string) => void;
+}
+
+const isImage = (url: string) => /\.(jpeg|jpg|gif|png|webp)$/i.test(url);
+const isVideo = (url: string) => /\.(mp4|webm)$/i.test(url);
+
+function MediaPreview({ url }: { url: string }) {
+    if (isImage(url)) {
+      return (
+        <Image 
+            src={url} 
+            alt="Image preview" 
+            fill 
+            style={{ objectFit: 'cover' }}
+        />
+      );
+    }
+  
+    if (isVideo(url)) {
+      return (
+        <video 
+            src={url} 
+            playsInline 
+            autoPlay 
+            muted 
+            loop 
+            className="w-full h-full object-cover" 
+        />
+      );
+    }
+  
+    // If the URL is not empty but not a valid media type, show a warning
+    if (url) {
+        return (
+            <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-2 text-center">
+              <FileWarning size={24} />
+              <span className="text-xs mt-1">URL inválida ou formato não suportado</span>
+            </div>
+        );
+    }
+
+    // Default placeholder
+    return (
+        <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+            {url.includes('mp4') || url.includes('webm') ? <Film size={24} /> : <ImagePlus size={24} />}
+        </div>
+    );
 }
 
 export function ImageUploader({ imageUrl, onImageUrlChange }: ImageUploaderProps) {
@@ -20,23 +66,7 @@ export function ImageUploader({ imageUrl, onImageUrlChange }: ImageUploaderProps
   return (
     <div className="flex-grow flex items-center gap-2">
       <div className="flex-shrink-0 w-20 h-20 bg-muted rounded-md overflow-hidden relative group">
-        {isValidUrl ? (
-          <Image 
-            src={imageUrl} 
-            alt="Image preview" 
-            fill 
-            style={{ objectFit: 'cover' }}
-            onError={(e) => {
-              // This can happen if the URL is valid but the image is broken
-              // We could show a broken image icon here, but for now we'll just clear it
-              console.error('Failed to load image:', imageUrl);
-            }} 
-          />
-        ) : (
-          <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
-            <ImagePlus size={24} />
-          </div>
-        )}
+        <MediaPreview url={imageUrl} />
       </div>
       <Input
         type="text"
