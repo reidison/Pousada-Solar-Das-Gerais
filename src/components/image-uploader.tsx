@@ -11,10 +11,21 @@ interface ImageUploaderProps {
   onImageUrlChange: (newUrl: string) => void;
 }
 
-const isImage = (url: string) => /\.(jpeg|jpg|gif|png|webp)(\?.*)?$/i.test(url);
+const isImage = (url: string) => /\.(jpeg|jpg|gif|png|webp|avif)(\?.*)?$/i.test(url);
 const isVideo = (url: string) => /\.(mp4|webm)(\?.*)?$/i.test(url);
 
 function MediaPreview({ url }: { url: string }) {
+    if (!url) {
+      return (
+        <div className="flex flex-col items-center justify-center h-full text-muted-foreground bg-muted rounded-md">
+            <ImagePlus size={24} />
+            <span className="text-xs mt-1 text-center px-2">
+              Cole uma URL de imagem ou vídeo
+            </span>
+        </div>
+      );
+    }
+  
     if (isImage(url)) {
       return (
         <Image 
@@ -23,6 +34,12 @@ function MediaPreview({ url }: { url: string }) {
             fill 
             style={{ objectFit: 'contain' }}
             className="rounded-md"
+            onError={(e) => {
+              // In case of error (e.g. 404), this prevents an infinite loop
+              e.currentTarget.src = ''; // Clear the src to avoid re-triggering error
+              e.currentTarget.style.display = 'none'; // Hide the broken image element
+              // We can show a fallback here if needed
+            }}
         />
       );
     }
@@ -42,10 +59,10 @@ function MediaPreview({ url }: { url: string }) {
   
     return (
         <div className="flex flex-col items-center justify-center h-full text-muted-foreground bg-muted rounded-md">
-          { url ? <FileWarning size={24} /> : <ImagePlus size={24} /> }
-          <span className="text-xs mt-1 text-center px-2">
-            { url ? "URL inválida ou formato não suportado" : "Cole uma URL de imagem ou vídeo" }
-          </span>
+            <FileWarning size={24} />
+            <span className="text-xs mt-1 text-center px-2">
+              URL inválida ou formato não suportado. Use links diretos para imagens (ex: .jpg, .png) ou vídeos (ex: .mp4).
+            </span>
         </div>
     );
 }
