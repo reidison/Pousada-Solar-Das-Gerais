@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import imageCompression from 'browser-image-compression';
+import type { WithId } from '@/firebase';
 
 interface CityTourSlide {
   id: string;
@@ -29,7 +30,6 @@ export default function CityTourPage() {
   const [isUploading, setIsUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
-  // Focus on a single slide for the gallery, simplifying logic.
   const slidesRef = useMemoFirebase(
     () => (firestore ? query(collection(firestore, 'city_tour_slides'), orderBy('order')) : null),
     [firestore]
@@ -37,7 +37,6 @@ export default function CityTourPage() {
 
   const { data: slides, isLoading: isLoadingSlides } = useCollection<CityTourSlide>(slidesRef);
   
-  // Combine all images from all slides into a single array for the grid gallery
   const allImages = useMemo(() => {
     return slides?.flatMap(slide => slide.images.map(imgUrl => ({ imgUrl, slideId: slide.id }))) ?? [];
   }, [slides]);
@@ -51,19 +50,15 @@ export default function CityTourPage() {
     setIsUploading(true);
 
     try {
-        let gallerySlide: CityTourSlide | WithId<CityTourSlide>;
+        let gallerySlide: CityTourSlide | WithId<CityTourSlide> | undefined = slides?.[0];
 
-        // If no slide exists, create one to act as the gallery album.
-        if (!slides || slides.length === 0) {
+        if (!gallerySlide) {
             const newSlideDoc = await addDoc(collection(firestore, 'city_tour_slides'), {
                 text: "Galeria de Imagens do City Tour",
                 images: [],
                 order: 1
             });
-            // This is a temporary object to use immediately without re-fetching.
             gallerySlide = { id: newSlideDoc.id, text: "Galeria de Imagens do City Tour", images: [], order: 1 };
-        } else {
-            gallerySlide = slides[0];
         }
 
         if (gallerySlide.images.length >= 20) {
@@ -101,7 +96,6 @@ export default function CityTourPage() {
     if (file) {
       handleUploadFile(file);
     }
-    // Reset file input to allow uploading the same file again
     if(fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -224,7 +218,7 @@ export default function CityTourPage() {
             className="hidden"
             accept="image/png, image/jpeg, image/gif"
           />
-          <Button variant="destructive" onClick={deleteGallery} disabled={allImages.length === 0}>
+          <Button variant="destructive" onClick={deleteGallery} disabled={allImages.length === 0 || isLoadingSlides}>
             <Trash2 className="mr-2" />
             Excluir galeria inteira
           </Button>
