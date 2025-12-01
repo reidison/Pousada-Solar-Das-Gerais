@@ -58,16 +58,5 @@ service cloud.firestore {
     match /minibar_items/{itemId} {
        allow read, write: if true;
     }
-
-    /**
-     * @description Public access for city tour slides.
-     * **WARNING:** Write rules are open for development. Secure this before production.
-     * @path /city_tour_slides/{slideId}
-     * @allow (read, write) Anyone can read or write to city tour slides.
-     * @principle Simplifies development by allowing direct client-side management.
-     */
-    match /city_tour_slides/{slideId} {
-        allow read, write: if true;
-    }
   }
 }
