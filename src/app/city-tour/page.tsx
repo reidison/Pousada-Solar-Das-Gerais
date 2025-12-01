@@ -21,7 +21,7 @@ interface CityTourSlide {
 export default function CityTourPage() {
   const { firestore, storage } = useFirebase();
   const { toast } = useToast();
-  const { user } = useUser();
+  const { user } = useUser(); // Hook para verificar o estado de autenticação
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isUploading, setIsUploading] = useState(false);
@@ -33,32 +33,36 @@ export default function CityTourPage() {
 
   const { data: slides, isLoading: isLoadingSlides } = useCollection<CityTourSlide>(slidesRef);
   
-  // Combine all images from all slides into a single array for the grid
   const allImages = useMemo(() => {
     return slides?.flatMap(slide => slide.images.map(imgUrl => ({ imgUrl, slideId: slide.id }))) ?? [];
   }, [slides]);
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    if (!storage || !firestore || !user) {
-      toast({ title: 'Erro', description: 'Serviços do Firebase não estão prontos.', variant: 'destructive' });
+    if (!storage || !firestore || !user) { // Garante que o usuário esteja autenticado
+      toast({ title: 'Erro', description: 'Serviços do Firebase não estão prontos ou usuário não autenticado.', variant: 'destructive' });
       return;
     }
 
     const file = event.target.files?.[0];
     if (!file) return;
     
-    // If no slides exist, create one.
     let targetSlide = slides?.[0];
     if (!targetSlide) {
-        const newSlideRef = await addDoc(collection(firestore, 'city_tour_slides'), {
-            text: "Imagens da galeria",
-            images: [],
-            order: 1
-        });
-        targetSlide = { id: newSlideRef.id, text: "Imagens da galeria", images: [], order: 1 };
+        try {
+            const newSlideRef = await addDoc(collection(firestore, 'city_tour_slides'), {
+                text: "Imagens da galeria",
+                images: [],
+                order: 1
+            });
+            targetSlide = { id: newSlideRef.id, text: "Imagens da galeria", images: [], order: 1 };
+        } catch (error) {
+            console.error("Erro ao criar o primeiro slide:", error);
+            toast({ title: 'Erro ao criar galeria', description: 'Não foi possível inicializar a galeria.', variant: 'destructive' });
+            return;
+        }
     }
 
-    if (targetSlide.images.length >= 20) { // Increased limit for a gallery
+    if (targetSlide.images.length >= 20) {
       toast({ title: "Limite alcançado", description: "Máximo de 20 imagens na galeria.", variant: 'destructive' });
       return;
     }
@@ -76,7 +80,7 @@ export default function CityTourPage() {
       toast({ title: 'Imagem adicionada com sucesso!' });
     } catch (error) {
       console.error("Erro no upload da imagem:", error);
-      toast({ title: 'Erro ao enviar imagem', description: 'Não foi possível fazer o upload da imagem. Verifique as permissões do Storage.', variant: 'destructive' });
+      toast({ title: 'Erro ao enviar imagem', description: 'Verifique as permissões do Storage e se está autenticado.', variant: 'destructive' });
     } finally {
       setIsUploading(false);
       if(fileInputRef.current) {
@@ -94,7 +98,6 @@ export default function CityTourPage() {
     const newImages = slideToUpdate.images.filter((img) => img !== imgUrlToRemove);
     await updateDoc(doc(firestore, 'city_tour_slides', slideId), { images: newImages });
     
-    // Note: This does not delete the image from Firebase Storage to avoid complexity.
     toast({ title: 'Imagem removida!' });
   };
 
@@ -104,8 +107,6 @@ export default function CityTourPage() {
     const batch = writeBatch(firestore);
     const docsSnapshot = await getDocs(collection(firestore, "city_tour_slides"));
     docsSnapshot.forEach(d => batch.delete(d.ref));
-    
-    // You should also delete the files in Storage, but that requires more complex logic (e.g., a Cloud Function).
     
     await batch.commit();
     toast({ title: "Galeria excluída!" });
