@@ -47,47 +47,44 @@ export default function CityTourPage() {
       return;
     }
     
-    // Use the first slide as the gallery album. If it doesn't exist, create it.
-    let gallerySlide = slides?.[0];
-    if (!gallerySlide) {
-        try {
-            const newSlideRef = await addDoc(collection(firestore, 'city_tour_slides'), {
-                text: "Imagens da galeria",
-                images: [],
-                order: 1
-            });
-            // This is a temporary object to allow the upload to proceed without re-fetching.
-            gallerySlide = { id: newSlideRef.id, text: "Imagens da galeria", images: [], order: 1 };
-        } catch (error) {
-            console.error("Erro ao criar o primeiro slide:", error);
-            toast({ title: 'Erro ao criar galeria', description: 'Não foi possível inicializar a galeria.', variant: 'destructive' });
-            return;
-        }
-    }
-
-    if (gallerySlide.images.length >= 20) {
-      toast({ title: "Limite alcançado", description: "Máximo de 20 imagens na galeria.", variant: 'destructive' });
-      return;
-    }
-
     setIsUploading(true);
 
     try {
-      const storageRef = ref(storage, `city-tour-images/${gallerySlide.id}/${Date.now()}_${file.name}`);
-      const uploadResult = await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(uploadResult.ref);
+        let gallerySlide = slides?.[0];
 
-      const newImages = [...gallerySlide.images, downloadURL];
-      await updateDoc(doc(firestore, 'city_tour_slides', gallerySlide.id), { images: newImages });
+        // If no slide exists, create one to act as the gallery album.
+        if (!gallerySlide) {
+            const newSlideDoc = await addDoc(collection(firestore, 'city_tour_slides'), {
+                text: "Galeria de Imagens do City Tour",
+                images: [],
+                order: 1
+            });
+            // This is a temporary object to use immediately without re-fetching.
+            gallerySlide = { id: newSlideDoc.id, text: "Galeria de Imagens do City Tour", images: [], order: 1 };
+        }
 
-      toast({ title: 'Imagem adicionada com sucesso!' });
+        if (gallerySlide.images.length >= 20) {
+            toast({ title: "Limite alcançado", description: "Máximo de 20 imagens na galeria.", variant: 'destructive' });
+            setIsUploading(false);
+            return;
+        }
+
+        const storageRef = ref(storage, `city-tour-images/${gallerySlide.id}/${Date.now()}_${file.name}`);
+        const uploadResult = await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(uploadResult.ref);
+
+        const newImages = [...gallerySlide.images, downloadURL];
+        await updateDoc(doc(firestore, 'city_tour_slides', gallerySlide.id), { images: newImages });
+
+        toast({ title: 'Imagem adicionada com sucesso!' });
     } catch (error) {
-      console.error("Erro no upload da imagem:", error);
-      toast({ title: 'Erro ao enviar imagem', description: 'Verifique as permissões do Storage e se está autenticado.', variant: 'destructive' });
+        console.error("Erro no upload da imagem:", error);
+        toast({ title: 'Erro ao enviar imagem', description: 'Verifique as permissões do Storage e se está autenticado.', variant: 'destructive' });
     } finally {
-      setIsUploading(false);
+        setIsUploading(false);
     }
-  };
+};
+
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -222,7 +219,7 @@ export default function CityTourPage() {
             Excluir galeria inteira
           </Button>
         </div>
-        {!user && !isUploading && <p className="text-xs text-muted-foreground mt-2">Carregando usuário para permitir upload...</p>}
+        {!user && <p className="text-xs text-muted-foreground mt-2">Carregando usuário para permitir upload...</p>}
       </div>
     </div>
   );
