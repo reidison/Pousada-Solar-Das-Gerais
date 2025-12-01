@@ -84,9 +84,9 @@ export default function CityTourPage() {
       await updateDoc(slideRef, { images: updatedImages });
 
       toast({ title: 'Imagem adicionada com sucesso!' });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao fazer upload da imagem:", error);
-      toast({ title: "Erro ao salvar a imagem", variant: 'destructive' });
+      toast({ title: "Erro ao salvar a imagem", description: error.message || 'Não foi possível completar o upload.', variant: 'destructive' });
     } finally {
       setIsUploading(false);
       // Reset file input
@@ -162,7 +162,6 @@ export default function CityTourPage() {
                       alt={`Slide ${currentSlide + 1}`} 
                       fill
                       style={{ objectFit: 'contain' }}
-                      unoptimized
                     />
                  ) : (
                     <div className="text-muted-foreground flex flex-col items-center">
