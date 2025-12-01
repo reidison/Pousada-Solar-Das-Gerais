@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, ChangeEvent } from 'react';
-import { useCollection, useFirestore, useMemoFirebase, useFirebase } from '@/firebase';
+import { useCollection, useFirebase, useMemoFirebase } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, writeBatch, getDocs, orderBy, query } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Button } from '@/components/ui/button';
@@ -162,6 +162,7 @@ export default function CityTourPage() {
                       alt={`Slide ${currentSlide + 1}`} 
                       fill
                       style={{ objectFit: 'contain' }}
+                      unoptimized
                     />
                  ) : (
                     <div className="text-muted-foreground flex flex-col items-center">
