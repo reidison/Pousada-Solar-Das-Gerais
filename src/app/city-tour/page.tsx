@@ -9,6 +9,7 @@ import { Trash2, ArrowLeft, ChevronLeft, ChevronRight, Send } from 'lucide-react
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
+import Image from 'next/image';
 
 interface CityTourSlide {
   id: string;
@@ -130,8 +131,10 @@ export default function CityTourCarousel() {
               <div className="flex gap-4 p-4">
                 {active?.images.map((url, index) => (
                   <div key={index} className="relative">
-                    <img
+                    <Image
                       src={url}
+                      width={208}
+                      height={208}
                       className="w-52 h-52 object-cover rounded-lg shadow-md"
                       alt={`Imagem ${index + 1}`}
                     />
