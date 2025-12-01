@@ -1,15 +1,16 @@
 'use client';
 
-import React, { useState, useRef, ChangeEvent, useMemo } from 'react';
+import React, { useState, useRef, ChangeEvent, useMemo, DragEvent } from 'react';
 import { useCollection, useFirebase, useMemoFirebase, useUser } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, writeBatch, getDocs, orderBy, query } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Button } from '@/components/ui/button';
-import { Trash2, ArrowLeft, Upload, Loader2 } from 'lucide-react';
+import { Trash2, ArrowLeft, Upload, Loader2, ImagePlus } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
 interface CityTourSlide {
   id: string;
@@ -21,10 +22,11 @@ interface CityTourSlide {
 export default function CityTourPage() {
   const { firestore, storage } = useFirebase();
   const { toast } = useToast();
-  const { user } = useUser(); // Hook para verificar o estado de autenticação
+  const { user } = useUser();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isUploading, setIsUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const slidesRef = useMemoFirebase(
     () => (firestore ? query(collection(firestore, 'city_tour_slides'), orderBy('order')) : null),
@@ -37,14 +39,11 @@ export default function CityTourPage() {
     return slides?.flatMap(slide => slide.images.map(imgUrl => ({ imgUrl, slideId: slide.id }))) ?? [];
   }, [slides]);
 
-  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    if (!storage || !firestore || !user) { // Garante que o usuário esteja autenticado
+  const handleUploadFile = async (file: File) => {
+    if (!storage || !firestore || !user) {
       toast({ title: 'Erro', description: 'Serviços do Firebase não estão prontos ou usuário não autenticado.', variant: 'destructive' });
       return;
     }
-
-    const file = event.target.files?.[0];
-    if (!file) return;
     
     let targetSlide = slides?.[0];
     if (!targetSlide) {
@@ -83,9 +82,35 @@ export default function CityTourPage() {
       toast({ title: 'Erro ao enviar imagem', description: 'Verifique as permissões do Storage e se está autenticado.', variant: 'destructive' });
     } finally {
       setIsUploading(false);
-      if(fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
+    }
+  };
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      handleUploadFile(file);
+    }
+    if(fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+  
+  const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(false);
+    const file = event.dataTransfer.files?.[0];
+    if (file) {
+      handleUploadFile(file);
     }
   };
 
@@ -123,17 +148,30 @@ export default function CityTourPage() {
       <h1 className="text-3xl font-bold mb-2">City Tour – Galeria de Imagens</h1>
       <p className="text-muted-foreground mb-8">Veja e gerencie as imagens da galeria.</p>
 
-
-      <Card>
-        <CardContent className="p-4 md:p-6">
+      <Card 
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        className={cn(
+          "transition-all",
+          isDragging && "border-dashed border-2 border-primary bg-accent/20"
+        )}
+      >
+        <CardContent className="p-4 md:p-6 min-h-[250px]">
+            {isDragging && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 z-10">
+                    <ImagePlus size={48} className="text-primary mb-4" />
+                    <p className="font-semibold text-primary">Arraste e solte a imagem aqui</p>
+                </div>
+            )}
             {isLoadingSlides ? (
                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {[...Array(4)].map((_, i) => <div key={i} className="aspect-square bg-muted rounded-lg animate-pulse" />)}
                  </div>
             ) : allImages.length === 0 ? (
-                <div className="p-8 border rounded-lg text-center bg-background">
+                <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-lg text-center bg-background h-full">
                     <p className="mb-4">Nenhuma imagem na galeria.</p>
-                    <p className="text-sm text-muted-foreground">Use o botão "Adicionar Imagem" para começar.</p>
+                    <p className="text-sm text-muted-foreground">Arraste uma imagem para cá ou use o botão "Adicionar Imagem" para começar.</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -160,7 +198,6 @@ export default function CityTourPage() {
         </CardContent>
       </Card>
      
-
       <div className="mt-8 p-6 border rounded-lg bg-card">
         <h3 className="font-semibold mb-4">Gerenciar galeria</h3>
         <div className="flex flex-wrap gap-4">
@@ -180,7 +217,7 @@ export default function CityTourPage() {
             Excluir galeria inteira
           </Button>
         </div>
-        {!user && <p className="text-xs text-muted-foreground mt-2">Carregando usuário para permitir upload...</p>}
+        {!user && !isUploading && <p className="text-xs text-muted-foreground mt-2">Carregando usuário para permitir upload...</p>}
       </div>
     </div>
   );
