@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, ChangeEvent } from 'react';
-import { useCollection, useFirebase, useMemoFirebase } from '@/firebase';
+import { useCollection, useFirebase, useMemoFirebase, useUser } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, writeBatch, getDocs, orderBy, query } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Button } from '@/components/ui/button';
@@ -32,12 +32,13 @@ interface CityTourSlide {
 export default function CityTourPage() {
   const { firestore, storage } = useFirebase();
   const { toast } = useToast();
+  const { user, isUserLoading } = useUser();
 
   const slidesRef = useMemoFirebase(
     () => (firestore ? query(collection(firestore, 'city_tour_slides'), orderBy('order')) : null),
     [firestore]
   );
-  const { data: slides, isLoading } = useCollection<CityTourSlide>(slidesRef);
+  const { data: slides, isLoading: isLoadingSlides } = useCollection<CityTourSlide>(slidesRef);
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
@@ -59,6 +60,11 @@ export default function CityTourPage() {
   
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (!storage || !firestore || !slides || !slides[currentSlide] || !event.target.files || event.target.files.length === 0) {
+      return;
+    }
+
+    if (!user) {
+      toast({ title: 'Usuário não autenticado', description: 'Por favor, aguarde e tente novamente.', variant: 'destructive' });
       return;
     }
 
@@ -135,6 +141,8 @@ export default function CityTourPage() {
           toast({ title: "Erro ao criar slide.", variant: "destructive" });
       }
   };
+
+  const isLoading = isLoadingSlides || isUserLoading;
 
   if (isLoading) {
     return <div className="flex h-screen items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>;

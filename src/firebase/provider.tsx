@@ -3,7 +3,7 @@
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
 import { FirebaseApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
-import { Auth, User, onAuthStateChanged } from 'firebase/auth';
+import { Auth, User, onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { FirebaseStorage } from 'firebase/storage';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener'
 
@@ -79,18 +79,17 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
       return;
     }
 
-    // This part ensures we sign in users anonymously if they aren't already logged in.
-    // However, for this specific app, we might not need authenticated users to read data.
-    // The security rules are public read.
-    // For simplicity, let's keep authentication handling but note it's not strictly necessary for reads.
     const unsubscribe = onAuthStateChanged(
       auth,
       (firebaseUser) => { // Auth state determined
         if (firebaseUser) {
           setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: null });
         } else {
-           // If no user, we can try to sign in anonymously for write operations later
-           setUserAuthState({ user: null, isUserLoading: false, userError: null });
+           // If no user, sign in anonymously to allow write operations.
+           signInAnonymously(auth).catch((error) => {
+               console.error("Anonymous sign-in failed:", error);
+               setUserAuthState({ user: null, isUserLoading: false, userError: error });
+           });
         }
       },
       (error) => { // Auth listener error
