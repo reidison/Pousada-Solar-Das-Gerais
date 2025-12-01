@@ -10,7 +10,6 @@ import { Coffee, Wifi, Check, Map, Phone, GlassWater, KeyRound, PhoneCall, BookT
 import { UsefulServicesModal } from '@/components/useful-services-modal';
 import { MinibarModal } from '@/components/minibar-modal';
 import { RegulationModal } from '@/components/regulation-modal';
-import { CityTourModal } from '@/components/city-tour-modal';
 import { WhatsappIcon } from '@/components/icons/whatsapp-icon';
 import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
@@ -69,7 +68,9 @@ export default function SolarInfoHubPage() {
       icon: <Map size={28} />,
       title: translations.infoCards.cityTour.title,
       content: (
-        <CityTourModal />
+        <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">
+          {translations.infoCards.cityTour.button}
+        </Button>
       ),
     },
     {

@@ -4,8 +4,21 @@ export default {
   darkMode: ['class'],
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/footer.tsx',
+    './src/components/header.tsx',
+    './src/components/icons/brazil-flag-icon.tsx',
+    './src/components/icons/logo.tsx',
+    './src/components/icons/qr-code.tsx',
+    './src/components/icons/usa-flag-icon.tsx',
+    './src/components/icons/whatsapp-icon.tsx',
+    './src/components/info-card.tsx',
+    './src/components/minibar-modal.tsx',
+    './src/components/regulation-modal.tsx',
+    './src/components/useful-services-modal.tsx',
+    './src/components/welcome-message.tsx',
+    './src/components/city-tour-modal.tsx',
+    './src/components/ui/**/*.tsx'
   ],
   theme: {
     container: {
