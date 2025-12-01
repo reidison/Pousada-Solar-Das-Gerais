@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import {
   Dialog,
@@ -14,9 +14,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-  type CarouselApi,
 } from '@/components/ui/carousel';
 import {
     AlertDialog,
@@ -27,18 +24,16 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/language-context';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
 import type { WithId } from '@/firebase';
-import { Plus, Trash2, ImagePlus, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Plus, Trash2, ImagePlus, Loader2, X } from 'lucide-react';
+import { ImageUploader } from '@/components/image-uploader';
 
 interface CityTourSlide {
   text: string;
@@ -86,16 +81,20 @@ export function CityTourModal() {
               <Loader2 className="h-8 w-8 animate-spin" />
             </div>
           ) : (
-            <Carousel className="w-full h-full">
+            <Carousel
+              opts={{
+                align: 'start',
+                loop: false,
+              }}
+              className="w-full h-full"
+            >
               <CarouselContent className="h-full">
                 {slides?.map((slide) => (
-                  <CarouselItem key={slide.id} className="h-full">
+                  <CarouselItem key={slide.id} className="h-full basis-full">
                     <SlideEditor slide={slide} />
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="left-2" />
-              <CarouselNext className="right-2" />
             </Carousel>
           )}
         </div>
@@ -172,8 +171,8 @@ function SlideEditor({ slide }: { slide: WithId<CityTourSlide> }) {
   }
 
   return (
-    <div className="flex flex-col h-full p-1">
-      <div className="flex-grow overflow-y-auto space-y-4 p-2">
+    <div className="flex flex-col h-full">
+      <div className="flex-grow space-y-4 overflow-y-auto p-2">
         <Textarea
           placeholder={t.placeholder}
           value={text}
@@ -190,23 +189,12 @@ function SlideEditor({ slide }: { slide: WithId<CityTourSlide> }) {
           </div>
           {images.map((url, index) => (
             <div key={index} className="flex items-center gap-2">
-                <div className="flex-shrink-0 w-20 h-20 bg-muted rounded-md overflow-hidden relative">
-                    {url ? (
-                        <Image src={url} alt={`Image ${index + 1}`} fill style={{objectFit: "cover"}}/>
-                    ): (
-                        <div className="flex items-center justify-center h-full text-muted-foreground">
-                            <ImagePlus size={24}/>
-                        </div>
-                    )}
-                </div>
-              <Input
-                type="url"
-                placeholder={t.imageUrlPlaceholder}
-                value={url}
-                onChange={(e) => handleImageChange(index, e.target.value)}
+              <ImageUploader
+                imageUrl={url}
+                onImageUrlChange={(newUrl) => handleImageChange(index, newUrl)}
               />
               <Button variant="ghost" size="icon" onClick={() => removeImageField(index)}>
-                <Trash2 className="h-4 w-4 text-destructive" />
+                <X className="h-4 w-4 text-muted-foreground" />
               </Button>
             </div>
           ))}

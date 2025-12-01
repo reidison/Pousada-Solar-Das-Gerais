@@ -97,6 +97,8 @@ export type Translation = {
     deleteErrorToastTitle: string;
     deleteConfirmTitle: string;
     deleteConfirmDescription: string;
+    chooseImageButton: string;
+    changeImageButton: string;
   };
   usefulServicesModal: {
     title: string;
@@ -226,6 +228,8 @@ export const translations: Record<Locale, Translation> = {
       deleteErrorToastTitle: 'Erro ao excluir o slide.',
       deleteConfirmTitle: 'Confirmar Exclusão',
       deleteConfirmDescription: 'Tem certeza que deseja excluir este slide? Esta ação não pode ser desfeita.',
+      chooseImageButton: 'Escolher Imagem',
+      changeImageButton: 'Trocar Imagem',
     },
     usefulServicesModal: {
       title: 'Serviços e Contatos Úteis',
@@ -353,6 +357,8 @@ export const translations: Record<Locale, Translation> = {
       deleteErrorToastTitle: 'Error deleting slide.',
       deleteConfirmTitle: 'Confirm Deletion',
       deleteConfirmDescription: 'Are you sure you want to delete this slide? This action cannot be undone.',
+      chooseImageButton: 'Choose Image',
+      changeImageButton: 'Change Image',
     },
     usefulServicesModal: {
       title: 'Useful Services and Contacts',
