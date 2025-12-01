@@ -50,10 +50,10 @@ export default function CityTourPage() {
     setIsUploading(true);
 
     try {
-        let gallerySlide = slides?.[0];
+        let gallerySlide: CityTourSlide;
 
         // If no slide exists, create one to act as the gallery album.
-        if (!gallerySlide) {
+        if (!slides || slides.length === 0) {
             const newSlideDoc = await addDoc(collection(firestore, 'city_tour_slides'), {
                 text: "Galeria de Imagens do City Tour",
                 images: [],
@@ -61,6 +61,8 @@ export default function CityTourPage() {
             });
             // This is a temporary object to use immediately without re-fetching.
             gallerySlide = { id: newSlideDoc.id, text: "Galeria de Imagens do City Tour", images: [], order: 1 };
+        } else {
+            gallerySlide = slides[0];
         }
 
         if (gallerySlide.images.length >= 20) {
