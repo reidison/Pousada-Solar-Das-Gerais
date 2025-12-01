@@ -15,6 +15,7 @@ import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import type { LodgeInfo } from '@/types/lodge-info';
 import { useLanguage } from '@/contexts/language-context';
+import Link from 'next/link';
 
 export default function SolarInfoHubPage() {
   const firestore = useFirestore();
@@ -31,8 +32,8 @@ export default function SolarInfoHubPage() {
       title: translations.infoCards.breakfast.title,
       content: (
         <>
-          <p>{translations.infoCards.breakfast.line1}</p>
-          <p>{translations.infoCards.breakfast.line2}</p>
+          <p>{lodgeInfo?.breakfastHours ? lodgeInfo.breakfastHours : translations.infoCards.breakfast.line1}</p>
+          <p>{lodgeInfo?.breakfastLocation ? lodgeInfo.breakfastLocation : translations.infoCards.breakfast.line2}</p>
         </>
       ),
     },
@@ -42,9 +43,9 @@ export default function SolarInfoHubPage() {
       content: (
           <>
             <p>{translations.infoCards.wifi.line1}</p>
-            <p className="font-bold text-sm">{translations.infoCards.wifi.networkName}</p>
+            <p className="font-bold text-sm">{lodgeInfo?.wifiName ? lodgeInfo.wifiName : translations.infoCards.wifi.networkName}</p>
             <p>{translations.infoCards.wifi.line2}</p>
-            <p className="font-bold text-sm">{translations.infoCards.wifi.password}</p>
+            <p className="font-bold text-sm">{lodgeInfo?.wifiPassword ? lodgeInfo.wifiPassword : translations.infoCards.wifi.password}</p>
           </>
       ),
     },
@@ -54,11 +55,8 @@ export default function SolarInfoHubPage() {
       content: (
         <>
           <p>{translations.infoCards.mainAccess.line1}</p>
-          <p className="font-bold text-lg text-primary">
-            {translations.infoCards.mainAccess.line2}
-          </p>
           <p className="text-3xl text-primary flex items-center justify-center gap-1">
-            0525
+            {lodgeInfo?.mainDoorAccessCode ? lodgeInfo.mainDoorAccessCode : '0525'}
             <Check size={40} className="text-green-600" strokeWidth={4} />
           </p>
         </>
@@ -68,8 +66,10 @@ export default function SolarInfoHubPage() {
       icon: <Map size={28} />,
       title: translations.infoCards.cityTour.title,
       content: (
-        <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">
-          {translations.infoCards.cityTour.button}
+        <Button asChild variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">
+          <Link href="/city-tour">
+            {translations.infoCards.cityTour.button}
+          </Link>
         </Button>
       ),
     },
