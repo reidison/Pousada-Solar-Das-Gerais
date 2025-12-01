@@ -181,13 +181,13 @@ export default function CityTourCarousel() {
           />
 
           <div className="flex gap-4">
-            <Button variant="destructive" onClick={deleteGallery}>
-              <Trash2 size={16} className="mr-2" />
-              Excluir galeria inteira
-            </Button>
             <Button onClick={addImgurLink}>
               <Send size={16} className="mr-2" />
               Enviar
+            </Button>
+            <Button variant="destructive" onClick={deleteGallery}>
+              <Trash2 size={16} className="mr-2" />
+              Excluir galeria inteira
             </Button>
           </div>
         </div>
