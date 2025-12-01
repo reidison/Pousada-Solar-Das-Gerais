@@ -11,6 +11,7 @@
  * - Service Categories: A collection at `/service_categories`.
  * - Service Items: A sub-collection at `/service_categories/{categoryId}/items`.
  * - Minibar Items: A collection at `/minibar_items`.
+ * - Tour Stops: A collection at `/tour_stops`.
  *
  * Key Security Decisions:
  * - Lodge information is public and readable by all users. Writes are denied.
@@ -57,6 +58,17 @@ service cloud.firestore {
      */
     match /minibar_items/{itemId} {
        allow read, write: if true;
+    }
+
+    /**
+     * @description Public access for city tour stops.
+     * **WARNING:** Write rules are open for development. Secure this before production.
+     * @path /tour_stops/{stopId}
+     * @allow (read, write) Anyone can read or write to tour stops.
+     * @principle Simplifies development by allowing direct client-side management.
+     */
+    match /tour_stops/{stopId} {
+      allow read, write: if true;
     }
   }
 }

@@ -103,6 +103,26 @@
         }
       },
       "required": ["name", "price"]
+    },
+    "TourStop": {
+      "title": "Tour Stop",
+      "description": "Represents a single stop or point of interest in a city tour.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The name of the tourist spot."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the tourist spot."
+        },
+        "coverImage": {
+          "type": "string",
+          "description": "URL of a representative image for the spot."
+        }
+      },
+      "required": ["title", "description", "coverImage"]
     }
   },
   "auth": {
@@ -147,8 +167,16 @@
           "schema": { "$ref": "#/backend/entities/MinibarItem" },
           "description": "Collection of items available in the minibar."
         }
+      },
+      {
+        "path": "/tour_stops/{stopId}",
+        "definition": {
+          "entityName": "TourStop",
+          "schema": { "$ref": "#/backend/entities/TourStop" },
+          "description": "Collection of city tour stops."
+        }
       }
     ],
-    "reasoning": "The design includes a single document for LodgeInfo for simplicity. For services, a `service_categories` collection allows for organizing services. Each category document can then have a sub-collection of `items`, which provides a structured and scalable way to manage useful contacts. A separate collection for `minibar_items` allows for easy management of the minibar inventory."
+    "reasoning": "The design includes a single document for LodgeInfo for simplicity. For services, a `service_categories` collection allows for organizing services. Each category document can then have a sub-collection of `items`, which provides a structured and scalable way to manage useful contacts. A separate collection for `minibar_items` allows for easy management of the minibar inventory. A `tour_stops` collection is added to manage points of interest for the city tour."
   }
 }
