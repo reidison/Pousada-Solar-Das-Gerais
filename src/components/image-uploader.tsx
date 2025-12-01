@@ -11,10 +11,18 @@ interface ImageUploaderProps {
   onImageUrlChange: (newUrl: string) => void;
 }
 
-const isImage = (url: string) => /\.(jpeg|jpg|gif|png|webp)$/i.test(url);
-const isVideo = (url: string) => /\.(mp4|webm)$/i.test(url);
+const isImage = (url: string) => /\.(jpeg|jpg|gif|png|webp)(\?.*)?$/i.test(url);
+const isVideo = (url: string) => /\.(mp4|webm)(\?.*)?$/i.test(url);
 
 function MediaPreview({ url }: { url: string }) {
+    if (!url) {
+        return (
+            <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+                <ImagePlus size={24} />
+            </div>
+        );
+    }
+    
     if (isImage(url)) {
       return (
         <Image 
@@ -40,19 +48,10 @@ function MediaPreview({ url }: { url: string }) {
     }
   
     // If the URL is not empty but not a valid media type, show a warning
-    if (url) {
-        return (
-            <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-2 text-center">
-              <FileWarning size={24} />
-              <span className="text-xs mt-1">URL inválida ou formato não suportado</span>
-            </div>
-        );
-    }
-
-    // Default placeholder
     return (
-        <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
-            {url.includes('mp4') || url.includes('webm') ? <Film size={24} /> : <ImagePlus size={24} />}
+        <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-2 text-center">
+          <FileWarning size={24} />
+          <span className="text-xs mt-1">URL inválida ou formato não suportado</span>
         </div>
     );
 }
@@ -60,8 +59,6 @@ function MediaPreview({ url }: { url: string }) {
 export function ImageUploader({ imageUrl, onImageUrlChange }: ImageUploaderProps) {
   const { translations } = useLanguage();
   const t = translations.cityTourModal;
-
-  const isValidUrl = imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('data:image'));
 
   return (
     <div className="flex-grow flex items-center gap-2">
