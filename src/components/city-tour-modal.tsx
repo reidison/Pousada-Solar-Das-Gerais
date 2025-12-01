@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
 import {
   Dialog,
   DialogContent,
@@ -44,6 +43,7 @@ export function CityTourModal() {
   const { translations } = useLanguage();
   const t = translations.cityTourModal;
   const tInfoCard = translations.infoCards.cityTour;
+  const { toast } = useToast();
 
   const firestore = useFirestore();
   const slidesRef = useMemoFirebase(
