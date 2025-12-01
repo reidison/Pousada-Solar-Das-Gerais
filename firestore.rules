@@ -1,74 +1,26 @@
-/**
- * @fileoverview Firestore Security Rules for the LodgeInfo entity and Service Categories.
- *
- * Core Philosophy:
- * This ruleset provides public read access to lodge information and service categories,
- * which is appropriate for a guest-facing application. For simplicity during development,
- * writes are also currently allowed, but this should be restricted in production.
- *
- * Data Structure:
- * - Lodge information: A single document at `/lodge_info/main`.
- * - Service Categories: A collection at `/service_categories`.
- * - Service Items: A sub-collection at `/service_categories/{categoryId}/items`.
- * - Minibar Items: A collection at `/minibar_items`.
- * - Tour Stops: A collection at `/tour_stops`.
- *
- * Key Security Decisions:
- * - Lodge information is public and readable by all users. Writes are denied.
- * - Service categories, items, and minibar items are publicly readable and writable.
- *   - **WARNING:** This is for initial development only. In a production environment,
- *     write access should be restricted to authenticated administrators.
- */
+
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    /**
-     * @description Allows anyone to read the lodge information, but restricts writes.
-     * @path /lodge_info/main
-     * @allow (get, list) Any user can read the lodge info.
-     * @deny (create, update, delete) No user can modify the lodge info.
-     * @principle Allows public read access but restricts all writes.
-     */
     match /lodge_info/{docId} {
-      allow read, write: if true;
+      allow read, write: if true; // Public read, admin write recommended for prod
     }
 
-    /**
-     * @description Public access for service categories and their items.
-     * **WARNING:** Write rules are open for development. Secure this before production.
-     * @path /service_categories/{categoryId}
-     * @allow (read, write) Anyone can read or write to service categories and items.
-     * @principle Simplifies development by allowing direct client-side management.
-     */
     match /service_categories/{categoryId} {
-      allow read, write: if true;
+      allow read, write: if true; // Public read, admin write recommended for prod
 
       match /items/{itemId} {
-        allow read, write: if true;
+        allow read, write: if true; // Public read, admin write recommended for prod
       }
     }
     
-    /**
-     * @description Public access for minibar items.
-     * **WARNING:** Write rules are open for development. Secure this before production.
-     * @path /minibar_items/{itemId}
-     * @allow (read, write) Anyone can read or write to minibar items.
-     * @principle Simplifies development by allowing direct client-side management.
-     */
     match /minibar_items/{itemId} {
-       allow read, write: if true;
+       allow read, write: if true; // Public read, admin write recommended for prod
     }
 
-    /**
-     * @description Public access for city tour stops.
-     * **WARNING:** Write rules are open for development. Secure this before production.
-     * @path /tour_stops/{stopId}
-     * @allow (read, write) Anyone can read or write to tour stops.
-     * @principle Simplifies development by allowing direct client-side management.
-     */
     match /tour_stops/{stopId} {
-      allow read, write: if true;
+      allow read, write: if true; // Public read, admin write recommended for prod
     }
   }
 }

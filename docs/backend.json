@@ -37,7 +37,7 @@
         },
         "whatsappNumber": {
           "type": "string",
-          "description": "WhatsApp number for contacting the reception."
+,"description": "Represents a single stop or point of interest in a city tour."
         },
         "welcomeMessage": {
           "type": "string",
@@ -132,51 +132,25 @@
     ]
   },
   "firestore": {
-    "structure": [
-      {
-        "path": "/lodge_info/main",
-        "definition": {
-          "entityName": "LodgeInfo",
-          "schema": {
-            "$ref": "#/backend/entities/LodgeInfo"
-          },
-          "description": "Stores general information about the lodge. A single document contains all lodge information. This simplifies fetching the configuration and also editing it.",
-          "params": []
-        }
-      },
-      {
-        "path": "/service_categories/{categoryId}",
-        "definition": {
-          "entityName": "ServiceCategory",
-          "schema": { "$ref": "#/backend/entities/ServiceCategory" },
-          "description": "Collection of service categories."
-        }
-      },
-      {
-        "path": "/service_categories/{categoryId}/items/{itemId}",
-        "definition": {
-          "entityName": "ServiceItem",
-          "schema": { "$ref": "#/backend/entities/ServiceItem" },
-          "description": "Sub-collection for service items within a category."
-        }
-      },
-      {
-        "path": "/minibar_items/{itemId}",
-        "definition": {
-          "entityName": "MinibarItem",
-          "schema": { "$ref": "#/backend/entities/MinibarItem" },
-          "description": "Collection of items available in the minibar."
-        }
-      },
-      {
-        "path": "/tour_stops/{stopId}",
-        "definition": {
-          "entityName": "TourStop",
-          "schema": { "$ref": "#/backend/entities/TourStop" },
-          "description": "Collection of city tour stops."
-        }
-      }
-    ],
-    "reasoning": "The design includes a single document for LodgeInfo for simplicity. For services, a `service_categories` collection allows for organizing services. Each category document can then have a sub-collection of `items`, which provides a structured and scalable way to manage useful contacts. A separate collection for `minibar_items` allows for easy management of the minibar inventory. A `tour_stops` collection is added to manage points of interest for the city tour."
+    "/lodge_info/main": {
+      "schema": { "$ref": "#/backend/entities/LodgeInfo" },
+      "description": "Stores general information about the lodge. A single document simplifies fetching and editing."
+    },
+    "/service_categories/{categoryId}": {
+      "schema": { "$ref": "#/backend/entities/ServiceCategory" },
+      "description": "Collection of service categories."
+    },
+    "/service_categories/{categoryId}/items/{itemId}": {
+      "schema": { "$ref": "#/backend/entities/ServiceItem" },
+      "description": "Sub-collection for service items within a category."
+    },
+    "/minibar_items/{itemId}": {
+      "schema": { "$ref": "#/backend/entities/MinibarItem" },
+      "description": "Collection of items available in the minibar."
+    },
+    "/tour_stops/{stopId}": {
+      "schema": { "$ref": "#/backend/entities/TourStop" },
+      "description": "Collection of city tour stops."
+    }
   }
 }

@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState } from 'react';
@@ -13,6 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import exampleData from '@/app/lib/placeholder-images.json';
 
 interface TourStop {
+  id: string;
   title: string;
   description: string;
   coverImage: string;
@@ -49,10 +51,12 @@ export default function CityTourPage() {
       const batch = writeBatch(firestore);
 
       // Delete existing documents
-      const querySnapshot = await getDocs(tourStopsRef);
-      querySnapshot.forEach((doc) => {
-        batch.delete(doc.ref);
-      });
+      if (tourStops && tourStops.length > 0) {
+        const querySnapshot = await getDocs(tourStopsRef);
+        querySnapshot.forEach((doc) => {
+          batch.delete(doc.ref);
+        });
+      }
 
       // Add new documents from example data
       exampleData.tour_stops.forEach((stop) => {
