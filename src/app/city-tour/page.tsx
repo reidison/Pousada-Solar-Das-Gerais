@@ -28,6 +28,7 @@ export default function CityTourPage() {
   const [isUploading, setIsUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
+  // Focus on a single slide for the gallery, simplifying logic.
   const slidesRef = useMemoFirebase(
     () => (firestore ? query(collection(firestore, 'city_tour_slides'), orderBy('order')) : null),
     [firestore]
@@ -35,6 +36,7 @@ export default function CityTourPage() {
 
   const { data: slides, isLoading: isLoadingSlides } = useCollection<CityTourSlide>(slidesRef);
   
+  // Combine all images from all slides into a single array for the grid gallery
   const allImages = useMemo(() => {
     return slides?.flatMap(slide => slide.images.map(imgUrl => ({ imgUrl, slideId: slide.id }))) ?? [];
   }, [slides]);
@@ -45,15 +47,17 @@ export default function CityTourPage() {
       return;
     }
     
-    let targetSlide = slides?.[0];
-    if (!targetSlide) {
+    // Use the first slide as the gallery album. If it doesn't exist, create it.
+    let gallerySlide = slides?.[0];
+    if (!gallerySlide) {
         try {
             const newSlideRef = await addDoc(collection(firestore, 'city_tour_slides'), {
                 text: "Imagens da galeria",
                 images: [],
                 order: 1
             });
-            targetSlide = { id: newSlideRef.id, text: "Imagens da galeria", images: [], order: 1 };
+            // This is a temporary object to allow the upload to proceed without re-fetching.
+            gallerySlide = { id: newSlideRef.id, text: "Imagens da galeria", images: [], order: 1 };
         } catch (error) {
             console.error("Erro ao criar o primeiro slide:", error);
             toast({ title: 'Erro ao criar galeria', description: 'Não foi possível inicializar a galeria.', variant: 'destructive' });
@@ -61,7 +65,7 @@ export default function CityTourPage() {
         }
     }
 
-    if (targetSlide.images.length >= 20) {
+    if (gallerySlide.images.length >= 20) {
       toast({ title: "Limite alcançado", description: "Máximo de 20 imagens na galeria.", variant: 'destructive' });
       return;
     }
@@ -69,12 +73,12 @@ export default function CityTourPage() {
     setIsUploading(true);
 
     try {
-      const storageRef = ref(storage, `city-tour-images/${targetSlide.id}/${Date.now()}_${file.name}`);
+      const storageRef = ref(storage, `city-tour-images/${gallerySlide.id}/${Date.now()}_${file.name}`);
       const uploadResult = await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(uploadResult.ref);
 
-      const newImages = [...targetSlide.images, downloadURL];
-      await updateDoc(doc(firestore, 'city_tour_slides', targetSlide.id), { images: newImages });
+      const newImages = [...gallerySlide.images, downloadURL];
+      await updateDoc(doc(firestore, 'city_tour_slides', gallerySlide.id), { images: newImages });
 
       toast({ title: 'Imagem adicionada com sucesso!' });
     } catch (error) {
@@ -90,6 +94,7 @@ export default function CityTourPage() {
     if (file) {
       handleUploadFile(file);
     }
+    // Reset file input to allow uploading the same file again
     if(fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -153,13 +158,13 @@ export default function CityTourPage() {
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={cn(
-          "transition-all",
+          "transition-all relative",
           isDragging && "border-dashed border-2 border-primary bg-accent/20"
         )}
       >
-        <CardContent className="p-4 md:p-6 min-h-[250px]">
+        <CardContent className="p-4 md:p-6 min-h-[250px] flex flex-col">
             {isDragging && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 z-10">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 z-10 pointer-events-none">
                     <ImagePlus size={48} className="text-primary mb-4" />
                     <p className="font-semibold text-primary">Arraste e solte a imagem aqui</p>
                 </div>
@@ -169,7 +174,7 @@ export default function CityTourPage() {
                     {[...Array(4)].map((_, i) => <div key={i} className="aspect-square bg-muted rounded-lg animate-pulse" />)}
                  </div>
             ) : allImages.length === 0 ? (
-                <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-lg text-center bg-background h-full">
+                <div className="flex-grow flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-lg text-center bg-background h-full">
                     <p className="mb-4">Nenhuma imagem na galeria.</p>
                     <p className="text-sm text-muted-foreground">Arraste uma imagem para cá ou use o botão "Adicionar Imagem" para começar.</p>
                 </div>
