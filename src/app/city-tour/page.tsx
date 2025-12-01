@@ -24,6 +24,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 interface CityTourSlide {
+  id: string;
   text: string;
   images: string[];
   order: number;
@@ -96,7 +97,9 @@ export default function CityTourPage() {
     } finally {
       setIsUploading(false);
       // Reset file input
-      event.target.value = '';
+      if (event.target) {
+        event.target.value = '';
+      }
     }
   };
 
@@ -112,9 +115,9 @@ export default function CityTourPage() {
         return;
       }
       
+      // Here you would also delete files from storage, which is more complex and requires listing files.
+      // For now, we just delete the firestore docs, which removes the image references from the app.
       slidesSnapshot.docs.forEach((doc) => {
-        // Here you would also delete files from storage, which is more complex and requires listing files.
-        // For now, we just delete the firestore docs.
         batch.delete(doc.ref);
       });
       
