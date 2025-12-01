@@ -20,6 +20,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface CityTourSlide {
   text: string;
@@ -52,10 +53,7 @@ export default function CityTourPage() {
       if (!firestore || !slides || !slides[currentSlide] || !newImageUrl.trim()) return;
       
       const slide = slides[currentSlide];
-      // Note: A lógica original limitava a 3 imagens. O novo layout só exibe 1, mas manteremos o array.
-      // Se a intenção é ter múltiplas imagens por slide, o JSX precisaria de outro carrossel interno.
-      // Por simplicidade, vamos substituir a imagem existente ou adicionar se não houver nenhuma.
-      const updatedImages = [newImageUrl.trim()]; // Substitui ou adiciona a imagem
+      const updatedImages = [newImageUrl.trim()]; 
       const slideRef = doc(firestore, 'city_tour_slides', slide.id);
       
       try {
@@ -73,7 +71,6 @@ export default function CityTourPage() {
   
     try {
       const batch = writeBatch(firestore);
-      // Aqui, vamos deletar a coleção de slides inteira, que parece ser a intenção de "Excluir galeria".
       const slidesSnapshot = await getDocs(collection(firestore, 'city_tour_slides'));
       if (slidesSnapshot.empty) {
         toast({ title: "A galeria já está vazia." });
@@ -83,7 +80,7 @@ export default function CityTourPage() {
         batch.delete(doc.ref);
       });
       await batch.commit();
-      setCurrentSlide(0); // Reset
+      setCurrentSlide(0); 
       toast({ title: "Galeria excluída com sucesso!" });
     } catch (error) {
       console.error("Erro ao excluir galeria:", error);
@@ -113,8 +110,13 @@ export default function CityTourPage() {
               {/* Carousel Display */}
               <div id="carousel-images" className="carousel-images relative h-64 md:h-96 bg-muted flex items-center justify-center">
                  {activeSlide.images && activeSlide.images.length > 0 ? (
-                    // Usando a tag <img> para compatibilidade com URLs do Imgur sem extensão
-                    <img src={activeSlide.images[0]} alt={`Slide ${currentSlide + 1}`} className="w-full h-full object-contain"/>
+                    <Image 
+                      src={activeSlide.images[0]} 
+                      alt={`Slide ${currentSlide + 1}`} 
+                      fill
+                      style={{ objectFit: 'contain' }}
+                      unoptimized
+                    />
                  ) : (
                     <div className="text-muted-foreground flex flex-col items-center">
                         <ImageIcon size={48} />
