@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
-import { ImagePlus, FileWarning } from 'lucide-react';
+import { ImagePlus } from 'lucide-react';
 import { useLanguage } from '@/contexts/language-context';
 
 function MediaPreview({ url }: { url: string }) {
@@ -26,7 +26,6 @@ function MediaPreview({ url }: { url: string }) {
             fill
             style={{ objectFit: 'contain' }}
             className="rounded-md"
-            unoptimized // Useful for external URLs if you don't control the optimization
         />
     );
 }
