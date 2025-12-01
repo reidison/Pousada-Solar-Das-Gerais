@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import imageCompression from 'browser-image-compression';
 
 interface CityTourSlide {
   id: string;
@@ -50,7 +51,7 @@ export default function CityTourPage() {
     setIsUploading(true);
 
     try {
-        let gallerySlide: CityTourSlide;
+        let gallerySlide: CityTourSlide | WithId<CityTourSlide>;
 
         // If no slide exists, create one to act as the gallery album.
         if (!slides || slides.length === 0) {
@@ -71,8 +72,15 @@ export default function CityTourPage() {
             return;
         }
 
-        const storageRef = ref(storage, `city-tour-images/${gallerySlide.id}/${Date.now()}_${file.name}`);
-        const uploadResult = await uploadBytes(storageRef, file);
+        const options = {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+        };
+        const compressedFile = await imageCompression(file, options);
+
+        const storageRef = ref(storage, `city-tour-images/${gallerySlide.id}/${Date.now()}_${compressedFile.name}`);
+        const uploadResult = await uploadBytes(storageRef, compressedFile);
         const downloadURL = await getDownloadURL(uploadResult.ref);
 
         const newImages = [...gallerySlide.images, downloadURL];
