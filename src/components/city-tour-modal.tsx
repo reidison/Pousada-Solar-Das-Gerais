@@ -24,6 +24,7 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
+    AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -172,7 +173,7 @@ function SlideEditor({ slide }: { slide: WithId<CityTourSlide> }) {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-grow space-y-4 overflow-y-auto p-2">
+      <div className="flex-grow space-y-4 overflow-y-auto p-1">
         <Textarea
           placeholder={t.placeholder}
           value={text}
