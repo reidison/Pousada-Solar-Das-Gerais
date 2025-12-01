@@ -5,7 +5,7 @@ import { useCollection, useFirebase, useMemoFirebase, useUser } from '@/firebase
 import { collection, addDoc, doc, updateDoc, writeBatch, getDocs, orderBy, query } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Trash2, ArrowLeft, ChevronLeft, ChevronRight, Upload } from 'lucide-react';
+import { Trash2, ArrowLeft, ChevronLeft, ChevronRight, Send } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
@@ -21,6 +21,7 @@ export default function CityTourCarousel() {
   const { firestore } = useFirebase();
   const { toast } = useToast();
   const { user } = useUser();
+  const [newImageUrl, setNewImageUrl] = useState('');
 
   const slidesRef = useMemoFirebase(
     () => (firestore ? query(collection(firestore, 'city_tour_slides'), orderBy('order')) : null),
@@ -42,9 +43,9 @@ export default function CityTourCarousel() {
   };
 
   // 🟢 ADICIONAR imagem do IMGUR
-  const addImgurLink = async (event: ChangeEvent<HTMLInputElement>) => {
-    if (!firestore || !slides || !slides[currentSlide]) return;
-    const link = event.target.value.trim();
+  const addImgurLink = async () => {
+    if (!firestore || !slides || !slides[currentSlide] || !newImageUrl) return;
+    const link = newImageUrl.trim();
 
     if (!link.includes('imgur.com')) {
       toast({ title: 'URL inválida', description: 'Insira apenas URLs diretas do Imgur.', variant: 'destructive' });
@@ -65,7 +66,7 @@ export default function CityTourCarousel() {
       toast({ title: 'Erro ao adicionar', variant: 'destructive' });
     }
 
-    event.target.value = '';
+    setNewImageUrl('');
   };
 
   // 🟢 REMOVER imagem individual
@@ -175,13 +176,18 @@ export default function CityTourCarousel() {
           {/* ADICIONAR LINK DO IMGUR */}
           <Input
             placeholder="Cole aqui a URL direta do Imgur (ex: https://i.imgur.com/abc123.jpg)"
-            onBlur={addImgurLink}
+            value={newImageUrl}
+            onChange={(e) => setNewImageUrl(e.target.value)}
           />
 
           <div className="flex gap-4">
             <Button variant="destructive" onClick={deleteGallery}>
               <Trash2 size={16} className="mr-2" />
               Excluir galeria inteira
+            </Button>
+            <Button onClick={addImgurLink}>
+              <Send size={16} className="mr-2" />
+              Enviar
             </Button>
           </div>
         </div>
