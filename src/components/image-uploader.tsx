@@ -1,70 +1,34 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
 import { ImagePlus, FileWarning } from 'lucide-react';
 import { useLanguage } from '@/contexts/language-context';
 
 function MediaPreview({ url }: { url: string }) {
-  const [isError, setIsError] = useState(false);
-  const [isTryingVideo, setIsTryingVideo] = useState(false);
+    if (!url) {
+        return (
+            <div className="flex flex-col items-center justify-center h-full text-muted-foreground bg-muted rounded-md">
+                <ImagePlus size={24} />
+                <span className="text-xs mt-1 text-center px-2">
+                    Cole uma URL de imagem direta (e.g., .jpg, .png)
+                </span>
+            </div>
+        );
+    }
 
-  React.useEffect(() => {
-    setIsError(false);
-    setIsTryingVideo(false);
-  }, [url]);
-
-  if (!url) {
+    // next/image requires width and height, or fill. `fill` is better for responsive containers.
     return (
-      <div className="flex flex-col items-center justify-center h-full text-muted-foreground bg-muted rounded-md">
-        <ImagePlus size={24} />
-        <span className="text-xs mt-1 text-center px-2">
-          Cole uma URL de imagem ou vídeo
-        </span>
-      </div>
+        <Image
+            src={url}
+            alt="Image preview"
+            fill
+            style={{ objectFit: 'contain' }}
+            className="rounded-md"
+            unoptimized // Useful for external URLs if you don't control the optimization
+        />
     );
-  }
-
-  if (isError) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full text-muted-foreground bg-muted rounded-md p-4">
-        <FileWarning size={24} />
-        <span className="text-xs mt-1 text-center px-2">
-          URL inválida ou formato não suportado. Use links diretos para imagens (ex: .jpg, .png) ou vídeos (ex: .mp4).
-        </span>
-      </div>
-    );
-  }
-
-  if (isTryingVideo) {
-    return (
-      <video
-        src={url}
-        playsInline
-        autoPlay
-        muted
-        loop
-        className="w-full h-full object-contain rounded-md"
-        onError={() => setIsError(true)}
-      />
-    );
-  }
-
-  return (
-    <Image
-      src={url}
-      alt="Image preview"
-      fill
-      style={{ objectFit: 'contain' }}
-      className="rounded-md"
-      unoptimized={true} // Useful for external URLs, especially if they are not standard image formats
-      onError={() => {
-        // If image fails, try rendering as a video
-        setIsTryingVideo(true);
-      }}
-    />
-  );
 }
 
 export function ImageUploader({ imageUrl, onImageUrlChange }: { imageUrl: string; onImageUrlChange: (newUrl: string) => void; }) {
