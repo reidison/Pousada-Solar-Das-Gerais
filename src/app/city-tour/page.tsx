@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, useRef, ChangeEvent } from 'react';
 import { useCollection, useFirebase, useMemoFirebase, useUser } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, writeBatch, getDocs, orderBy, query } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Trash2, ArrowLeft, ChevronLeft, ChevronRight, Send } from 'lucide-react';
+import { Trash2, ArrowLeft, ChevronLeft, ChevronRight, Upload, Loader2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
@@ -14,24 +15,27 @@ import Image from 'next/image';
 interface CityTourSlide {
   id: string;
   text: string;
-  images: string[]; // URLs do Imgur
+  images: string[];
   order: number;
 }
 
-export default function CityTourCarousel() {
-  const { firestore } = useFirebase();
+export default function CityTourPage() {
+  const { firestore, storage } = useFirebase();
   const { toast } = useToast();
   const { user } = useUser();
-  const [newImageUrl, setNewImageUrl] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
 
   const slidesRef = useMemoFirebase(
     () => (firestore ? query(collection(firestore, 'city_tour_slides'), orderBy('order')) : null),
     [firestore]
   );
 
-  const { data: slides } = useCollection<CityTourSlide>(slidesRef);
+  const { data: slides, isLoading: isLoadingSlides } = useCollection<CityTourSlide>(slidesRef);
 
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const activeSlide = slides?.[currentSlide];
 
   const goNext = () => {
     if (!slides) return;
@@ -43,45 +47,54 @@ export default function CityTourCarousel() {
     setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
   };
 
-  // 🟢 ADICIONAR imagem do IMGUR
-  const addImgurLink = async () => {
-    if (!firestore || !slides || !slides[currentSlide] || !newImageUrl) return;
-    const link = newImageUrl.trim();
-
-    if (!link.includes('imgur.com')) {
-      toast({ title: 'URL inválida', description: 'Insira apenas URLs diretas do Imgur.', variant: 'destructive' });
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (!storage || !firestore || !activeSlide || !user) {
+      toast({ title: 'Erro', description: 'Serviços do Firebase não estão prontos.', variant: 'destructive' });
       return;
     }
 
-    const slide = slides[currentSlide];
-    if (slide.images.length >= 3) {
-      toast({ title: "Limite alcançado", description: "Máximo de 3 imagens por slide." });
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (activeSlide.images.length >= 3) {
+      toast({ title: "Limite alcançado", description: "Máximo de 3 imagens por slide.", variant: 'destructive' });
       return;
     }
+
+    setIsUploading(true);
 
     try {
-      const newImages = [...slide.images, link];
-      await updateDoc(doc(firestore, 'city_tour_slides', slide.id), { images: newImages });
-      toast({ title: 'Imagem adicionada!' });
-    } catch (e) {
-      toast({ title: 'Erro ao adicionar', variant: 'destructive' });
-    }
+      const storageRef = ref(storage, `city-tour-slides/${activeSlide.id}/${Date.now()}_${file.name}`);
+      const uploadResult = await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(uploadResult.ref);
 
-    setNewImageUrl('');
+      const newImages = [...activeSlide.images, downloadURL];
+      await updateDoc(doc(firestore, 'city_tour_slides', activeSlide.id), { images: newImages });
+
+      toast({ title: 'Imagem adicionada com sucesso!' });
+    } catch (error) {
+      console.error("Erro no upload da imagem:", error);
+      toast({ title: 'Erro ao enviar imagem', description: 'Não foi possível fazer o upload da imagem. Tente novamente.', variant: 'destructive' });
+    } finally {
+      setIsUploading(false);
+      // Reset file input
+      if(fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
   };
 
-  // 🟢 REMOVER imagem individual
   const removeImage = async (imgUrl: string) => {
-    if (!firestore || !slides) return;
+    if (!firestore || !activeSlide) return;
 
-    const slide = slides[currentSlide];
-    const newImages = slide.images.filter((img) => img !== imgUrl);
-
-    await updateDoc(doc(firestore, 'city_tour_slides', slide.id), { images: newImages });
+    const newImages = activeSlide.images.filter((img) => img !== imgUrl);
+    await updateDoc(doc(firestore, 'city_tour_slides', activeSlide.id), { images: newImages });
+    
+    // Note: This does not delete the image from Firebase Storage to avoid complexity.
+    // A production app might need a cleanup function for orphaned images.
     toast({ title: 'Imagem removida!' });
   };
 
-  // 🟢 REMOVER galeria inteira
   const deleteGallery = async () => {
     if (!firestore) return;
 
@@ -89,27 +102,24 @@ export default function CityTourCarousel() {
     const docs = await getDocs(collection(firestore, "city_tour_slides"));
 
     docs.forEach(d => batch.delete(d.ref));
+    // Also consider deleting files from Storage, which requires more complex logic.
 
     await batch.commit();
     setCurrentSlide(0);
     toast({ title: "Galeria excluída!" });
   };
 
-  // 🟢 Criar primeiro slide
   const createFirst = async () => {
     if (!firestore) return;
     await addDoc(collection(firestore, 'city_tour_slides'), {
-      text: "Primeiro slide! Adicione imagens do Imgur abaixo.",
+      text: "Primeiro slide! Adicione imagens abaixo.",
       images: [],
       order: 1
     });
   };
 
-  const active = slides?.[currentSlide];
-
   return (
     <div className="container mx-auto px-4 py-8">
-
       <Link href="/" className="flex items-center text-sm text-muted-foreground hover:text-foreground mb-4">
         <ArrowLeft size={16} className="mr-1" />
         Voltar
@@ -119,80 +129,73 @@ export default function CityTourCarousel() {
 
       {!slides || slides.length === 0 ? (
         <div className="p-8 border rounded-lg text-center">
-          <p>Nenhum slide.</p>
-          <Button onClick={createFirst}>Criar primeiro slide</Button>
+          <p className="mb-4">{isLoadingSlides ? 'Carregando slides...' : 'Nenhum slide.'}</p>
+          {!isLoadingSlides && <Button onClick={createFirst}>Criar primeiro slide</Button>}
         </div>
       ) : (
         <Card className="overflow-hidden">
           <CardContent className="p-0">
-
-            {/* IMAGENS */}
             <div className="relative h-80 md:h-96 bg-black flex items-center justify-center">
-              <div className="flex gap-4 p-4">
-                {active?.images.map((url, index) => (
-                  <div key={index} className="relative">
+              <div className="flex gap-4 p-4 overflow-x-auto">
+                {activeSlide?.images.map((url, index) => (
+                  <div key={url} className="relative flex-shrink-0">
                     <Image
                       src={url}
                       width={208}
                       height={208}
                       className="w-52 h-52 object-cover rounded-lg shadow-md"
-                      alt={`Imagem ${index + 1}`}
+                      alt={`Imagem do Slide ${currentSlide + 1} - ${index + 1}`}
                     />
-
                     <button
                       onClick={() => removeImage(url)}
-                      className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1"
+                      className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 transition-opacity hover:opacity-80"
+                      aria-label="Remover imagem"
                     >
                       <Trash2 size={16} />
                     </button>
                   </div>
                 ))}
-
-                {active?.images.length === 0 && (
-                  <p className="text-white text-sm opacity-.80">Nenhuma imagem neste slide</p>
+                {activeSlide?.images.length === 0 && (
+                  <p className="text-white text-sm opacity-80">Nenhuma imagem neste slide</p>
                 )}
               </div>
-
-              {/* SETAS */}
-              <button onClick={goPrev} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full">
-                <ChevronLeft />
-              </button>
-
-              <button onClick={goNext} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full">
-                <ChevronRight />
-              </button>
+              {slides.length > 1 && (
+                <>
+                  <button onClick={goPrev} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md">
+                    <ChevronLeft />
+                  </button>
+                  <button onClick={goNext} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md">
+                    <ChevronRight />
+                  </button>
+                </>
+              )}
             </div>
-
             <div className="p-4 border-t">
               <p className="font-semibold">Slide {currentSlide + 1}/{slides.length}</p>
-              <p className="text-muted-foreground mt-1">{active?.text}</p>
+              <p className="text-muted-foreground mt-1">{activeSlide?.text}</p>
             </div>
           </CardContent>
         </Card>
       )}
 
-      {/* ----------------------- GERENCIAR GALERIA ------------------------ */}
       <div className="mt-8 p-6 border rounded-lg bg-card">
-        <h3 className="font-semibold mb-4">Gerenciar imagens</h3>
-
-        <div className="flex flex-col gap-4">
-          {/* ADICIONAR LINK DO IMGUR */}
-          <Input
-            placeholder="Cole aqui a URL direta do Imgur (ex: https://i.imgur.com/abc123.jpg)"
-            value={newImageUrl}
-            onChange={(e) => setNewImageUrl(e.target.value)}
+        <h3 className="font-semibold mb-4">Gerenciar galeria</h3>
+        <div className="flex flex-wrap gap-4">
+          <Button onClick={() => fileInputRef.current?.click()} disabled={isUploading || !activeSlide}>
+            {isUploading ? <Loader2 className="mr-2 animate-spin" /> : <Upload className="mr-2" />}
+            {isUploading ? 'Enviando...' : 'Adicionar Imagem'}
+          </Button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+            accept="image/png, image/jpeg, image/gif"
           />
-
-          <div className="flex gap-4">
-            <Button onClick={addImgurLink}>
-              <Send size={16} className="mr-2" />
-              Enviar
-            </Button>
-            <Button variant="destructive" onClick={deleteGallery}>
-              <Trash2 size={16} className="mr-2" />
-              Excluir galeria inteira
-            </Button>
-          </div>
+          <Button variant="destructive" onClick={deleteGallery} disabled={!slides || slides.length === 0}>
+            <Trash2 className="mr-2" />
+            Excluir galeria inteira
+          </Button>
         </div>
       </div>
     </div>
