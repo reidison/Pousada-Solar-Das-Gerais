@@ -124,11 +124,6 @@ function SlideEditor({ slide }: { slide: WithId<CityTourSlide> }) {
   const [images, setImages] = useState<string[]>(slide.images);
   const [isSaving, setIsSaving] = useState(false);
 
-  useEffect(() => {
-    setText(slide.text);
-    setImages(slide.images);
-  }, [slide]);
-
   const handleSave = async () => {
     if (!slideRef) return;
     setIsSaving(true);
