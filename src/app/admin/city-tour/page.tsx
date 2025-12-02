@@ -125,7 +125,7 @@ function AddItemForm() {
       <CardContent className="space-y-4">
         <Input placeholder="Título" value={newItem.title} onChange={e => handleInputChange('title', e.target.value)} />
         <Textarea placeholder="Descrição" value={newItem.description} onChange={e => handleInputChange('description', e.target.value)} />
-        <Input placeholder="URL da Imagem de Capa" value={newItem.coverImage} onChange={e => handleInputChange('coverImage', e.target.value)} />
+        <Input placeholder="URL da Imagem de Capa (link direto, ex: .jpg, .png)" value={newItem.coverImage} onChange={e => handleInputChange('coverImage', e.target.value)} />
         <div className="flex gap-2 justify-end">
           <Button variant="ghost" onClick={() => setIsAdding(false)} disabled={isSaving}>Cancelar</Button>
           <Button onClick={handleAdd} disabled={isSaving}>
@@ -144,25 +144,25 @@ function TourStopImage({ src, alt }: { src: string; alt: string; }) {
   
     // Use an effect to check if the src is a valid-looking URL.
     // This is a simple check and doesn't guarantee the image will load.
-    useState(() => {
+    React.useEffect(() => {
         if (src && typeof src === 'string' && (src.startsWith('http') || src.startsWith('/'))) {
             setIsValidSrc(true);
         } else {
             setIsValidSrc(false);
         }
         setHasError(false); // Reset error state when src changes
-    });
+    }, [src]);
   
     if (!isValidSrc || hasError) {
       return (
-        <div className="relative h-40 w-full rounded-md overflow-hidden bg-muted flex items-center justify-center">
-            <span className="text-xs text-muted-foreground">Imagem inválida</span>
+        <div className="aspect-[4/3] w-full rounded-md overflow-hidden bg-muted flex items-center justify-center">
+            <span className="text-xs text-muted-foreground">Imagem inválida ou não carregada</span>
         </div>
       );
     }
   
     return (
-      <div className="relative h-40 w-full rounded-md overflow-hidden">
+      <div className="relative aspect-[4/3] w-full rounded-md overflow-hidden">
         <Image
           src={src}
           alt={alt}
@@ -228,7 +228,7 @@ function EditableTourStopCard({ stop }: { stop: WithId<TourStop> }) {
         <CardContent className="p-6 space-y-4">
           <Input placeholder="Título" value={editedItem.title} onChange={e => handleInputChange('title', e.target.value)} />
           <Textarea placeholder="Descrição" value={editedItem.description} onChange={e => handleInputChange('description', e.target.value)} />
-          <Input placeholder="URL da Imagem de Capa" value={editedItem.coverImage} onChange={e => handleInputChange('coverImage', e.target.value)} />
+          <Input placeholder="URL da Imagem de Capa (link direto, ex: .jpg, .png)" value={editedItem.coverImage} onChange={e => handleInputChange('coverImage', e.target.value)} />
           
           <TourStopImage src={editedItem.coverImage} alt={editedItem.title} />
 
