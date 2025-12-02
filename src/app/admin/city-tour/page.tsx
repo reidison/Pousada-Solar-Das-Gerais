@@ -92,7 +92,11 @@ function AddItemForm() {
     }
     setIsSaving(true);
     try {
-      await addDoc(itemsRef, newItem);
+      await addDoc(itemsRef, {
+        title: newItem.title.trim(),
+        description: newItem.description.trim(),
+        coverImage: newItem.coverImage.trim(),
+      });
       toast({ title: 'Sucesso', description: 'Ponto turístico adicionado.' });
       setNewItem({ title: '', description: '', coverImage: '' });
       setIsAdding(false);
@@ -145,7 +149,7 @@ function TourStopImage({ src, alt }: { src: string; alt: string; }) {
     // Use an effect to check if the src is a valid-looking URL.
     // This is a simple check and doesn't guarantee the image will load.
     React.useEffect(() => {
-        if (src && typeof src === 'string' && (src.startsWith('http') || src.startsWith('/'))) {
+        if (src && typeof src === 'string' && (src.trim().startsWith('http') || src.trim().startsWith('/'))) {
             setIsValidSrc(true);
         } else {
             setIsValidSrc(false);
@@ -164,7 +168,7 @@ function TourStopImage({ src, alt }: { src: string; alt: string; }) {
     return (
       <div className="relative aspect-[4/3] w-full rounded-md overflow-hidden">
         <Image
-          src={src}
+          src={src.trim()}
           alt={alt}
           fill
           className="object-cover"
@@ -193,9 +197,9 @@ function EditableTourStopCard({ stop }: { stop: WithId<TourStop> }) {
     setIsSaving(true);
     try {
       await updateDoc(itemDocRef, {
-        title: editedItem.title,
-        description: editedItem.description,
-        coverImage: editedItem.coverImage,
+        title: editedItem.title.trim(),
+        description: editedItem.description.trim(),
+        coverImage: editedItem.coverImage.trim(),
       });
       toast({ title: 'Sucesso', description: 'Ponto turístico atualizado.' });
       setIsEditing(false);
@@ -282,3 +286,5 @@ function EditableTourStopCard({ stop }: { stop: WithId<TourStop> }) {
     </Card>
   );
 }
+
+    
