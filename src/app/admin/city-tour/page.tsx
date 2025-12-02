@@ -143,20 +143,17 @@ function AddItemForm() {
 }
 
 function TourStopImage({ src, alt }: { src: string; alt: string; }) {
-    const [isValidSrc, setIsValidSrc] = useState(false);
     const [hasError, setHasError] = useState(false);
-  
-    // Use an effect to check if the src is a valid-looking URL.
-    // This is a simple check and doesn't guarantee the image will load.
+    
+    // Trim the src and check for validity.
+    const cleanSrc = src ? src.trim() : '';
+    const isValidSrc = cleanSrc.startsWith('http');
+
     React.useEffect(() => {
-        if (src && typeof src === 'string' && (src.trim().startsWith('http') || src.trim().startsWith('/'))) {
-            setIsValidSrc(true);
-        } else {
-            setIsValidSrc(false);
-        }
-        setHasError(false); // Reset error state when src changes
+        // Reset error state when src changes
+        setHasError(false);
     }, [src]);
-  
+
     if (!isValidSrc || hasError) {
       return (
         <div className="aspect-[4/3] w-full rounded-md overflow-hidden bg-muted flex items-center justify-center">
@@ -168,13 +165,13 @@ function TourStopImage({ src, alt }: { src: string; alt: string; }) {
     return (
       <div className="relative aspect-[4/3] w-full rounded-md overflow-hidden">
         <Image
-          src={src.trim()}
+          src={cleanSrc}
           alt={alt}
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 33vw"
           onError={() => setHasError(true)}
-          unoptimized={hasError} // Prevent next/image from retrying a bad URL
+          unoptimized={hasError}
         />
       </div>
     );
@@ -286,5 +283,7 @@ function EditableTourStopCard({ stop }: { stop: WithId<TourStop> }) {
     </Card>
   );
 }
+
+    
 
     
