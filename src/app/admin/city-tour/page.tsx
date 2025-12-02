@@ -171,7 +171,6 @@ function TourStopImage({ src, alt }: { src: string; alt: string; }) {
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 33vw"
           onError={() => setHasError(true)}
-          unoptimized={hasError}
         />
       </div>
     );
@@ -283,7 +282,5 @@ function EditableTourStopCard({ stop }: { stop: WithId<TourStop> }) {
     </Card>
   );
 }
-
-    
 
     
