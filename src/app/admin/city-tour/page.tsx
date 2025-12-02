@@ -138,6 +138,44 @@ function AddItemForm() {
   );
 }
 
+function TourStopImage({ src, alt }: { src: string; alt: string; }) {
+    const [isValidSrc, setIsValidSrc] = useState(false);
+    const [hasError, setHasError] = useState(false);
+  
+    // Use an effect to check if the src is a valid-looking URL.
+    // This is a simple check and doesn't guarantee the image will load.
+    useState(() => {
+        if (src && typeof src === 'string' && (src.startsWith('http') || src.startsWith('/'))) {
+            setIsValidSrc(true);
+        } else {
+            setIsValidSrc(false);
+        }
+        setHasError(false); // Reset error state when src changes
+    });
+  
+    if (!isValidSrc || hasError) {
+      return (
+        <div className="relative h-40 w-full rounded-md overflow-hidden bg-muted flex items-center justify-center">
+            <span className="text-xs text-muted-foreground">Imagem inválida</span>
+        </div>
+      );
+    }
+  
+    return (
+      <div className="relative h-40 w-full rounded-md overflow-hidden">
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, 33vw"
+          onError={() => setHasError(true)}
+          unoptimized={hasError} // Prevent next/image from retrying a bad URL
+        />
+      </div>
+    );
+}
+
 function EditableTourStopCard({ stop }: { stop: WithId<TourStop> }) {
   const firestore = useFirestore();
   const { toast } = useToast();
@@ -184,10 +222,6 @@ function EditableTourStopCard({ stop }: { stop: WithId<TourStop> }) {
     setEditedItem(prev => ({...prev, [field]: value }));
   }
   
-  const isValidUrl = (url: string | undefined | null): boolean => {
-    return !!url && typeof url === 'string' && url.trim() !== '';
-  }
-
   if (isEditing) {
     return (
       <Card>
@@ -195,11 +229,9 @@ function EditableTourStopCard({ stop }: { stop: WithId<TourStop> }) {
           <Input placeholder="Título" value={editedItem.title} onChange={e => handleInputChange('title', e.target.value)} />
           <Textarea placeholder="Descrição" value={editedItem.description} onChange={e => handleInputChange('description', e.target.value)} />
           <Input placeholder="URL da Imagem de Capa" value={editedItem.coverImage} onChange={e => handleInputChange('coverImage', e.target.value)} />
-          {isValidUrl(editedItem.coverImage) && (
-            <div className="relative h-40 w-full rounded-md overflow-hidden">
-                <Image src={editedItem.coverImage} alt={editedItem.title} fill className="object-cover" sizes="33vw"/>
-            </div>
-          )}
+          
+          <TourStopImage src={editedItem.coverImage} alt={editedItem.title} />
+
           <div className="flex gap-2 justify-end">
             <Button variant="ghost" onClick={() => { setIsEditing(false); setEditedItem(stop); }} disabled={isSaving}>Cancelar</Button>
             <Button onClick={handleUpdate} disabled={isSaving}>
@@ -215,11 +247,9 @@ function EditableTourStopCard({ stop }: { stop: WithId<TourStop> }) {
   return (
     <Card className="group">
       <CardContent className="p-6 flex flex-col md:flex-row gap-6 items-start">
-        {isValidUrl(stop.coverImage) && (
-            <div className="relative h-40 w-full md:w-1/3 rounded-md overflow-hidden flex-shrink-0">
-                <Image src={stop.coverImage} alt={stop.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
-            </div>
-        )}
+        <div className="relative w-full md:w-1/3 flex-shrink-0">
+          <TourStopImage src={stop.coverImage} alt={stop.title} />
+        </div>
         <div className="flex-grow">
           <h3 className="font-bold text-lg text-primary">{stop.title}</h3>
           <p className="text-muted-foreground mt-2">{stop.description}</p>
