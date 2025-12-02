@@ -6,7 +6,7 @@ import { WelcomeMessage } from '@/components/welcome-message';
 import { InfoCard } from '@/components/info-card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Coffee, Wifi, Check, Map, Phone, GlassWater, KeyRound, PhoneCall, BookText } from 'lucide-react';
+import { Coffee, Wifi, Check, Map, Phone, GlassWater, KeyRound, PhoneCall, BookText, Settings } from 'lucide-react';
 import { UsefulServicesModal } from '@/components/useful-services-modal';
 import { MinibarModal } from '@/components/minibar-modal';
 import { RegulationModal } from '@/components/regulation-modal';
@@ -127,6 +127,13 @@ export default function SolarInfoHubPage() {
               {card.content}
             </InfoCard>
           ))}
+           <InfoCard icon={<Settings size={28} />} title="Painel de Administração">
+              <Button asChild variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">
+                <Link href="/admin">
+                  Gerenciar Conteúdo
+                </Link>
+              </Button>
+            </InfoCard>
         </div>
       </main>
       <Footer />
