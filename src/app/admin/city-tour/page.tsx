@@ -183,6 +183,10 @@ function EditableTourStopCard({ stop }: { stop: WithId<TourStop> }) {
   const handleInputChange = (field: keyof TourStop, value: string) => {
     setEditedItem(prev => ({...prev, [field]: value }));
   }
+  
+  const isValidUrl = (url: string | undefined | null): boolean => {
+    return !!url && typeof url === 'string' && url.trim() !== '';
+  }
 
   if (isEditing) {
     return (
@@ -191,7 +195,7 @@ function EditableTourStopCard({ stop }: { stop: WithId<TourStop> }) {
           <Input placeholder="Título" value={editedItem.title} onChange={e => handleInputChange('title', e.target.value)} />
           <Textarea placeholder="Descrição" value={editedItem.description} onChange={e => handleInputChange('description', e.target.value)} />
           <Input placeholder="URL da Imagem de Capa" value={editedItem.coverImage} onChange={e => handleInputChange('coverImage', e.target.value)} />
-          {editedItem.coverImage && (
+          {isValidUrl(editedItem.coverImage) && (
             <div className="relative h-40 w-full rounded-md overflow-hidden">
                 <Image src={editedItem.coverImage} alt={editedItem.title} fill className="object-cover" sizes="33vw"/>
             </div>
@@ -211,7 +215,7 @@ function EditableTourStopCard({ stop }: { stop: WithId<TourStop> }) {
   return (
     <Card className="group">
       <CardContent className="p-6 flex flex-col md:flex-row gap-6 items-start">
-        {stop.coverImage && (
+        {isValidUrl(stop.coverImage) && (
             <div className="relative h-40 w-full md:w-1/3 rounded-md overflow-hidden flex-shrink-0">
                 <Image src={stop.coverImage} alt={stop.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
             </div>
