@@ -6,7 +6,7 @@ import { WelcomeMessage } from '@/components/welcome-message';
 import { InfoCard } from '@/components/info-card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Coffee, Wifi, Check, Map, Phone, GlassWater, KeyRound, PhoneCall, BookText } from 'lucide-react';
+import { Coffee, Wifi, Check, Map, Phone, GlassWater, KeyRound, PhoneCall, BookText, ShoppingBag } from 'lucide-react';
 import { UsefulServicesModal } from '@/components/useful-services-modal';
 import { MinibarModal } from '@/components/minibar-modal';
 import { RegulationModal } from '@/components/regulation-modal';
@@ -69,6 +69,17 @@ export default function SolarInfoHubPage() {
         <Button asChild variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">
           <Link href="/city-tour">
             {translations.infoCards.cityTour.button}
+          </Link>
+        </Button>
+      ),
+    },
+    {
+      icon: <ShoppingBag size={28} />,
+      title: "Nossa Loja",
+      content: (
+        <Button asChild variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">
+          <Link href="/loja">
+            Ver produtos
           </Link>
         </Button>
       ),
