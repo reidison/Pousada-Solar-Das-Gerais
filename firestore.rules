@@ -19,8 +19,9 @@ service cloud.firestore {
        allow read, write: if true; // Public read, admin write recommended for prod
     }
 
-    match /tour_stops/{stopId} {
-      allow read, write: if true; // Public read, admin write recommended for prod
+    match /tour_slides/{slideId} {
+      allow read: if true;
+      allow write: if request.auth != null;
     }
   }
 }

@@ -12,8 +12,8 @@
           "description": "Unique identifier for the Lodge Info entity."
         },
         "logoUrl": {
-            "type": "string",
-            "description": "URL for the lodge's logo."
+          "type": "string",
+          "description": "URL for the lodge's logo."
         },
         "breakfastHours": {
           "type": "string",
@@ -37,7 +37,7 @@
         },
         "whatsappNumber": {
           "type": "string",
-,"description": "Represents a single stop or point of interest in a city tour."
+          "description": "Represents a single stop or point of interest in a city tour."
         },
         "welcomeMessage": {
           "type": "string",
@@ -66,7 +66,9 @@
           "description": "The name of the category."
         }
       },
-      "required": ["name"]
+      "required": [
+        "name"
+      ]
     },
     "ServiceItem": {
       "title": "Service Item",
@@ -86,7 +88,11 @@
           "description": "The contact phone number for the service."
         }
       },
-      "required": ["name", "address", "phone"]
+      "required": [
+        "name",
+        "address",
+        "phone"
+      ]
     },
     "MinibarItem": {
       "title": "Minibar Item",
@@ -102,27 +108,29 @@
           "description": "The price of the item, formatted as a string (e.g., 'R$ 10,00')."
         }
       },
-      "required": ["name", "price"]
+      "required": [
+        "name",
+        "price"
+      ]
     },
-    "TourStop": {
-      "title": "Tour Stop",
-      "description": "Represents a single stop or point of interest in a city tour.",
+    "TourSlide": {
+      "title": "Tour Slide",
+      "description": "Represents a single slide in the city tour carousel.",
       "type": "object",
       "properties": {
-        "title": {
+        "imageUrl": {
           "type": "string",
-          "description": "The name of the tourist spot."
+          "description": "Public URL of the image stored in Firebase Storage."
         },
-        "description": {
+        "storagePath": {
           "type": "string",
-          "description": "A brief description of the tourist spot."
-        },
-        "coverImage": {
-          "type": "string",
-          "description": "URL of a representative image for the spot."
+          "description": "The full path to the image file in Firebase Storage, used for deletion."
         }
       },
-      "required": ["title", "description", "coverImage"]
+      "required": [
+        "imageUrl",
+        "storagePath"
+      ]
     }
   },
   "auth": {
@@ -133,24 +141,34 @@
   },
   "firestore": {
     "/lodge_info/main": {
-      "schema": { "$ref": "#/backend/entities/LodgeInfo" },
+      "schema": {
+        "$ref": "#/backend/entities/LodgeInfo"
+      },
       "description": "Stores general information about the lodge. A single document simplifies fetching and editing."
     },
     "/service_categories/{categoryId}": {
-      "schema": { "$ref": "#/backend/entities/ServiceCategory" },
+      "schema": {
+        "$ref": "#/backend/entities/ServiceCategory"
+      },
       "description": "Collection of service categories."
     },
     "/service_categories/{categoryId}/items/{itemId}": {
-      "schema": { "$ref": "#/backend/entities/ServiceItem" },
+      "schema": {
+        "$ref": "#/backend/entities/ServiceItem"
+      },
       "description": "Sub-collection for service items within a category."
     },
     "/minibar_items/{itemId}": {
-      "schema": { "$ref": "#/backend/entities/MinibarItem" },
+      "schema": {
+        "$ref": "#/backend/entities/MinibarItem"
+      },
       "description": "Collection of items available in the minibar."
     },
-    "/tour_stops/{stopId}": {
-      "schema": { "$ref": "#/backend/entities/TourStop" },
-      "description": "Collection of city tour stops."
+    "/tour_slides/{slideId}": {
+      "schema": {
+        "$ref": "#/backend/entities/TourSlide"
+      },
+      "description": "Collection of city tour carousel slides."
     }
   }
 }
