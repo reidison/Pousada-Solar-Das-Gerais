@@ -3,9 +3,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Map, Settings } from 'lucide-react';
+import { ArrowLeft, Settings } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 
 export default function AdminPage() {
   return (
@@ -22,25 +21,12 @@ export default function AdminPage() {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card className="hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Map size={20} />
-              Gerenciar City Tour
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">Adicione, edite ou remova os pontos turísticos exibidos na página do City Tour.</p>
-            <Button asChild>
-              <Link href="/admin/city-tour">
-                Acessar
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-        
-        {/* Futuros cards de administração podem ser adicionados aqui */}
-        
+        <Card className="text-center">
+            <CardContent className="p-8">
+              <h2 className="text-xl font-semibold">Nenhuma ferramenta disponível</h2>
+              <p className="text-muted-foreground">Novas opções de gerenciamento aparecerão aqui no futuro.</p>
+            </CardContent>
+          </Card>
       </div>
     </div>
   );
