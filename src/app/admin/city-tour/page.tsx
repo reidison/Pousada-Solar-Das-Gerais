@@ -4,7 +4,7 @@
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Loader2, Plus, Trash2, XCircle } from 'lucide-react';
+import { ArrowLeft, Loader2, Plus, Trash2, XCircle, ImageOff } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useCollection, useFirebase, useMemoFirebase } from '@/firebase';
@@ -17,6 +17,30 @@ interface TourSlide {
   id: string;
   imageUrl: string;
   storagePath: string;
+}
+
+function isValidHttpUrl(string: string) {
+    let url;
+    try {
+        url = new URL(string.trim());
+    } catch (_) {
+        return false;
+    }
+    return url.protocol === 'http:' || url.protocol === 'https:';
+}
+
+function SlideImage({ src, alt }: { src: string; alt: string }) {
+    const sanitizedSrc = src.replace(/\s/g, '');
+
+    if (!isValidHttpUrl(sanitizedSrc)) {
+        return (
+            <div className="w-full h-full bg-muted flex flex-col items-center justify-center text-muted-foreground">
+                <ImageOff size={32} />
+                <span className="text-xs mt-2 text-center p-2">URL da imagem inválida</span>
+            </div>
+        );
+    }
+    return <Image src={sanitizedSrc} alt={alt} fill className="object-cover" />;
 }
 
 export default function AdminCityTourPage() {
@@ -41,6 +65,12 @@ export default function AdminCityTourPage() {
     const file = event.target.files?.[0];
     if (!file || !storage || !slidesRef) return;
 
+    // Basic file type validation
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      toast({ variant: "destructive", title: "Erro", description: "Por favor, selecione um arquivo de imagem (JPG, PNG, WEBP)." });
+      return;
+    }
+
     setIsUploading(true);
     toast({ title: "Enviando imagem...", description: "Por favor, aguarde." });
 
@@ -62,7 +92,6 @@ export default function AdminCityTourPage() {
       toast({ variant: "destructive", title: "Erro", description: "Não foi possível enviar a imagem." });
     } finally {
       setIsUploading(false);
-      // Reset file input
       if(fileInputRef.current) {
         fileInputRef.current.value = "";
       }
@@ -74,10 +103,8 @@ export default function AdminCityTourPage() {
 
     toast({ title: "Excluindo imagem..." });
     try {
-      // Delete from Firestore
       await deleteDoc(doc(firestore, 'tour_slides', slideId));
 
-      // Delete from Storage
       const storageRef = ref(storage, storagePath);
       await deleteObject(storageRef);
 
@@ -106,16 +133,11 @@ export default function AdminCityTourPage() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-            {isLoading && <Loader2 className="h-8 w-8 animate-spin text-primary" />}
+            {isLoading && <div className="aspect-[4/3] flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}
             
             {slides?.map((slide) => (
-              <div key={slide.id} className="relative group aspect-video">
-                <Image
-                  src={slide.imageUrl}
-                  alt="Slide do carrossel"
-                  fill
-                  className="object-cover rounded-md"
-                />
+              <div key={slide.id} className="relative group aspect-[4/3] rounded-md overflow-hidden border">
+                <SlideImage src={slide.imageUrl} alt="Slide do carrossel" />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-md">
                    <AlertDialog>
                       <AlertDialogTrigger asChild>
@@ -145,7 +167,7 @@ export default function AdminCityTourPage() {
             <button
               onClick={handleFileSelect}
               disabled={isUploading}
-              className="aspect-video border-2 border-dashed border-muted-foreground/50 rounded-md flex flex-col items-center justify-center text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="aspect-[4/3] border-2 border-dashed border-muted-foreground/50 rounded-md flex flex-col items-center justify-center text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isUploading ? (
                 <Loader2 className="h-8 w-8 animate-spin" />
@@ -174,3 +196,4 @@ export default function AdminCityTourPage() {
     </div>
   );
 }
+

@@ -11,6 +11,7 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 
 interface TourSlide {
+  id: string; // Add id to satisfy key prop
   imageUrl: string;
 }
 
@@ -58,7 +59,7 @@ export default function CityTourPage() {
                   <Card className="overflow-hidden">
                     <CardContent className="flex aspect-video items-center justify-center p-0 relative">
                        <Image
-                          src={slide.imageUrl}
+                          src={slide.imageUrl.replace(/\s/g, '')}
                           alt="Ponto turístico de Ouro Preto"
                           fill
                           className="object-cover"
@@ -76,11 +77,11 @@ export default function CityTourPage() {
       )}
 
       {!isLoading && (!slides || slides.length === 0) && (
-         <div className="space-y-12">
-            <Card className="text-center p-8">
-                <CardContent>
+         <div className="text-center py-12">
+            <Card>
+                <CardContent className="p-8">
                     <h2 className="text-xl font-semibold mb-2">Em breve</h2>
-                    <p className="text-muted-foreground mb-4">Estamos preparando um roteiro incrível para você. Volte em breve!</p>
+                    <p className="text-muted-foreground">Estamos preparando um roteiro incrível para você. Volte em breve!</p>
                 </CardContent>
             </Card>
         </div>
