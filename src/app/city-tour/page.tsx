@@ -20,6 +20,39 @@ interface TourStop {
   coverImage: string;
 }
 
+function TourStopImage({ src, alt, sizes }: { src: string; alt: string; sizes: string }) {
+    const [hasError, setHasError] = useState(false);
+
+    // Sanitize the URL by removing all whitespace.
+    const cleanSrc = src ? src.replace(/\s/g, '') : '';
+    const isValidSrc = cleanSrc.startsWith('http://') || cleanSrc.startsWith('https://');
+
+    React.useEffect(() => {
+        // Reset error state when src changes
+        setHasError(false);
+    }, [src]);
+
+    if (!isValidSrc || hasError) {
+      return (
+        <div className="absolute inset-0 bg-muted flex items-center justify-center">
+            <span className="text-xs text-muted-foreground">Imagem inválida ou não carregada</span>
+        </div>
+      );
+    }
+  
+    return (
+        <Image
+            src={cleanSrc}
+            alt={alt}
+            fill
+            className="object-cover"
+            sizes={sizes}
+            onError={() => setHasError(true)}
+            data-ai-hint="historic building"
+        />
+    );
+}
+
 export default function CityTourPage() {
   const { toast } = useToast();
   const firestore = useFirestore();
@@ -140,13 +173,10 @@ function TourStopCard({ stop, isReversed }: { stop: TourStop; isReversed: boolea
         <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
             <div className={`grid grid-cols-1 md:grid-cols-2 items-center ${isReversed ? 'md:grid-flow-col-dense' : ''}`}>
                 <div className={`relative h-64 md:h-96 ${isReversed ? 'md:order-2' : ''}`}>
-                    <Image
+                    <TourStopImage
                         src={stop.coverImage}
                         alt={stop.title}
-                        fill
-                        className="object-cover"
                         sizes="(max-width: 768px) 100vw, 50vw"
-                        data-ai-hint="historic building"
                     />
                 </div>
                 <div className={`p-8 ${isReversed ? 'md:order-1' : ''}`}>
