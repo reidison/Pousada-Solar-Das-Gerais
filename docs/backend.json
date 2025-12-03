@@ -112,25 +112,6 @@
         "name",
         "price"
       ]
-    },
-    "TourSlide": {
-      "title": "Tour Slide",
-      "description": "Represents a single slide in the city tour carousel.",
-      "type": "object",
-      "properties": {
-        "imageUrl": {
-          "type": "string",
-          "description": "Public URL of the image stored in Firebase Storage."
-        },
-        "storagePath": {
-          "type": "string",
-          "description": "The full path to the image file in Firebase Storage, used for deletion."
-        }
-      },
-      "required": [
-        "imageUrl",
-        "storagePath"
-      ]
     }
   },
   "auth": {
@@ -163,12 +144,6 @@
         "$ref": "#/backend/entities/MinibarItem"
       },
       "description": "Collection of items available in the minibar."
-    },
-    "/tour_slides/{slideId}": {
-      "schema": {
-        "$ref": "#/backend/entities/TourSlide"
-      },
-      "description": "Collection of city tour carousel slides."
     }
   }
 }
