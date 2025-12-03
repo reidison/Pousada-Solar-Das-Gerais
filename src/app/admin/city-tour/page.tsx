@@ -145,9 +145,9 @@ function AddItemForm() {
 function TourStopImage({ src, alt }: { src: string; alt: string; }) {
     const [hasError, setHasError] = useState(false);
     
-    // Trim the src and check for validity.
-    const cleanSrc = src ? src.trim() : '';
-    const isValidSrc = cleanSrc.startsWith('http');
+    // Sanitize the URL by removing all whitespace and checking for a valid protocol.
+    const cleanSrc = src ? src.replace(/\s/g, '') : '';
+    const isValidSrc = cleanSrc.startsWith('http://') || cleanSrc.startsWith('https://');
 
     React.useEffect(() => {
         // Reset error state when src changes
