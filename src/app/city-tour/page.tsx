@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { useCollection, useFirestore } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 
 interface TourSlide {
@@ -16,7 +16,7 @@ interface TourSlide {
 
 export default function CityTourPage() {
   const firestore = useFirestore();
-  const slidesRef = React.useMemo(() => {
+  const slidesRef = useMemoFirebase(() => {
     if (!firestore) return null;
     return collection(firestore, 'tour_slides');
   }, [firestore]);
@@ -88,4 +88,3 @@ export default function CityTourPage() {
     </div>
   );
 }
-
