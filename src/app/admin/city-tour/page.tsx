@@ -147,7 +147,7 @@ function TourStopImage({ src, alt }: { src: string; alt: string; }) {
     
     // Sanitize the URL by removing all whitespace and checking for a valid protocol.
     const cleanSrc = src ? src.replace(/\s/g, '') : '';
-    const isValidSrc = cleanSrc.startsWith('http://') || cleanSrc.startsWith('https://');
+    const isValidSrc = cleanSrc.startsWith('http://') || cleanSrc.startsWith('https');
 
     React.useEffect(() => {
         // Reset error state when src changes
@@ -157,7 +157,7 @@ function TourStopImage({ src, alt }: { src: string; alt: string; }) {
     if (!isValidSrc || hasError) {
       return (
         <div className="aspect-[4/3] w-full rounded-md overflow-hidden bg-muted flex items-center justify-center">
-            <span className="text-xs text-muted-foreground">Imagem inválida ou não carregada</span>
+            <span className="text-xs text-muted-foreground text-center p-2">URL da imagem inválida ou não foi possível carregar. Verifique o link.</span>
         </div>
       );
     }

@@ -20,7 +20,7 @@ interface TourStop {
   coverImage: string;
 }
 
-function TourStopImage({ src, alt, sizes }: { src: string; alt: string; sizes: string }) {
+function TourStopImage({ src, alt, hint, sizes }: { src: string; alt: string; hint?: string; sizes: string }) {
     const [hasError, setHasError] = useState(false);
 
     // Sanitize the URL by removing all whitespace.
@@ -35,7 +35,7 @@ function TourStopImage({ src, alt, sizes }: { src: string; alt: string; sizes: s
     if (!isValidSrc || hasError) {
       return (
         <div className="absolute inset-0 bg-muted flex items-center justify-center">
-            <span className="text-xs text-muted-foreground">Imagem inválida ou não carregada</span>
+            <span className="text-xs text-muted-foreground text-center p-2">Imagem inválida ou não carregada</span>
         </div>
       );
     }
@@ -48,7 +48,7 @@ function TourStopImage({ src, alt, sizes }: { src: string; alt: string; sizes: s
             className="object-cover"
             sizes={sizes}
             onError={() => setHasError(true)}
-            data-ai-hint="historic building"
+            data-ai-hint={hint}
         />
     );
 }
@@ -161,14 +161,19 @@ export default function CityTourPage() {
         )}
 
         {!isLoading && hasStops && tourStops.map((stop, index) => (
-            <TourStopCard key={stop.id} stop={stop} isReversed={index % 2 !== 0} />
+          <TourStopCard
+            key={stop.id}
+            stop={stop}
+            isReversed={index % 2 !== 0}
+            imageHint={exampleData.tour_stops[index]?.coverImage?.hint}
+          />
         ))}
       </div>
     </div>
   );
 }
 
-function TourStopCard({ stop, isReversed }: { stop: TourStop; isReversed: boolean }) {
+function TourStopCard({ stop, isReversed, imageHint }: { stop: TourStop; isReversed: boolean; imageHint?: string }) {
     return (
         <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
             <div className={`grid grid-cols-1 md:grid-cols-2 items-center ${isReversed ? 'md:grid-flow-col-dense' : ''}`}>
@@ -176,6 +181,7 @@ function TourStopCard({ stop, isReversed }: { stop: TourStop; isReversed: boolea
                     <TourStopImage
                         src={stop.coverImage}
                         alt={stop.title}
+                        hint={imageHint}
                         sizes="(max-width: 768px) 100vw, 50vw"
                     />
                 </div>
