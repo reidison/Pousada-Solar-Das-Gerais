@@ -30,15 +30,15 @@ const defaultMinibarItems = [
     { name: 'Batata Raiz do Bem 80g', price: 'R$ 10,00' },
     { name: 'Pimentinha 100g', price: 'R$ 10,00' },
     { name: 'Pele Pururuca 70g', price: 'R$ 10,00' },
-    { name: 'Barra de Chocolate 80g', price: 'R$ 10,00' },
+    { name: 'Barra de Chocolate 80g', price: 'R$ 15,00' },
     { name: 'Biscoito LOOK 55g', price: 'R$ 10,00' },
     { name: 'Biscoito Clube Social 23,5g', price: 'R$ 3,50' },
     { name: 'Tridente 18g', price: 'R$ 5,00' },
-    { name: 'Garrafa de Vinho', price: 'R$ 80,00' },
-    { name: 'Lata de Cerveja', price: 'R$ 10,00' },
-    { name: 'Lata de Refrigerante', price: 'R$ 7,00' },
+    { name: 'Garrafa de Vinho', price: 'R$ 60,00' },
+    { name: 'Lata de Cerveja', price: 'R$ 12,00' },
+    { name: 'Lata de Refrigerante', price: 'R$ 8,00' },
     { name: 'Água s/ Gás', price: 'R$ 5,00' },
-    { name: 'Água c/ Gás', price: 'R$ 5,00' }
+    { name: 'Hambúrguer', price: 'R$ 15,00' }
 ];
 
 export function MinibarModal() {
