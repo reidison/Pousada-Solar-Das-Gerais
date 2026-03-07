@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Header } from '@/components/header';
@@ -5,8 +6,7 @@ import { Footer } from '@/components/footer';
 import { WelcomeMessage } from '@/components/welcome-message';
 import { InfoCard } from '@/components/info-card';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Coffee, Wifi, Check, Map, Phone, GlassWater, KeyRound, PhoneCall, BookText, ShoppingBag } from 'lucide-react';
+import { Coffee, Wifi, Map, Phone, GlassWater, PhoneCall, BookText, ShoppingBag } from 'lucide-react';
 import { UsefulServicesModal } from '@/components/useful-services-modal';
 import { MinibarModal } from '@/components/minibar-modal';
 import { RegulationModal } from '@/components/regulation-modal';
@@ -24,7 +24,7 @@ export default function SolarInfoHubPage() {
     () => (firestore ? doc(firestore, 'lodge_info', 'main') : null),
     [firestore]
   );
-  const { data: lodgeInfo, isLoading } = useDoc<LodgeInfo>(lodgeInfoRef);
+  const { data: lodgeInfo } = useDoc<LodgeInfo>(lodgeInfoRef);
 
   const infoCards = [
     {
@@ -53,19 +53,6 @@ export default function SolarInfoHubPage() {
                 <p className="text-xs">{translations.infoCards.wifi.line2} <span className="font-bold">{translations.infoCards.wifi.blocksPassword}</span></p>
             </div>
           </div>
-      ),
-    },
-    {
-      icon: <KeyRound size={28} />,
-      title: translations.infoCards.mainAccess.title,
-      content: (
-        <>
-          <p>{translations.infoCards.mainAccess.line1}</p>
-          <p className="text-3xl text-primary flex items-center justify-center gap-1">
-            {lodgeInfo?.mainDoorAccessCode ? lodgeInfo.mainDoorAccessCode : '0525'}
-            <Check size={40} className="text-green-600" strokeWidth={4} />
-          </p>
-        </>
       ),
     },
     {

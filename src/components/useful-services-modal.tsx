@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState } from 'react';
@@ -28,7 +29,7 @@ import {
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, writeBatch, getDocs } from 'firebase/firestore';
 import { Phone, PlusCircle, Trash2, Save, X, Edit } from 'lucide-react';
 import type { WithId } from '@/firebase';
@@ -67,13 +68,15 @@ const defaultServicesData = [
   }
 ];
 
-
 export function UsefulServicesModal() {
   const firestore = useFirestore();
+  const { user } = useUser();
   const { toast } = useToast();
   const { translations } = useLanguage();
   const t = translations.usefulServicesModal;
   const tInfoCard = translations.infoCards.usefulPhones;
+  
+  const isAdmin = user && !user.isAnonymous;
 
   const categoriesRef = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -100,14 +103,12 @@ export function UsefulServicesModal() {
         return;
     }
 
-
     setIsImporting(true);
     toast({ title: t.importToastTitle, description: t.importToastDescription });
 
     try {
         const batch = writeBatch(firestore);
 
-        // Delete existing categories and their items
         if (categories) {
             for (const category of categories) {
                 const itemsCollectionRef = collection(firestore, 'service_categories', category.id, 'items');
@@ -119,7 +120,6 @@ export function UsefulServicesModal() {
             }
         }
         
-        // Add default services
         for (const service of defaultServicesData) {
             const categoryDocRef = doc(categoriesRef);
             batch.set(categoryDocRef, { name: service.category });
@@ -132,7 +132,6 @@ export function UsefulServicesModal() {
         }
 
         await batch.commit();
-
         toast({ title: t.importSuccessToastTitle, description: t.importSuccessToastDescription });
     } catch (error) {
         console.error("Erro ao importar serviços:", error);
@@ -140,7 +139,7 @@ export function UsefulServicesModal() {
     } finally {
         setIsImporting(false);
     }
-};
+  };
 
   return (
     <Dialog>
@@ -160,41 +159,43 @@ export function UsefulServicesModal() {
           ) : (
             <Accordion type="multiple" className="w-full">
               {categories?.map((category) => (
-                <CategoryItem key={category.id} category={category} />
+                <CategoryItem key={category.id} category={category} isAdmin={isAdmin} />
               ))}
             </Accordion>
           )}
-          <div className="mt-4 border-t pt-4">
-            {isAddingCategory ? (
-              <div className="flex items-center gap-2">
-                <Input
-                  value={newCategoryName}
-                  onChange={(e) => setNewCategoryName(e.target.value)}
-                  placeholder={t.newCategoryPlaceholder}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAddCategory()}
-                />
-                <Button size="icon" onClick={handleAddCategory}><Save size={16}/></Button>
-                <Button size="icon" variant="ghost" onClick={() => setIsAddingCategory(false)}><X size={16}/></Button>
-              </div>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                 <Button variant="outline" size="sm" onClick={() => setIsAddingCategory(true)}>
-                    <PlusCircle size={16} className="mr-2" />
-                    {t.addCategoryButton}
-                </Button>
-                <Button variant="secondary" size="sm" onClick={handleImportDefaultServices} disabled={isImporting}>
-                    {isImporting ? t.importingButton : t.importButton}
-                </Button>
-              </div>
-            )}
-          </div>
+          {isAdmin && (
+            <div className="mt-4 border-t pt-4">
+              {isAddingCategory ? (
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={newCategoryName}
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    placeholder={t.newCategoryPlaceholder}
+                    onKeyDown={(e) => e.key === 'Enter' && handleAddCategory()}
+                  />
+                  <Button size="icon" onClick={handleAddCategory}><Save size={16}/></Button>
+                  <Button size="icon" variant="ghost" onClick={() => setIsAddingCategory(false)}><X size={16}/></Button>
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                   <Button variant="outline" size="sm" onClick={() => setIsAddingCategory(true)}>
+                      <PlusCircle size={16} className="mr-2" />
+                      {t.addCategoryButton}
+                  </Button>
+                  <Button variant="secondary" size="sm" onClick={handleImportDefaultServices} disabled={isImporting}>
+                      {isImporting ? t.importingButton : t.importButton}
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
   );
 }
 
-function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
+function CategoryItem({ category, isAdmin }: { category: WithId<ServiceCategory>, isAdmin: boolean | null }) {
   const firestore = useFirestore();
   const { translations } = useLanguage();
   const t = translations.usefulServicesModal;
@@ -222,13 +223,11 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
 
   const handleDeleteCategory = async () => {
     if (!categoryDocRef || !itemsRef || !firestore) return;
-    
     try {
       const itemsSnapshot = await getDocs(itemsRef);
       const batch = writeBatch(firestore);
       itemsSnapshot.docs.forEach(doc => batch.delete(doc.ref));
       await batch.commit();
-
       await deleteDoc(categoryDocRef);
     } catch(e) {
       console.error("Error deleting category and its items:", e);
@@ -257,47 +256,49 @@ function CategoryItem({ category }: { category: WithId<ServiceCategory> }) {
               <span className="font-semibold text-left">{category.name || <span className="italic text-muted-foreground">{t.untitledCategory}</span>}</span>
             )}
         </AccordionTrigger>
-        <div className="flex items-center gap-1 pl-2">
-            {isEditingCategory ? (
-                <>
-                    <Button size="icon" variant="ghost" onClick={handleUpdateCategory}><Save size={16} /></Button>
-                    <Button size="icon" variant="ghost" onClick={() => setIsEditingCategory(false)}><X size={16} /></Button>
-                </>
-            ) : (
-                <Button size="icon" variant="ghost" onClick={() => setIsEditingCategory(true)}><Edit size={16} /></Button>
-            )}
-             <AlertDialog>
-                <AlertDialogTrigger asChild>
-                    <Button size="icon" variant="ghost"><Trash2 size={16} className="text-destructive"/></Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>{t.deleteConfirmTitle}</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            {t.deleteCategoryConfirm(categoryNameToConfirm)}
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>{t.cancelButton}</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDeleteCategory}>{t.deleteButton}</AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
-        </div>
+        {isAdmin && (
+          <div className="flex items-center gap-1 pl-2">
+              {isEditingCategory ? (
+                  <>
+                      <Button size="icon" variant="ghost" onClick={handleUpdateCategory}><Save size={16} /></Button>
+                      <Button size="icon" variant="ghost" onClick={() => setIsEditingCategory(false)}><X size={16} /></Button>
+                  </>
+              ) : (
+                  <Button size="icon" variant="ghost" onClick={() => setIsEditingCategory(true)}><Edit size={16} /></Button>
+              )}
+               <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                      <Button size="icon" variant="ghost"><Trash2 size={16} className="text-destructive"/></Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                      <AlertDialogHeader>
+                          <AlertDialogTitle>{t.deleteConfirmTitle}</AlertDialogTitle>
+                          <AlertDialogDescription>
+                              {t.deleteCategoryConfirm(categoryNameToConfirm)}
+                          </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                          <AlertDialogCancel>{t.cancelButton}</AlertDialogCancel>
+                          <AlertDialogAction onClick={handleDeleteCategory}>{t.deleteButton}</AlertDialogAction>
+                      </AlertDialogFooter>
+                  </AlertDialogContent>
+              </AlertDialog>
+          </div>
+        )}
       </div>
       <AccordionContent>
         <div className="space-y-2">
           {isLoadingItems ? <p>{t.loading}</p> : items?.map((item) => (
-            <ServiceListItem key={item.id} categoryId={category.id} item={item} />
+            <ServiceListItem key={item.id} categoryId={category.id} item={item} isAdmin={isAdmin} />
           ))}
-          <AddItemForm categoryId={category.id} />
+          {isAdmin && <AddItemForm categoryId={category.id} />}
         </div>
       </AccordionContent>
     </AccordionItem>
   )
 }
 
-function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithId<ServiceItem> }) {
+function ServiceListItem({ categoryId, item, isAdmin }: { categoryId: string; item: WithId<ServiceItem>, isAdmin: boolean | null }) {
     const firestore = useFirestore();
     const { translations } = useLanguage();
     const t = translations.usefulServicesModal;
@@ -362,30 +363,31 @@ function ServiceListItem({ categoryId, item }: { categoryId: string; item: WithI
                   </p>
                 )}
             </div>
-            <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-                <Button size="icon" variant="ghost" onClick={() => setIsEditing(true)}><Edit size={16} /></Button>
-                <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                        <Button size="icon" variant="ghost"><Trash2 size={16} className="text-destructive"/></Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>{t.deleteConfirmTitle}</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                {t.deleteConfirm(itemNameToConfirm)}
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel>{t.cancelButton}</AlertDialogCancel>
-                            <AlertDialogAction onClick={handleDelete}>{t.deleteButton}</AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
-            </div>
+            {isAdmin && (
+              <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                  <Button size="icon" variant="ghost" onClick={() => setIsEditing(true)}><Edit size={16} /></Button>
+                  <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                          <Button size="icon" variant="ghost"><Trash2 size={16} className="text-destructive"/></Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                          <AlertDialogHeader>
+                              <AlertDialogTitle>{t.deleteConfirmTitle}</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                  {t.deleteConfirm(itemNameToConfirm)}
+                              </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                              <AlertDialogCancel>{t.cancelButton}</AlertDialogCancel>
+                              <AlertDialogAction onClick={handleDelete}>{t.deleteButton}</AlertDialogAction>
+                          </AlertDialogFooter>
+                      </AlertDialogContent>
+                  </AlertDialog>
+              </div>
+            )}
         </div>
     );
 }
-
 
 function AddItemForm({ categoryId }: { categoryId: string }) {
     const firestore = useFirestore();

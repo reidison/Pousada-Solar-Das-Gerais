@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState } from 'react';
@@ -11,14 +12,13 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, writeBatch } from 'firebase/firestore';
 import { PlusCircle, Trash2, Save, X, Edit, Loader2 } from 'lucide-react';
 import type { WithId } from '@/firebase';
 import { useToast } from "@/hooks/use-toast";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useLanguage } from '@/contexts/language-context';
-
 
 interface MinibarItem {
   name: string;
@@ -41,19 +41,21 @@ const defaultMinibarItems = [
     { name: 'Água c/ Gás', price: 'R$ 5,00' }
 ];
 
-
 export function MinibarModal() {
   const firestore = useFirestore();
+  const { user } = useUser();
   const { toast } = useToast();
   const { translations } = useLanguage();
   const t = translations.minibarModal;
+  
+  const isAdmin = user && !user.isAnonymous;
 
   const itemsRef = useMemoFirebase(() => {
     if (!firestore) return null;
     return collection(firestore, 'minibar_items');
   }, [firestore]);
 
-  const { data: items, isLoading, error } = useCollection<MinibarItem>(itemsRef);
+  const { data: items, isLoading } = useCollection<MinibarItem>(itemsRef);
   
   const [isImporting, setIsImporting] = useState(false);
 
@@ -82,7 +84,6 @@ export function MinibarModal() {
         });
 
         await batch.commit();
-
         toast({ title: t.importSuccessToastTitle, description: t.importSuccessToastDescription });
     } catch (error) {
         console.error("Erro ao importar itens do frigobar:", error);
@@ -91,7 +92,6 @@ export function MinibarModal() {
         setIsImporting(false);
     }
   };
-
 
   return (
     <Dialog>
@@ -111,32 +111,33 @@ export function MinibarModal() {
               <TableRow>
                 <TableHead>{t.tableHeaderItem}</TableHead>
                 <TableHead className="text-right">{t.tableHeaderPrice}</TableHead>
-                <TableHead className="w-[100px] text-right"></TableHead>
+                {isAdmin && <TableHead className="w-[100px] text-right"></TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow><TableCell colSpan={3} className="text-center">{t.loading}</TableCell></TableRow>
+                <TableRow><TableCell colSpan={isAdmin ? 3 : 2} className="text-center">{t.loading}</TableCell></TableRow>
               ) : items?.map((item) => (
-                <EditableItemRow key={item.id} item={item} />
+                <EditableItemRow key={item.id} item={item} isAdmin={isAdmin} />
               ))}
-              <AddItemForm />
+              {isAdmin && <AddItemForm />}
             </TableBody>
           </Table>
         </div>
-        <div className="mt-4 border-t pt-4">
-            <Button variant="secondary" size="sm" onClick={handleImportDefault} disabled={isImporting}>
-                {isImporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                {isImporting ? t.importingButton : t.importButton}
-            </Button>
-        </div>
+        {isAdmin && (
+          <div className="mt-4 border-t pt-4">
+              <Button variant="secondary" size="sm" onClick={handleImportDefault} disabled={isImporting}>
+                  {isImporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  {isImporting ? t.importingButton : t.importButton}
+              </Button>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
 }
 
-
-function EditableItemRow({ item }: { item: WithId<MinibarItem> }) {
+function EditableItemRow({ item, isAdmin }: { item: WithId<MinibarItem>, isAdmin: boolean | null }) {
     const firestore = useFirestore();
     const { translations } = useLanguage();
     const t = translations.minibarModal;
@@ -167,7 +168,7 @@ function EditableItemRow({ item }: { item: WithId<MinibarItem> }) {
         setEditedItem(prev => ({...prev, [field]: value }));
     }
 
-    if (isEditing) {
+    if (isEditing && isAdmin) {
         return (
             <TableRow>
                 <TableCell>
@@ -190,12 +191,14 @@ function EditableItemRow({ item }: { item: WithId<MinibarItem> }) {
          <TableRow className="group">
             <TableCell>{item.name}</TableCell>
             <TableCell className="text-right">{item.price}</TableCell>
-             <TableCell className="text-right">
-                <div className="flex justify-end items-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button size="icon" variant="ghost" onClick={() => setIsEditing(true)}><Edit size={16} /></Button>
-                    <Button size="icon" variant="ghost" onClick={handleDelete}><Trash2 size={16} className="text-destructive"/></Button>
-                </div>
-            </TableCell>
+            {isAdmin && (
+              <TableCell className="text-right">
+                  <div className="flex justify-end items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button size="icon" variant="ghost" onClick={() => setIsEditing(true)}><Edit size={16} /></Button>
+                      <Button size="icon" variant="ghost" onClick={handleDelete}><Trash2 size={16} className="text-destructive"/></Button>
+                  </div>
+              </TableCell>
+            )}
         </TableRow>
     );
 }
