@@ -1,4 +1,3 @@
-
 export interface LodgeInfo {
     id: string;
     logoUrl: string;
@@ -9,4 +8,5 @@ export interface LodgeInfo {
     mainDoorAccessCode: string;
     whatsappNumber: string;
     welcomeMessage: string;
+    regulation: string;
 }

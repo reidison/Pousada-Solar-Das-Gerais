@@ -79,6 +79,7 @@ export type Translation = {
     confirmButton: string;
     successToastTitle: string;
     successToastDescription: string;
+    loading: string;
   };
   cityTourModal: {
     title: string;
@@ -178,7 +179,7 @@ export const translations: Record<Locale, Translation> = {
         button: "Ver Lista Completa",
       },
       regulation: {
-        title: "Nosso Regulamento",
+        title: "Regulamento Interno",
         button: "Ler",
       },
     },
@@ -206,12 +207,13 @@ export const translations: Record<Locale, Translation> = {
       cancelButton: 'Cancelar',
     },
     regulationModal: {
-      title: 'Nosso Regulamento',
+      title: 'Regulamento Interno',
       description: 'Importante: leia nossas orientações para a sua estadia',
-      placeholder: 'text area',
+      placeholder: 'Digite o regulamento aqui...',
       confirmButton: 'Confirmar',
       successToastTitle: 'Sucesso!',
       successToastDescription: 'O regulamento foi atualizado.',
+      loading: 'Carregando...',
     },
     cityTourModal: {
       title: 'Programação do City Tour',
@@ -309,7 +311,7 @@ export const translations: Record<Locale, Translation> = {
         button: "View Full List",
       },
       regulation: {
-        title: "Our Regulations",
+        title: "Internal Regulations",
         button: "Read",
       },
     },
@@ -337,12 +339,13 @@ export const translations: Record<Locale, Translation> = {
       cancelButton: 'Cancel',
     },
     regulationModal: {
-      title: 'Our Regulations',
+      title: 'Internal Regulations',
       description: 'Important: read our guidelines for your stay',
-      placeholder: 'text area',
+      placeholder: 'Type the regulation here...',
       confirmButton: 'Confirm',
       successToastTitle: 'Success!',
       successToastDescription: 'The regulations have been updated.',
+      loading: 'Loading...',
     },
     cityTourModal: {
       title: 'City Tour Schedule',
