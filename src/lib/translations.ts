@@ -1,4 +1,3 @@
-
 export type Locale = 'pt' | 'en';
 
 export type Translation = {
@@ -15,9 +14,13 @@ export type Translation = {
     wifi: {
       title: string;
       line1: string;
-      networkName: string;
       line2: string;
+      generalLabel: string;
+      networkName: string;
       password: string;
+      blocksLabel: string;
+      blocksNetworkName: string;
+      blocksPassword: string;
     };
     mainAccess: {
       title: string;
@@ -144,9 +147,13 @@ export const translations: Record<Locale, Translation> = {
       wifi: {
         title: "Wi-Fi",
         line1: "Rede:",
-        networkName: "pousada solar das gerais",
         line2: "Senha:",
+        generalLabel: "Geral",
+        networkName: "Pousada_Solar_Das_Gerais",
         password: "pousada2023",
+        blocksLabel: "Blocos 110 e 111",
+        blocksNetworkName: "ap119A",
+        blocksPassword: "hostel2023",
       },
       mainAccess: {
         title: "Acesso Principal",
@@ -271,9 +278,13 @@ export const translations: Record<Locale, Translation> = {
       wifi: {
         title: "Wi-Fi",
         line1: "Network:",
-        networkName: "pousada solar das gerais",
         line2: "Password:",
+        generalLabel: "General",
+        networkName: "Pousada_Solar_Das_Gerais",
         password: "pousada2023",
+        blocksLabel: "Blocks 110 and 111",
+        blocksNetworkName: "ap119A",
+        blocksPassword: "hostel2023",
       },
       mainAccess: {
         title: "Main Access",

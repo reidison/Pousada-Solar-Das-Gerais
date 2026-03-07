@@ -41,12 +41,18 @@ export default function SolarInfoHubPage() {
       icon: <Wifi size={28} />,
       title: translations.infoCards.wifi.title,
       content: (
-          <>
-            <p>{translations.infoCards.wifi.line1}</p>
-            <p className="font-bold text-sm">{lodgeInfo?.wifiName ? lodgeInfo.wifiName : translations.infoCards.wifi.networkName}</p>
-            <p>{translations.infoCards.wifi.line2}</p>
-            <p className="font-bold text-sm">{lodgeInfo?.wifiPassword ? lodgeInfo.wifiPassword : translations.infoCards.wifi.password}</p>
-          </>
+          <div className="space-y-4 w-full text-center">
+            <div className="pb-3 border-b border-dashed">
+                <p className="font-bold text-primary text-xs uppercase mb-2 tracking-tight">{translations.infoCards.wifi.generalLabel}</p>
+                <p className="text-xs">{translations.infoCards.wifi.line1} <span className="font-bold">{translations.infoCards.wifi.networkName}</span></p>
+                <p className="text-xs">{translations.infoCards.wifi.line2} <span className="font-bold">{translations.infoCards.wifi.password}</span></p>
+            </div>
+            <div>
+                <p className="font-bold text-primary text-xs uppercase mb-2 tracking-tight">{translations.infoCards.wifi.blocksLabel}</p>
+                <p className="text-xs">{translations.infoCards.wifi.line1} <span className="font-bold">{translations.infoCards.wifi.blocksNetworkName}</span></p>
+                <p className="text-xs">{translations.infoCards.wifi.line2} <span className="font-bold">{translations.infoCards.wifi.blocksPassword}</span></p>
+            </div>
+          </div>
       ),
     },
     {
