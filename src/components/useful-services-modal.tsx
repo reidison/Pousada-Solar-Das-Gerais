@@ -31,10 +31,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, writeBatch, getDocs } from 'firebase/firestore';
-import { Phone, PlusCircle, Trash2, Save, X, Edit } from 'lucide-react';
+import { Phone, PlusCircle, Trash2, Save, X, Edit, Copy, Check, MapPin, ExternalLink } from 'lucide-react';
 import type { WithId } from '@/firebase';
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from '@/contexts/language-context';
+import { cn } from '@/lib/utils';
 
 interface ServiceItem {
   name: string;
@@ -302,6 +303,7 @@ function ServiceListItem({ categoryId, item, isAdmin }: { categoryId: string; it
     const firestore = useFirestore();
     const { translations } = useLanguage();
     const t = translations.usefulServicesModal;
+    const { toast } = useToast();
 
     const itemDocRef = useMemoFirebase(() => {
         if (!firestore) return null;
@@ -310,6 +312,7 @@ function ServiceListItem({ categoryId, item, isAdmin }: { categoryId: string; it
 
     const [isEditing, setIsEditing] = useState(false);
     const [editedItem, setEditedItem] = useState(item);
+    const [copied, setCopied] = useState(false);
 
     const handleDelete = async () => {
         if (!itemDocRef) return;
@@ -326,11 +329,24 @@ function ServiceListItem({ categoryId, item, isAdmin }: { categoryId: string; it
         setIsEditing(false);
     };
 
+    const handleCopy = () => {
+        const textToCopy = `${item.name}\n${item.address}\n${item.phone}`;
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            setCopied(true);
+            toast({
+                title: "Copiado!",
+                description: "Informações enviadas para a área de transferência.",
+            });
+            setTimeout(() => setCopied(false), 2000);
+        });
+    };
+
     const handleInputChange = (field: keyof ServiceItem, value: string) => {
         setEditedItem(prev => ({...prev, [field]: value }));
     }
     
     const itemNameToConfirm = editedItem.name || t.untitledItem;
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.address + ' Ouro Preto')}`;
 
     if (isEditing) {
         return (
@@ -347,44 +363,70 @@ function ServiceListItem({ categoryId, item, isAdmin }: { categoryId: string; it
     }
 
     return (
-        <div className="flex justify-between items-start text-left text-sm p-2 rounded-md border border-transparent hover:border-border group">
-            <div className="flex-grow">
-                <p className="font-medium text-primary">{item.name || <span className="italic text-muted-foreground">{t.untitledItem}</span>}</p>
-                <p className="text-muted-foreground">{item.address}</p>
+        <div className="flex justify-between items-start text-left text-sm p-3 rounded-md border border-transparent hover:border-border hover:bg-muted/30 group transition-all">
+            <div className="flex-grow space-y-1">
+                <p className="font-semibold text-primary text-base">
+                  {item.name || <span className="italic text-muted-foreground">{t.untitledItem}</span>}
+                </p>
+                
+                <a 
+                  href={mapsUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-muted-foreground flex items-center gap-1.5 hover:text-primary transition-colors group/link"
+                >
+                  <MapPin size={14} className="flex-shrink-0" />
+                  <span className="underline underline-offset-2">{item.address}</span>
+                  <ExternalLink size={12} className="opacity-0 group-hover/link:opacity-100 transition-opacity" />
+                </a>
+
                 {item.phone && item.phone.match(/\d/) ? (
-                   <a href={`tel:${item.phone.replace(/\D/g, '')}`} className="text-green-600 flex items-center gap-2 mt-1 hover:underline">
-                    <Phone size={14} />
+                   <a href={`tel:${item.phone.replace(/\D/g, '')}`} className="text-green-700 flex items-center gap-1.5 font-medium hover:underline">
+                    <Phone size={14} className="flex-shrink-0" />
                     <span>{item.phone}</span>
                   </a>
                 ) : (
-                  <p className="text-muted-foreground flex items-center gap-2 mt-1">
-                    <Phone size={14} />
+                  <p className="text-muted-foreground flex items-center gap-1.5">
+                    <Phone size={14} className="flex-shrink-0" />
                     <span>{item.phone || t.phoneNotAvailable}</span>
                   </p>
                 )}
             </div>
-            {isAdmin && (
-              <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-                  <Button size="icon" variant="ghost" onClick={() => setIsEditing(true)}><Edit size={16} /></Button>
-                  <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                          <Button size="icon" variant="ghost"><Trash2 size={16} className="text-destructive"/></Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                          <AlertDialogHeader>
-                              <AlertDialogTitle>{t.deleteConfirmTitle}</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                  {t.deleteConfirm(itemNameToConfirm)}
-                              </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                              <AlertDialogCancel>{t.cancelButton}</AlertDialogCancel>
-                              <AlertDialogAction onClick={handleDelete}>{t.deleteButton}</AlertDialogAction>
-                          </AlertDialogFooter>
-                      </AlertDialogContent>
-                  </AlertDialog>
-              </div>
-            )}
+            
+            <div className="flex items-center gap-1 flex-shrink-0">
+                <Button 
+                    size="icon" 
+                    variant="ghost" 
+                    onClick={handleCopy} 
+                    title="Copiar informações"
+                    className={cn("h-8 w-8", copied && "text-green-600")}
+                >
+                    {copied ? <Check size={16} /> : <Copy size={16} />}
+                </Button>
+
+                {isAdmin && (
+                  <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setIsEditing(true)}><Edit size={16} /></Button>
+                      <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                              <Button size="icon" variant="ghost" className="h-8 w-8"><Trash2 size={16} className="text-destructive"/></Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                              <AlertDialogHeader>
+                                  <AlertDialogTitle>{t.deleteConfirmTitle}</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                      {t.deleteConfirm(itemNameToConfirm)}
+                                  </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                  <AlertDialogCancel>{t.cancelButton}</AlertDialogCancel>
+                                  <AlertDialogAction onClick={handleDelete}>{t.deleteButton}</AlertDialogAction>
+                              </AlertDialogFooter>
+                          </AlertDialogContent>
+                      </AlertDialog>
+                  </div>
+                )}
+            </div>
         </div>
     );
 }
