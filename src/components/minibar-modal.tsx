@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState } from 'react';
@@ -152,8 +151,8 @@ function EditableItemRow({ item, isAdmin }: { item: WithId<MinibarItem>, isAdmin
     const handleUpdate = async () => {
         if (!itemDocRef) return;
         await updateDoc(itemDocRef, {
-            name: editedItem.name.trim(),
-            price: editedItem.price.trim(),
+            name: (editedItem.name || '').trim(),
+            price: (editedItem.price || '').trim(),
         });
         setIsEditing(false);
     };
@@ -172,10 +171,10 @@ function EditableItemRow({ item, isAdmin }: { item: WithId<MinibarItem>, isAdmin
         return (
             <TableRow>
                 <TableCell>
-                    <Input value={editedItem.name} onChange={e => handleInputChange('name', e.target.value)} />
+                    <Input value={editedItem.name || ''} onChange={e => handleInputChange('name', e.target.value)} />
                 </TableCell>
                 <TableCell className='text-right'>
-                    <Input value={editedItem.price} className="text-right" onChange={e => handleInputChange('price', e.target.value)} />
+                    <Input value={editedItem.price || ''} className="text-right" onChange={e => handleInputChange('price', e.target.value)} />
                 </TableCell>
                  <TableCell className="text-right">
                     <div className="flex justify-end gap-2">

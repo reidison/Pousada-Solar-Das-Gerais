@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState } from 'react';
@@ -323,9 +322,9 @@ function ServiceListItem({ categoryId, item, isAdmin }: { categoryId: string; it
     const handleUpdate = async () => {
         if (!itemDocRef) return;
         await updateDoc(itemDocRef, {
-            name: editedItem.name.trim(),
-            address: editedItem.address.trim(),
-            phone: editedItem.phone.trim(),
+            name: (editedItem.name || '').trim(),
+            address: (editedItem.address || '').trim(),
+            phone: (editedItem.phone || '').trim(),
             website: (editedItem.website || '').trim(),
         });
         setIsEditing(false);
@@ -353,10 +352,10 @@ function ServiceListItem({ categoryId, item, isAdmin }: { categoryId: string; it
     if (isEditing) {
         return (
             <div className="flex flex-col text-left text-sm p-2 rounded-md border border-border space-y-2">
-                <Input placeholder={t.addServiceItemNamePlaceholder} value={editedItem.name} onChange={e => handleInputChange('name', e.target.value)} />
-                <Input placeholder={t.addServiceItemAddressPlaceholder} value={editedItem.address} onChange={e => handleInputChange('address', e.target.value)} />
-                <Input placeholder={t.addServiceItemPhonePlaceholder} value={editedItem.phone} onChange={e => handleInputChange('phone', e.target.value)} />
-                <Input placeholder={t.addServiceItemWebsitePlaceholder} value={editedItem.website} onChange={e => handleInputChange('website', e.target.value)} />
+                <Input placeholder={t.addServiceItemNamePlaceholder} value={editedItem.name || ''} onChange={e => handleInputChange('name', e.target.value)} />
+                <Input placeholder={t.addServiceItemAddressPlaceholder} value={editedItem.address || ''} onChange={e => handleInputChange('address', e.target.value)} />
+                <Input placeholder={t.addServiceItemPhonePlaceholder} value={editedItem.phone || ''} onChange={e => handleInputChange('phone', e.target.value)} />
+                <Input placeholder={t.addServiceItemWebsitePlaceholder} value={editedItem.website || ''} onChange={e => handleInputChange('website', e.target.value)} />
                 <div className="flex justify-end gap-2">
                     <Button size="sm" onClick={handleUpdate}><Save size={16} className="mr-1"/> {t.saveButton}</Button>
                     <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>{t.cancelButton}</Button>
@@ -372,16 +371,18 @@ function ServiceListItem({ categoryId, item, isAdmin }: { categoryId: string; it
                   {item.name || <span className="italic text-muted-foreground">{t.untitledItem}</span>}
                 </p>
                 
-                <a 
-                  href={mapsUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="text-muted-foreground flex items-center gap-1.5 hover:text-primary transition-colors group/link"
-                >
-                  <MapPin size={14} className="flex-shrink-0" />
-                  <span className="underline underline-offset-2">{item.address}</span>
-                  <ExternalLink size={12} className="opacity-0 group-hover/link:opacity-100 transition-opacity" />
-                </a>
+                {item.address && (
+                    <a 
+                    href={mapsUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-muted-foreground flex items-center gap-1.5 hover:text-primary transition-colors group/link"
+                    >
+                    <MapPin size={14} className="flex-shrink-0" />
+                    <span className="underline underline-offset-2">{item.address}</span>
+                    <ExternalLink size={12} className="opacity-0 group-hover/link:opacity-100 transition-opacity" />
+                    </a>
+                )}
 
                 <div className="flex flex-wrap gap-x-4 gap-y-1">
                     {item.phone && item.phone.match(/\d/) ? (
