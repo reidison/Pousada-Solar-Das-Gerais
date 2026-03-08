@@ -15,7 +15,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/language-context';
 import { useDoc, useFirestore, useMemoFirebase, useUser } from '@/firebase';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
 import type { LodgeInfo } from '@/types/lodge-info';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
@@ -45,31 +47,34 @@ export function RegulationModal() {
     }
   }, [lodgeInfo]);
 
-  const handleConfirm = async () => {
+  const handleConfirm = () => {
     if (!lodgeInfoRef || !isAdmin) return;
 
     setIsSaving(true);
-    try {
-      await updateDoc(lodgeInfoRef, {
-        regulation: regulationText,
-      });
+    
+    // Usamos setDoc com merge: true para evitar o erro "No document to update"
+    // caso o documento ainda não tenha sido criado.
+    setDoc(lodgeInfoRef, {
+      regulation: regulationText,
+    }, { merge: true })
+    .catch(async (serverError) => {
+      const permissionError = new FirestorePermissionError({
+        path: lodgeInfoRef.path,
+        operation: 'write',
+        requestResourceData: { regulation: regulationText },
+      } satisfies SecurityRuleContext);
 
-      toast({
-        title: t.successToastTitle,
-        description: t.successToastDescription,
-      });
+      errorEmitter.emit('permission-error', permissionError);
+    });
 
-      setIsOpen(false);
-    } catch (error) {
-      console.error("Erro ao salvar regulamento:", error);
-      toast({
-        variant: "destructive",
-        title: "Erro ao salvar",
-        description: "Não foi possível atualizar o regulamento.",
-      });
-    } finally {
-      setIsSaving(false);
-    }
+    // Feedback visual otimista e imediato
+    toast({
+      title: t.successToastTitle,
+      description: t.successToastDescription,
+    });
+
+    setIsOpen(false);
+    setIsSaving(false);
   };
 
   return (
