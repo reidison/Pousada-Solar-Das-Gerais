@@ -131,6 +131,23 @@ export type Translation = {
     untitledItem: string;
     replaceConfirm: string;
   };
+  lodgeConfigModal: {
+    title: string;
+    description: string;
+    logoLabel: string;
+    logoPlaceholder: string;
+    whatsappLabel: string;
+    whatsappPlaceholder: string;
+    breakfastHoursLabel: string;
+    breakfastHoursPlaceholder: string;
+    breakfastLocationLabel: string;
+    breakfastLocationPlaceholder: string;
+    saveButton: string;
+    savingButton: string;
+    successToastTitle: string;
+    successToastDescription: string;
+    adminButton: string;
+  };
 };
 
 export const translations: Record<Locale, Translation> = {
@@ -265,6 +282,23 @@ export const translations: Record<Locale, Translation> = {
       untitledItem: 'Item sem nome',
       replaceConfirm: 'Isso substituirá todas as categorias e itens existentes. Deseja continuar?',
     },
+    lodgeConfigModal: {
+      title: 'Configurações da Pousada',
+      description: 'Atualize as informações gerais que aparecem para os hóspedes.',
+      logoLabel: 'URL do Logo',
+      logoPlaceholder: 'Cole a URL da imagem do logo',
+      whatsappLabel: 'WhatsApp (apenas números com DDD)',
+      whatsappPlaceholder: 'Ex: 31988887777',
+      breakfastHoursLabel: 'Horário do Café',
+      breakfastHoursPlaceholder: 'Ex: Das 07:30h às 10:00h',
+      breakfastLocationLabel: 'Local do Café',
+      breakfastLocationPlaceholder: 'Ex: Salão de Café (Piso Térreo)',
+      saveButton: 'Salvar Configurações',
+      savingButton: 'Salvando...',
+      successToastTitle: 'Atualizado!',
+      successToastDescription: 'As informações da pousada foram salvas.',
+      adminButton: 'Configurar Pousada',
+    },
   },
   en: {
     welcomeMessage: {
@@ -396,6 +430,23 @@ export const translations: Record<Locale, Translation> = {
       untitledCategory: 'Untitled category',
       untitledItem: 'Untitled item',
       replaceConfirm: 'This will replace all existing categories and items. Do you want to continue?',
+    },
+    lodgeConfigModal: {
+      title: 'Lodge Settings',
+      description: 'Update the general information displayed to guests.',
+      logoLabel: 'Logo URL',
+      logoPlaceholder: 'Paste the logo image URL',
+      whatsappLabel: 'WhatsApp (numbers only with DDD)',
+      whatsappPlaceholder: 'Ex: 31988887777',
+      breakfastHoursLabel: 'Breakfast Hours',
+      breakfastHoursPlaceholder: 'Ex: From 07:30 am to 10:00 am',
+      breakfastLocationLabel: 'Breakfast Location',
+      breakfastLocationPlaceholder: 'Ex: Breakfast Hall (Ground Floor)',
+      saveButton: 'Save Settings',
+      savingButton: 'Saving...',
+      successToastTitle: 'Updated!',
+      successToastDescription: 'The lodge information has been saved.',
+      adminButton: 'Configure Lodge',
     },
   },
 };

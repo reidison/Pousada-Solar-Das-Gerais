@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Header } from '@/components/header';
@@ -10,8 +9,9 @@ import { Coffee, Wifi, Map, Phone, GlassWater, PhoneCall, BookText, ShoppingBag 
 import { UsefulServicesModal } from '@/components/useful-services-modal';
 import { MinibarModal } from '@/components/minibar-modal';
 import { RegulationModal } from '@/components/regulation-modal';
+import { LodgeConfigModal } from '@/components/lodge-config-modal';
 import { WhatsappIcon } from '@/components/icons/whatsapp-icon';
-import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
+import { useDoc, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import type { LodgeInfo } from '@/types/lodge-info';
 import { useLanguage } from '@/contexts/language-context';
@@ -20,6 +20,9 @@ import Link from 'next/link';
 export default function SolarInfoHubPage() {
   const firestore = useFirestore();
   const { translations } = useLanguage();
+  const { user } = useUser();
+  const isAdmin = user && !user.isAnonymous;
+
   const lodgeInfoRef = useMemoFirebase(
     () => (firestore ? doc(firestore, 'lodge_info', 'main') : null),
     [firestore]
@@ -123,6 +126,10 @@ export default function SolarInfoHubPage() {
     <div className="bg-background text-foreground flex min-h-screen flex-col font-body">
       <Header />
       <main className="container mx-auto flex-grow px-4 py-8 pt-28 md:pt-32 relative">
+        <div className="flex justify-center mb-6">
+          {isAdmin && <LodgeConfigModal />}
+        </div>
+        
         <WelcomeMessage />
         
         <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
