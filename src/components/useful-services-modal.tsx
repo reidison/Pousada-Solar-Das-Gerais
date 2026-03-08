@@ -311,7 +311,12 @@ function ServiceListItem({ categoryId, item, isAdmin }: { categoryId: string; it
     }, [firestore, categoryId, item.id]);
 
     const [isEditing, setIsEditing] = useState(false);
-    const [editedItem, setEditedItem] = useState(item);
+    const [editedItem, setEditedItem] = useState({
+        name: item.name || '',
+        address: item.address || '',
+        phone: item.phone || '',
+        website: item.website || ''
+    });
     const [copied, setCopied] = useState(false);
 
     const handleDelete = async () => {
@@ -352,10 +357,10 @@ function ServiceListItem({ categoryId, item, isAdmin }: { categoryId: string; it
     if (isEditing) {
         return (
             <div className="flex flex-col text-left text-sm p-2 rounded-md border border-border space-y-2">
-                <Input placeholder={t.addServiceItemNamePlaceholder} value={editedItem.name || ''} onChange={e => handleInputChange('name', e.target.value)} />
-                <Input placeholder={t.addServiceItemAddressPlaceholder} value={editedItem.address || ''} onChange={e => handleInputChange('address', e.target.value)} />
-                <Input placeholder={t.addServiceItemPhonePlaceholder} value={editedItem.phone || ''} onChange={e => handleInputChange('phone', e.target.value)} />
-                <Input placeholder={t.addServiceItemWebsitePlaceholder} value={editedItem.website || ''} onChange={e => handleInputChange('website', e.target.value)} />
+                <Input placeholder={t.addServiceItemNamePlaceholder} value={editedItem.name} onChange={e => handleInputChange('name', e.target.value)} />
+                <Input placeholder={t.addServiceItemAddressPlaceholder} value={editedItem.address} onChange={e => handleInputChange('address', e.target.value)} />
+                <Input placeholder={t.addServiceItemPhonePlaceholder} value={editedItem.phone} onChange={e => handleInputChange('phone', e.target.value)} />
+                <Input placeholder={t.addServiceItemWebsitePlaceholder} value={editedItem.website} onChange={e => handleInputChange('website', e.target.value)} />
                 <div className="flex justify-end gap-2">
                     <Button size="sm" onClick={handleUpdate}><Save size={16} className="mr-1"/> {t.saveButton}</Button>
                     <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>{t.cancelButton}</Button>
@@ -384,14 +389,14 @@ function ServiceListItem({ categoryId, item, isAdmin }: { categoryId: string; it
                     </a>
                 )}
 
-                <div className="flex flex-wrap gap-x-4 gap-y-1">
+                <div className="flex flex-col space-y-1 mt-1">
                     {item.phone && item.phone.match(/\d/) ? (
-                        <a href={`tel:${item.phone.replace(/\D/g, '')}`} className="text-green-700 flex items-center gap-1.5 font-medium hover:underline">
+                        <a href={`tel:${item.phone.replace(/\D/g, '')}`} className="text-green-700 flex items-center gap-1.5 font-medium hover:underline w-fit">
                             <Phone size={14} className="flex-shrink-0" />
                             <span>{item.phone}</span>
                         </a>
                     ) : (
-                        <p className="text-muted-foreground flex items-center gap-1.5">
+                        <p className="text-muted-foreground flex items-center gap-1.5 w-fit">
                             <Phone size={14} className="flex-shrink-0" />
                             <span>{item.phone || t.phoneNotAvailable}</span>
                         </p>
@@ -402,10 +407,10 @@ function ServiceListItem({ categoryId, item, isAdmin }: { categoryId: string; it
                             href={item.website.startsWith('http') ? item.website : `https://${item.website}`} 
                             target="_blank" 
                             rel="noopener noreferrer" 
-                            className="text-blue-700 flex items-center gap-1.5 font-medium hover:underline"
+                            className="text-green-700 flex items-center gap-1.5 font-medium hover:underline w-fit"
                         >
                             <Globe size={14} className="flex-shrink-0" />
-                            <span>Site / Link</span>
+                            <span>Site</span>
                         </a>
                     )}
                 </div>
