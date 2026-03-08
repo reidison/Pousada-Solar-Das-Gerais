@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "LodgeInfo": {
@@ -90,6 +91,10 @@
         "phone": {
           "type": "string",
           "description": "The contact phone number for the service."
+        },
+        "website": {
+          "type": "string",
+          "description": "The website URL for the service."
         }
       },
       "required": [

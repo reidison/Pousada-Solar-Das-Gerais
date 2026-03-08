@@ -31,7 +31,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { collection, addDoc, doc, updateDoc, deleteDoc, writeBatch, getDocs } from 'firebase/firestore';
-import { Phone, PlusCircle, Trash2, Save, X, Edit, Copy, Check, MapPin, ExternalLink } from 'lucide-react';
+import { Phone, PlusCircle, Trash2, Save, X, Edit, Copy, Check, MapPin, ExternalLink, Globe } from 'lucide-react';
 import type { WithId } from '@/firebase';
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from '@/contexts/language-context';
@@ -41,6 +41,7 @@ interface ServiceItem {
   name: string;
   address: string;
   phone: string;
+  website?: string;
 }
 
 interface ServiceCategory {
@@ -325,12 +326,13 @@ function ServiceListItem({ categoryId, item, isAdmin }: { categoryId: string; it
             name: editedItem.name.trim(),
             address: editedItem.address.trim(),
             phone: editedItem.phone.trim(),
+            website: (editedItem.website || '').trim(),
         });
         setIsEditing(false);
     };
 
     const handleCopy = () => {
-        const textToCopy = `${item.name}\n${item.address}\n${item.phone}`;
+        const textToCopy = `${item.name}\n${item.address}\n${item.phone}${item.website ? `\n${item.website}` : ''}`;
         navigator.clipboard.writeText(textToCopy).then(() => {
             setCopied(true);
             toast({
@@ -354,6 +356,7 @@ function ServiceListItem({ categoryId, item, isAdmin }: { categoryId: string; it
                 <Input placeholder={t.addServiceItemNamePlaceholder} value={editedItem.name} onChange={e => handleInputChange('name', e.target.value)} />
                 <Input placeholder={t.addServiceItemAddressPlaceholder} value={editedItem.address} onChange={e => handleInputChange('address', e.target.value)} />
                 <Input placeholder={t.addServiceItemPhonePlaceholder} value={editedItem.phone} onChange={e => handleInputChange('phone', e.target.value)} />
+                <Input placeholder={t.addServiceItemWebsitePlaceholder} value={editedItem.website} onChange={e => handleInputChange('website', e.target.value)} />
                 <div className="flex justify-end gap-2">
                     <Button size="sm" onClick={handleUpdate}><Save size={16} className="mr-1"/> {t.saveButton}</Button>
                     <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>{t.cancelButton}</Button>
@@ -380,17 +383,31 @@ function ServiceListItem({ categoryId, item, isAdmin }: { categoryId: string; it
                   <ExternalLink size={12} className="opacity-0 group-hover/link:opacity-100 transition-opacity" />
                 </a>
 
-                {item.phone && item.phone.match(/\d/) ? (
-                   <a href={`tel:${item.phone.replace(/\D/g, '')}`} className="text-green-700 flex items-center gap-1.5 font-medium hover:underline">
-                    <Phone size={14} className="flex-shrink-0" />
-                    <span>{item.phone}</span>
-                  </a>
-                ) : (
-                  <p className="text-muted-foreground flex items-center gap-1.5">
-                    <Phone size={14} className="flex-shrink-0" />
-                    <span>{item.phone || t.phoneNotAvailable}</span>
-                  </p>
-                )}
+                <div className="flex flex-wrap gap-x-4 gap-y-1">
+                    {item.phone && item.phone.match(/\d/) ? (
+                        <a href={`tel:${item.phone.replace(/\D/g, '')}`} className="text-green-700 flex items-center gap-1.5 font-medium hover:underline">
+                            <Phone size={14} className="flex-shrink-0" />
+                            <span>{item.phone}</span>
+                        </a>
+                    ) : (
+                        <p className="text-muted-foreground flex items-center gap-1.5">
+                            <Phone size={14} className="flex-shrink-0" />
+                            <span>{item.phone || t.phoneNotAvailable}</span>
+                        </p>
+                    )}
+
+                    {item.website && (
+                        <a 
+                            href={item.website.startsWith('http') ? item.website : `https://${item.website}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="text-blue-700 flex items-center gap-1.5 font-medium hover:underline"
+                        >
+                            <Globe size={14} className="flex-shrink-0" />
+                            <span>Site / Link</span>
+                        </a>
+                    )}
+                </div>
             </div>
             
             <div className="flex items-center gap-1 flex-shrink-0">
@@ -441,7 +458,7 @@ function AddItemForm({ categoryId }: { categoryId: string }) {
         return collection(firestore, 'service_categories', categoryId, 'items');
     }, [firestore, categoryId]);
 
-    const [newItem, setNewItem] = useState({ name: '', address: '', phone: '' });
+    const [newItem, setNewItem] = useState({ name: '', address: '', phone: '', website: '' });
     const [isAdding, setIsAdding] = useState(false);
 
     const handleAdd = async () => {
@@ -451,7 +468,7 @@ function AddItemForm({ categoryId }: { categoryId: string }) {
             return;
         }
         await addDoc(itemsRef, newItem);
-        setNewItem({ name: '', address: '', phone: '' });
+        setNewItem({ name: '', address: '', phone: '', website: '' });
         setIsAdding(false);
     };
 
@@ -473,6 +490,7 @@ function AddItemForm({ categoryId }: { categoryId: string }) {
             <Input placeholder={t.addServiceItemNamePlaceholder} value={newItem.name} onChange={e => handleInputChange('name', e.target.value)} />
             <Input placeholder={t.addServiceItemAddressPlaceholder} value={newItem.address} onChange={e => handleInputChange('address', e.target.value)} />
             <Input placeholder={t.addServiceItemPhonePlaceholder} value={newItem.phone} onChange={e => handleInputChange('phone', e.target.value)} />
+            <Input placeholder={t.addServiceItemWebsitePlaceholder} value={newItem.website} onChange={e => handleInputChange('website', e.target.value)} />
             <div className="flex justify-end gap-2">
                 <Button size="sm" onClick={handleAdd}><Save size={16} className="mr-1"/> {t.saveButton}</Button>
                 <Button size="sm" variant="ghost" onClick={() => setIsAdding(false)}>{t.cancelButton}</Button>

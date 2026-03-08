@@ -1,3 +1,4 @@
+
 export type Locale = 'pt' | 'en';
 
 export type Translation = {
@@ -118,6 +119,7 @@ export type Translation = {
     addServiceItemNamePlaceholder: string;
     addServiceItemAddressPlaceholder: string;
     addServiceItemPhonePlaceholder: string;
+    addServiceItemWebsitePlaceholder: string;
     importToastTitle: string;
     importToastDescription: string;
     importSuccessToastTitle: string;
@@ -269,6 +271,7 @@ export const translations: Record<Locale, Translation> = {
       addServiceItemNamePlaceholder: 'Nome do serviço',
       addServiceItemAddressPlaceholder: 'Endereço',
       addServiceItemPhonePlaceholder: 'Telefone',
+      addServiceItemWebsitePlaceholder: 'Site (URL completa)',
       importToastTitle: 'Importando lista...',
       importToastDescription: 'Por favor, aguarde.',
       importSuccessToastTitle: 'Sucesso!',
@@ -418,6 +421,7 @@ export const translations: Record<Locale, Translation> = {
       addServiceItemNamePlaceholder: 'Service name',
       addServiceItemAddressPlaceholder: 'Address',
       addServiceItemPhonePlaceholder: 'Phone',
+      addServiceItemWebsitePlaceholder: 'Website (full URL)',
       importToastTitle: 'Importing list...',
       importToastDescription: 'Please wait.',
       importSuccessToastTitle: 'Success!',
