@@ -208,7 +208,7 @@ export const translations: Record<Locale, Translation> = {
     },
     regulationModal: {
       title: 'Regulamento Interno',
-      description: 'Importante: leia nossas orientações para a sua estadia',
+      description: 'Para garantir conforto, segurança e bem-estar de todos, solicitamos a leitura e cumprimento das normas a seguir',
       placeholder: 'Digite o regulamento aqui...',
       confirmButton: 'Confirmar',
       successToastTitle: 'Sucesso!',
@@ -340,7 +340,7 @@ export const translations: Record<Locale, Translation> = {
     },
     regulationModal: {
       title: 'Internal Regulations',
-      description: 'Important: read our guidelines for your stay',
+      description: 'To ensure the comfort, safety, and well-being of everyone, we request the reading and compliance with the following rules',
       placeholder: 'Type the regulation here...',
       confirmButton: 'Confirm',
       successToastTitle: 'Success!',
