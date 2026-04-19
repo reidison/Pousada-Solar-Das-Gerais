@@ -1,6 +1,7 @@
-# Pousada Solar das Gerais - Painel de Informações
 
-Este é o Painel de Informações para hóspedes da Pousada Solar das Gerais, construído com Next.js, Firebase e Tailwind CSS.
+# Pousada Bela Vista - Painel de Informações
+
+Este é o Painel de Informações para hóspedes da Pousada Bela Vista, construído com Next.js, Firebase e Tailwind CSS.
 
 ## Como acessar o Modo Admin
 

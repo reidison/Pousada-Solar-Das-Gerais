@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -17,7 +18,7 @@ export default function CityTourPage() {
       
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-primary mb-2">City Tour em Ouro Preto</h1>
-        <p className="text-lg text-muted-foreground">Descubra as maravilhas da nossa cidade histórica.</p>
+        <p className="text-lg text-muted-foreground">Recomendações da Pousada Bela Vista.</p>
       </div>
 
        <div className="text-center py-12">

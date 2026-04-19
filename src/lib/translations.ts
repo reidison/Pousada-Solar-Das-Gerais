@@ -155,7 +155,7 @@ export type Translation = {
 export const translations: Record<Locale, Translation> = {
   pt: {
     welcomeMessage: {
-      title: "Bem-vindo(a) à Pousada Solar das Gerais!",
+      title: "Bem-vindo(a) à Pousada Bela Vista!",
       subtitle: "Horários, comodidades e informações para você aproveitar ao máximo sua estadia conosco.",
     },
     infoCards: {
@@ -169,8 +169,8 @@ export const translations: Record<Locale, Translation> = {
         line1: "Rede:",
         line2: "Senha:",
         generalLabel: "Geral",
-        networkName: "Pousada_Solar_Das_Gerais",
-        password: "pousada2023",
+        networkName: "Pousada_Bela_Vista",
+        password: "pousada2024",
         blocksLabel: "Bloco 2 apart. 110 e 111",
         blocksNetworkName: "ap119A",
         blocksPassword: "hostel2023",
@@ -305,7 +305,7 @@ export const translations: Record<Locale, Translation> = {
   },
   en: {
     welcomeMessage: {
-      title: "Welcome to Pousada Solar das Gerais!",
+      title: "Welcome to Pousada Bela Vista!",
       subtitle: "Schedules, amenities, and information for you to make the most of your stay with us.",
     },
     infoCards: {
@@ -319,8 +319,8 @@ export const translations: Record<Locale, Translation> = {
         line1: "Network:",
         line2: "Password:",
         generalLabel: "General",
-        networkName: "Pousada_Solar_Das_Gerais",
-        password: "pousada2023",
+        networkName: "Pousada_Bela_Vista",
+        password: "pousada2024",
         blocksLabel: "Block 2 apts. 110 and 111",
         blocksNetworkName: "ap119A",
         blocksPassword: "hostel2023",

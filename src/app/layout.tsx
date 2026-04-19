@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import { Toaster } from "@/components/ui/toaster"
 import { FirebaseClientProvider } from '@/firebase/client-provider';
@@ -5,8 +6,8 @@ import { LanguageProvider } from '@/contexts/language-context';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Informações Gerais – Pousada Solar das Gerais',
-  description: 'Painel de informações para hóspedes da Pousada Solar das Gerais.',
+  title: 'Painel do Hóspede – Pousada Bela Vista',
+  description: 'Painel de informações para hóspedes da Pousada Bela Vista.',
 };
 
 export default function RootLayout({

@@ -23,7 +23,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex flex-col items-center md:items-start gap-3 text-center md:text-left">
             <p className="text-sm">
-              &copy; {new Date().getFullYear()} Pousada Solar das Gerais.
+              &copy; {new Date().getFullYear()} Pousada Bela Vista.
             </p>
             {isAdmin ? (
                <Button variant="link" onClick={handleLogout} className="text-primary-foreground p-0 h-auto text-xs opacity-50 hover:opacity-100">
@@ -38,13 +38,13 @@ export function Footer() {
           </div>
           <div className="text-center">
              <a 
-              href="https://www.instagram.com/pousadasolardasgeraisop" 
+              href="https://www.instagram.com/pousadabelavista" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-[10px] font-semibold hover:text-accent transition-colors"
             >
               <Instagram size={20} />
-              <span>@pousadasolardasgeraisop</span>
+              <span>@pousadabelavista</span>
             </a>
           </div>
         </div>
