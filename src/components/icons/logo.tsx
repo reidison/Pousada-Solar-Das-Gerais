@@ -10,7 +10,7 @@ interface LogoProps extends Omit<React.ComponentProps<typeof Image>, 'alt' | 'sr
 
 export function Logo({ src, className, ...props }: LogoProps) {
   return (
-    <div className={cn("relative flex items-center justify-center bg-white", className)}>
+    <div className={cn("relative flex items-center justify-center bg-white overflow-hidden", className)}>
       <Image
         src={src}
         alt="Pousada Bela Vista"

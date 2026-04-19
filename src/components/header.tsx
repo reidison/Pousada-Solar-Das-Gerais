@@ -20,7 +20,7 @@ export function Header() {
   );
   const { data: lodgeInfo } = useDoc<LodgeInfo>(lodgeInfoRef);
 
-  // Logo padrão caso não haja um configurado no Firestore
+  // Logo padrão da Pousada Bela Vista definida no código (fallback do "banco")
   const logoUrl = lodgeInfo?.logoUrl || "https://i.imgur.com/jRjiohM.png";
   
   const { language, setLanguage } = useLanguage();
@@ -29,7 +29,7 @@ export function Header() {
     <header className="fixed top-0 left-0 right-0 z-40 bg-white shadow-sm border-b">
       <div className="container relative mx-auto px-4 h-20 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          {/* Altura ajustada para 59px (5px menor que os 64px padrão anteriores) */}
+          {/* Altura de 59px: Proporção ajustada conforme solicitado (5px menor que o padrão de 64px) */}
           <Logo src={logoUrl} className="h-[59px] w-auto object-contain" />
         </div>
         <div className="flex items-center gap-2">
