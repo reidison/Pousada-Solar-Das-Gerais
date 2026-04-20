@@ -77,9 +77,10 @@ export default function SolarInfoHubPage() {
       title: translations.infoCards.reception.title,
       content: (
         <>
-          <p className="mb-4">{translations.infoCards.reception.line1}</p>
+          <p className="mb-2">{translations.infoCards.reception.line1}</p>
+          <p className="text-sm font-bold text-primary mb-4">31 99258-0325</p>
           <Button asChild className="bg-primary text-primary-foreground hover:bg-green-600">
-            <a href={`https://wa.me/${(lodgeInfo?.whatsappNumber || '31992580325').replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer">
+            <a href={`https://wa.me/5531992580325`} target="_blank" rel="noopener noreferrer">
               <WhatsappIcon className="mr-2 h-5 w-5" />
               {translations.infoCards.reception.button}
             </a>

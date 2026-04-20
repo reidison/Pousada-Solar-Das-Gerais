@@ -282,7 +282,7 @@ export const translations: Record<Locale, Translation> = {
       logoLabel: 'Logotipo',
       logoPlaceholder: 'Selecione uma imagem',
       whatsappLabel: 'WhatsApp (apenas números com DDD)',
-      whatsappPlaceholder: 'Ex: 31988887777',
+      whatsappPlaceholder: 'Ex: 31992580325',
       breakfastHoursLabel: 'Horário do Café',
       breakfastHoursPlaceholder: 'Ex: Das 07:30h às 10:00h',
       breakfastLocationLabel: 'Local do Café',
@@ -323,7 +323,7 @@ export const translations: Record<Locale, Translation> = {
       },
       reception: {
         title: "Contact Reception",
-        line1: "Need anything? We are available on WhatsApp.",
+        line1: "Need anything? Contact us on WhatsApp.",
         button: "Support",
       },
       minibar: {
@@ -428,7 +428,7 @@ export const translations: Record<Locale, Translation> = {
       logoLabel: 'Logo',
       logoPlaceholder: 'Select an image',
       whatsappLabel: 'WhatsApp (numbers only with DDD)',
-      whatsappPlaceholder: 'Ex: 31988887777',
+      whatsappPlaceholder: 'Ex: 31992580325',
       breakfastHoursLabel: 'Breakfast Hours',
       breakfastHoursPlaceholder: 'Ex: From 07:30 am to 10:00 am',
       breakfastLocationLabel: 'Breakfast Location',
