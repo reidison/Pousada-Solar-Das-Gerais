@@ -225,14 +225,18 @@ export const translations: Record<Locale, Translation> = {
       successToastTitle: 'Sucesso!',
       successToastDescription: 'O regulamento foi atualizado.',
       loading: 'Carregando...',
-      defaultText: `1. HORÁRIOS: Check-in a partir das 14:00h e Check-out até as 12:00h.
+      defaultText: `INTERNET – WI-FI
+Rede: Pousada bela vista 
+Senha: pousada2026
+
+NORMAS E ORIENTAÇÕES:
+1. HORÁRIOS: Check-in a partir das 14:00h e Check-out até as 12:00h.
 2. CAFÉ DA MANHÃ: Servido diariamente das 07:30h às 10:00h no Salão de Café.
 3. SILÊNCIO: Solicitamos silêncio entre 22:00h e 08:00h para o conforto de todos.
 4. TABAGISMO: É terminantemente proibido fumar nos quartos e dependências internas.
-5. ECONOMIA: Pedimos a gentileza de desligar luzes, TV e aparelhos ao sair do quarto.
-6. DANOS: Eventuais danos ao enxoval ou estrutura serão debitados no checkout.
-7. VISITAS: Visitas devem ser recebidas apenas nas áreas comuns da pousada.
-8. CHECK-OUT: No momento da saída, favor entregar a chave na recepção e verificar se não esqueceu nenhum pertence no quarto.`,
+5. ORIENTAÇÕES DE SAÍDA: Ao sair, deixar a chave na recepção. No check out, verifique se não está esquecendo algum pertence no quarto.
+6. ECONOMIA: Pedimos a gentileza de desligar luzes, TV e aparelhos ao sair do quarto.
+7. DANOS: Eventuais danos ao enxoval ou estrutura serão debitados no checkout.`,
     },
     cityTourModal: {
       title: 'Programação do City Tour',
@@ -379,14 +383,18 @@ export const translations: Record<Locale, Translation> = {
       successToastTitle: 'Success!',
       successToastDescription: 'The regulations have been updated.',
       loading: 'Loading...',
-      defaultText: `1. SCHEDULE: Check-in from 2:00 pm and Check-out by 12:00 pm.
+      defaultText: `INTERNET – WI-FI
+Network: Pousada bela vista 
+Password: pousada2026
+
+RULES AND GUIDELINES:
+1. SCHEDULE: Check-in from 2:00 pm and Check-out by 12:00 pm.
 2. BREAKFAST: Served daily from 7:30 am to 10:00 am in the Breakfast Hall.
 3. SILENCE: We request silence between 10:00 pm and 8:00 am for everyone's comfort.
 4. SMOKING: Smoking is strictly prohibited in rooms and indoor areas.
-5. CONSERVATION: Please turn off lights, TV, and appliances when leaving the room.
-6. DAMAGES: Any damage to linens or structure will be charged at checkout.
-7. VISITORS: Visitors should be received only in the common areas of the lodge.
-8. CHECK-OUT: Upon departure, please return the key to the reception and check that no belongings are left behind in the room.`,
+5. CHECK-OUT GUIDELINES: When leaving, please leave the key at the reception. At check-out, make sure you are not forgetting any belongings in the room.
+6. CONSERVATION: Please turn off lights, TV, and appliances when leaving the room.
+7. DAMAGES: Any damage to linens or structure will be charged at checkout.`,
     },
     cityTourModal: {
       title: 'City Tour Schedule',
