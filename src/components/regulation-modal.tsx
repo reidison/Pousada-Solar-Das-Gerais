@@ -20,6 +20,7 @@ import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
 import type { LodgeInfo } from '@/types/lodge-info';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Loader2 } from 'lucide-react';
 
 export function RegulationModal() {
   const firestore = useFirestore();
@@ -44,20 +45,28 @@ export function RegulationModal() {
   useEffect(() => {
     if (lodgeInfo?.regulation) {
       setRegulationText(lodgeInfo.regulation);
-    } else {
+    } else if (!isLoading) {
       setRegulationText(t.defaultText);
     }
-  }, [lodgeInfo, t.defaultText]);
+  }, [lodgeInfo, t.defaultText, isLoading]);
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!lodgeInfoRef || !isAdmin) return;
 
     setIsSaving(true);
     
-    setDoc(lodgeInfoRef, {
-      regulation: regulationText,
-    }, { merge: true })
-    .catch(async (serverError) => {
+    try {
+      await setDoc(lodgeInfoRef, {
+        regulation: regulationText,
+      }, { merge: true });
+
+      toast({
+        title: t.successToastTitle,
+        description: t.successToastDescription,
+      });
+
+      setIsOpen(false);
+    } catch (serverError) {
       const permissionError = new FirestorePermissionError({
         path: lodgeInfoRef.path,
         operation: 'write',
@@ -65,15 +74,9 @@ export function RegulationModal() {
       } satisfies SecurityRuleContext);
 
       errorEmitter.emit('permission-error', permissionError);
-    });
-
-    toast({
-      title: t.successToastTitle,
-      description: t.successToastDescription,
-    });
-
-    setIsOpen(false);
-    setIsSaving(false);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -93,6 +96,7 @@ export function RegulationModal() {
         <div className="py-4">
           {isLoading ? (
             <div className="flex justify-center p-8 text-muted-foreground italic">
+              <Loader2 className="h-6 w-6 animate-spin mr-2" />
               {t.loading}
             </div>
           ) : isAdmin ? (
@@ -100,20 +104,30 @@ export function RegulationModal() {
               placeholder={t.placeholder}
               value={regulationText}
               onChange={(e) => setRegulationText(e.target.value)}
-              className="min-h-[300px]"
+              className="min-h-[350px] font-body text-sm leading-relaxed"
             />
           ) : (
             <ScrollArea className="h-[400px] w-full rounded-md border p-4 bg-muted/20">
-              <div className="whitespace-pre-wrap text-sm leading-relaxed text-foreground">
+              <div className="whitespace-pre-wrap text-sm leading-relaxed text-foreground font-body">
                 {regulationText || t.defaultText}
               </div>
             </ScrollArea>
           )}
         </div>
         {isAdmin && !isLoading && (
-          <DialogFooter>
-            <Button onClick={handleConfirm} disabled={isSaving}>
-              {isSaving ? "Salvando..." : t.confirmButton}
+          <DialogFooter className="flex flex-col sm:flex-row gap-2">
+            <Button variant="ghost" onClick={() => setIsOpen(false)} disabled={isSaving}>
+              {translations.usefulServicesModal.cancelButton}
+            </Button>
+            <Button onClick={handleConfirm} disabled={isSaving} className="min-w-[120px]">
+              {isSaving ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {translations.lodgeConfigModal.savingButton}
+                </>
+              ) : (
+                t.confirmButton
+              )}
             </Button>
           </DialogFooter>
         )}
