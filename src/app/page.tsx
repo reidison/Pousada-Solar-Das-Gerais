@@ -44,17 +44,9 @@ export default function SolarInfoHubPage() {
       icon: <Wifi size={28} />,
       title: translations.infoCards.wifi.title,
       content: (
-          <div className="space-y-6 w-full text-center">
-            <div className="pb-4 border-b border-dashed border-accent/20">
-                <p className="font-bold text-accent text-[10px] uppercase mb-1 tracking-widest">{translations.infoCards.wifi.generalLabel}</p>
-                <p className="text-sm font-medium">{translations.infoCards.wifi.line1} <span className="font-bold text-primary">{translations.infoCards.wifi.networkName}</span></p>
-                <p className="text-sm font-medium">{translations.infoCards.wifi.line2} <span className="font-bold text-primary">{translations.infoCards.wifi.password}</span></p>
-            </div>
-            <div>
-                <p className="font-bold text-accent text-[10px] uppercase mb-1 tracking-widest">{translations.infoCards.wifi.blocksLabel}</p>
-                <p className="text-sm font-medium">{translations.infoCards.wifi.line1} <span className="font-bold text-primary">{translations.infoCards.wifi.blocksNetworkName}</span></p>
-                <p className="text-sm font-medium">{translations.infoCards.wifi.line2} <span className="font-bold text-primary">{translations.infoCards.wifi.blocksPassword}</span></p>
-            </div>
+          <div className="space-y-2 w-full text-center">
+            <p className="text-sm font-medium">{translations.infoCards.wifi.line1} <span className="font-bold text-primary">{translations.infoCards.wifi.networkName}</span></p>
+            <p className="text-sm font-medium">{translations.infoCards.wifi.line2} <span className="font-bold text-primary">{translations.infoCards.wifi.password}</span></p>
           </div>
       ),
     },
@@ -87,7 +79,7 @@ export default function SolarInfoHubPage() {
         <>
           <p className="mb-4">{translations.infoCards.reception.line1}</p>
           <Button asChild className="bg-primary text-primary-foreground hover:bg-green-600">
-            <a href={`https://wa.me/${lodgeInfo?.whatsappNumber || ''}`} target="_blank" rel="noopener noreferrer">
+            <a href={`https://wa.me/${(lodgeInfo?.whatsappNumber || '31992580325').replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer">
               <WhatsappIcon className="mr-2 h-5 w-5" />
               {translations.infoCards.reception.button}
             </a>

@@ -15,12 +15,8 @@ export type Translation = {
       title: string;
       line1: string;
       line2: string;
-      generalLabel: string;
       networkName: string;
       password: string;
-      blocksLabel: string;
-      blocksNetworkName: string;
-      blocksPassword: string;
     };
     mainAccess: {
       title: string;
@@ -167,12 +163,8 @@ export const translations: Record<Locale, Translation> = {
         title: "Wi-Fi",
         line1: "Rede:",
         line2: "Senha:",
-        generalLabel: "Geral",
         networkName: "Pousada bela vista",
         password: "pousada2026",
-        blocksLabel: "Bloco 2 apart. 110 e 111",
-        blocksNetworkName: "ap119A",
-        blocksPassword: "hostel2023",
       },
       mainAccess: {
         title: "Acesso Principal",
@@ -317,12 +309,8 @@ export const translations: Record<Locale, Translation> = {
         title: "Wi-Fi",
         line1: "Network:",
         line2: "Password:",
-        generalLabel: "General",
         networkName: "Pousada bela vista",
         password: "pousada2026",
-        blocksLabel: "Block 2 apts. 110 and 111",
-        blocksNetworkName: "ap119A",
-        blocksPassword: "hostel2023",
       },
       mainAccess: {
         title: "Main Access",
