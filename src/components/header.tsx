@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useLanguage } from '@/contexts/language-context';
@@ -6,13 +5,32 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { BrazilFlagIcon } from '@/components/icons/brazil-flag-icon';
 import { UsaFlagIcon } from '@/components/icons/usa-flag-icon';
+import { Logo } from '@/components/icons/logo';
+import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
+import type { LodgeInfo } from '@/types/lodge-info';
+import Link from 'next/link';
 
 export function Header() {
   const { language, setLanguage } = useLanguage();
+  const firestore = useFirestore();
+
+  const lodgeInfoRef = useMemoFirebase(
+    () => (firestore ? doc(firestore, 'lodge_info', 'main') : null),
+    [firestore]
+  );
+  const { data: lodgeInfo } = useDoc<LodgeInfo>(lodgeInfoRef);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-white shadow-sm border-b">
-      <div className="container relative mx-auto px-4 h-20 flex items-center justify-end">
+      <div className="container relative mx-auto px-4 h-20 flex items-center justify-between">
+        <Link href="/" className="flex items-center">
+          <Logo 
+            src={lodgeInfo?.logoUrl || "https://i.imgur.com/jRjiohM.png"} 
+            className="h-14 w-auto" 
+          />
+        </Link>
+
         <div className="flex items-center gap-2">
             <Button
                 variant="ghost"
