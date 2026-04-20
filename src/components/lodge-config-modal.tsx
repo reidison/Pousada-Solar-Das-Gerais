@@ -120,6 +120,7 @@ export function LodgeConfigModal() {
   };
 
   const processImgurUrl = (url: string) => {
+    if (!url) return "https://i.imgur.com/NDqUUNp.png";
     if (url.includes('imgur.com/') && !url.includes('i.imgur.com')) {
       const id = url.split('/').pop()?.replace('a/', '');
       if (id && id.length > 3) return `https://i.imgur.com/${id}.png`;

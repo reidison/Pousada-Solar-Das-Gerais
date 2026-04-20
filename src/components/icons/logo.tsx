@@ -17,34 +17,30 @@ export function Logo({ src, className, ...props }: LogoProps) {
     setError(false);
   }, [src]);
 
-  const isUrlLikelyValid = (url: string) => {
-    if (!url) return false;
-    try {
-      new URL(url);
-      return true;
-    } catch {
-      return url.startsWith('/') || url.startsWith('data:');
-    }
-  };
-
   const processSrc = (url: string) => {
     if (!url) return fallbackLogo;
     
-    let processed = url;
-    // Converte links de álbuns ou páginas do Imgur para links diretos de imagem
-    if (url.includes('imgur.com/') && !url.includes('i.imgur.com')) {
-      const id = url.split('/').pop()?.replace('a/', '');
-      if (id && id.length > 3) {
-        processed = `https://i.imgur.com/${id}.png`;
+    // Se já for um link direto de imagem, retorna ele mesmo
+    if (url.match(/\.(jpeg|jpg|gif|png|webp)$/) !== null || url.includes('i.imgur.com')) {
+      return url;
+    }
+
+    // Converte links de álbuns ou páginas do Imgur para links diretos de imagem (.png)
+    if (url.includes('imgur.com/')) {
+      const parts = url.split('/');
+      const id = parts[parts.length - 1] || parts[parts.length - 2];
+      const cleanId = id.replace('a/', '').split('?')[0].split('#')[0];
+      if (cleanId && cleanId.length > 3) {
+        return `https://i.imgur.com/${cleanId}.png`;
       }
     }
-    return processed;
+    return url;
   };
 
-  const finalSrc = !error && isUrlLikelyValid(src) ? processSrc(src) : fallbackLogo;
+  const finalSrc = !error ? processSrc(src) : fallbackLogo;
 
   return (
-    <div className={cn("relative flex items-center justify-center overflow-hidden", className)}>
+    <div className={cn("relative flex items-center justify-center bg-transparent", className)}>
       <Image
         src={finalSrc}
         alt="Pousada Bela Vista"
