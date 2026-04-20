@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -90,17 +91,16 @@ export function useCollection<T = any>(
           setError(contextualError);
           errorEmitter.emit('permission-error', contextualError);
           setData(null);
-        } else if (error.code === 'unavailable') {
-          // If the backend is unavailable, we don't clear data. 
-          // Firestore will keep serving from cache.
-          console.warn('Firestore is unavailable. Operating in offline mode.');
+        } else if (error.code === 'unavailable' || error.code === 'deadline-exceeded') {
+          // Silent handling for connection issues
+          console.debug('Firestore connection issue (unavailable/timeout). Operating in offline mode.');
+          setIsLoading(false);
         } else {
           console.warn('Firestore subscription warning:', error.message);
           setError(error);
           setData(null);
+          setIsLoading(false);
         }
-        
-        setIsLoading(false);
       }
     );
 

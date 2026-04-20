@@ -1,3 +1,4 @@
+
 'use client';
     
 import { useState, useEffect } from 'react';
@@ -69,16 +70,16 @@ export function useDoc<T = any>(
           setError(contextualError);
           errorEmitter.emit('permission-error', contextualError);
           setData(null);
-        } else if (error.code === 'unavailable') {
-          // Stay quiet and keep current data if possible.
-          console.warn('Firestore is unavailable. Operating in offline mode.');
+        } else if (error.code === 'unavailable' || error.code === 'deadline-exceeded') {
+          // Silent handling for connection issues
+          console.debug('Firestore document connection issue. Operating in offline mode.');
+          setIsLoading(false);
         } else {
           console.warn('Firestore document fetch warning:', error.message);
           setError(error);
           setData(null);
+          setIsLoading(false);
         }
-        
-        setIsLoading(false);
       }
     );
 
