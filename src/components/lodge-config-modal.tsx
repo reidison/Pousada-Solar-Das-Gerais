@@ -20,7 +20,7 @@ import { useDoc, useFirestore, useMemoFirebase, useFirebase } from '@/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import type { LodgeInfo } from '@/types/lodge-info';
-import { Settings, Loader2, Upload, Image as ImageIcon, Check } from 'lucide-react';
+import { Settings, Loader2, Upload, Image as ImageIcon, Check, Link as LinkIcon } from 'lucide-react';
 import Image from 'next/image';
 
 export function LodgeConfigModal() {
@@ -47,7 +47,6 @@ export function LodgeConfigModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadComplete, setUploadComplete] = useState(false);
 
   useEffect(() => {
     if (lodgeInfo && !isUploading && !isSaving) {
@@ -64,7 +63,6 @@ export function LodgeConfigModal() {
     const file = e.target.files?.[0];
     if (!file || !storage) return;
 
-    // Limites básicos de segurança (ex: 2MB)
     if (file.size > 2 * 1024 * 1024) {
       toast({
         variant: "destructive",
@@ -75,7 +73,6 @@ export function LodgeConfigModal() {
     }
 
     setIsUploading(true);
-    setUploadComplete(false);
     
     try {
       const storageRef = ref(storage, `lodge/logo_${Date.now()}_${file.name}`);
@@ -83,18 +80,17 @@ export function LodgeConfigModal() {
       const downloadURL = await getDownloadURL(snapshot.ref);
       
       setFormData(prev => ({ ...prev, logoUrl: downloadURL }));
-      setUploadComplete(true);
       
       toast({
         title: "Upload concluído!",
-        description: "A nova imagem já está pronta. Não esqueça de Salvar as alterações.",
+        description: "A imagem foi carregada com sucesso.",
       });
     } catch (error) {
       console.error("Erro no upload:", error);
       toast({
         variant: "destructive",
         title: "Erro no upload",
-        description: "Não foi possível carregar a imagem. Tente novamente.",
+        description: "Não foi possível carregar a imagem.",
       });
     } finally {
       setIsUploading(false);
@@ -112,7 +108,6 @@ export function LodgeConfigModal() {
         description: t.successToastDescription,
       });
       setIsOpen(false);
-      setUploadComplete(false);
     } catch (error) {
       console.error("Erro ao salvar configurações:", error);
       toast({
@@ -142,55 +137,65 @@ export function LodgeConfigModal() {
         </DialogHeader>
         <div className="grid gap-6 py-4">
           <div className="grid gap-3">
-            <Label className="text-primary font-semibold">{t.logoLabel}</Label>
-            <div className="flex flex-col sm:flex-row items-center gap-6 p-4 border rounded-lg bg-muted/5">
-              <div className="relative h-24 w-24 border-2 border-dashed rounded-lg overflow-hidden bg-white flex items-center justify-center shadow-inner">
-                {formData.logoUrl ? (
-                  <Image 
-                    src={formData.logoUrl} 
-                    alt="Logo Preview" 
-                    fill 
-                    unoptimized={true}
-                    className="object-contain p-2"
-                  />
-                ) : (
-                  <ImageIcon className="text-muted-foreground opacity-30" size={40} />
-                )}
-                {isUploading && (
-                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-sm">
-                    <Loader2 className="text-white animate-spin" size={24} />
-                  </div>
-                )}
-              </div>
-              <div className="flex-1 space-y-3 w-full">
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  accept="image/png,image/jpeg,image/webp"
-                  className="hidden"
-                />
-                <Button 
-                  type="button" 
-                  variant={uploadComplete ? "outline" : "secondary"} 
-                  size="sm" 
-                  className="w-full gap-2 transition-all"
-                  disabled={isUploading}
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  {isUploading ? (
-                    <Loader2 size={16} className="animate-spin" />
-                  ) : uploadComplete ? (
-                    <Check size={16} className="text-green-600" />
+            <Label className="text-primary font-semibold flex items-center gap-2">
+              <ImageIcon size={16} />
+              {t.logoLabel}
+            </Label>
+            
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <div className="relative h-20 w-20 border rounded-md overflow-hidden bg-white flex items-center justify-center shadow-sm flex-shrink-0">
+                  {formData.logoUrl ? (
+                    <Image 
+                      src={formData.logoUrl} 
+                      alt="Logo Preview" 
+                      fill 
+                      unoptimized={true}
+                      className="object-contain p-1"
+                    />
                   ) : (
-                    <Upload size={16} />
+                    <ImageIcon className="text-muted-foreground opacity-20" size={32} />
                   )}
-                  {isUploading ? "Enviando..." : uploadComplete ? "Logotipo Alterado!" : "Selecionar Arquivo"}
-                </Button>
-                <p className="text-[11px] text-muted-foreground leading-tight text-center sm:text-left">
-                  Formatos aceitos: PNG, JPG ou WebP.<br/>
-                  A imagem aparecerá aqui no preview assim que o upload terminar.
-                </p>
+                  {isUploading && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <Loader2 className="text-white animate-spin" size={20} />
+                    </div>
+                  )}
+                </div>
+                
+                <div className="flex-1 w-full space-y-2">
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <LinkIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="URL da logo..."
+                        className="pl-8 h-9 text-xs"
+                        value={formData.logoUrl}
+                        onChange={(e) => setFormData({ ...formData, logoUrl: e.target.value })}
+                      />
+                    </div>
+                    <Button 
+                      type="button" 
+                      variant="secondary" 
+                      size="sm" 
+                      className="h-9 px-3"
+                      disabled={isUploading}
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      {isUploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+                    </Button>
+                  </div>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                    accept="image/png,image/jpeg,image/webp"
+                    className="hidden"
+                  />
+                  <p className="text-[10px] text-muted-foreground leading-tight italic">
+                    Insira uma URL direta ou faça upload. Formatos: PNG, JPG, WebP (Máx 2MB).
+                  </p>
+                </div>
               </div>
             </div>
           </div>
