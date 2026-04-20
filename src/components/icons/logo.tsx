@@ -1,4 +1,3 @@
-
 'use client';
 
 import Image from 'next/image';
@@ -17,7 +16,6 @@ export function Logo({ src, className, ...props }: LogoProps) {
     setError(false);
   }, [src]);
 
-  // Check if URL is valid before passing to Next.js Image
   const isUrlLikelyValid = (url: string) => {
     if (!url) return false;
     try {
