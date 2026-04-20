@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -152,7 +153,7 @@ export function LodgeConfigModal() {
             
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row items-center gap-4">
-                <div className="relative h-20 w-20 border rounded-md overflow-hidden bg-white flex items-center justify-center shadow-sm flex-shrink-0">
+                <div className="relative h-20 w-20 border rounded-md overflow-hidden bg-transparent flex items-center justify-center shadow-sm flex-shrink-0">
                   {formData.logoUrl && isValidUrl(formData.logoUrl) ? (
                     <img 
                       src={formData.logoUrl} 
@@ -166,8 +167,8 @@ export function LodgeConfigModal() {
                     <ImageIcon className="text-muted-foreground opacity-20" size={32} />
                   )}
                   {isUploading && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                      <Loader2 className="text-white animate-spin" size={20} />
+                    <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
+                      <Loader2 className="text-primary animate-spin" size={20} />
                     </div>
                   )}
                 </div>
