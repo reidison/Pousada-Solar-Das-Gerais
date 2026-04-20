@@ -21,7 +21,6 @@ import { doc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import type { LodgeInfo } from '@/types/lodge-info';
 import { Settings, Loader2, Upload, Image as ImageIcon, Check, Link as LinkIcon } from 'lucide-react';
-import Image from 'next/image';
 
 export function LodgeConfigModal() {
   const { storage } = useFirebase();
@@ -120,6 +119,16 @@ export function LodgeConfigModal() {
     }
   };
 
+  // Helper to validate URL before rendering preview
+  const isValidUrl = (url: string) => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return url.startsWith('/') || url.startsWith('data:');
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -145,13 +154,15 @@ export function LodgeConfigModal() {
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row items-center gap-4">
                 <div className="relative h-20 w-20 border rounded-md overflow-hidden bg-white flex items-center justify-center shadow-sm flex-shrink-0">
-                  {formData.logoUrl ? (
-                    <Image 
+                  {formData.logoUrl && isValidUrl(formData.logoUrl) ? (
+                    /* Using standard img for preview to avoid strict Next.js Image URL validation while typing */
+                    <img 
                       src={formData.logoUrl} 
                       alt="Logo Preview" 
-                      fill 
-                      unoptimized={true}
-                      className="object-contain p-1"
+                      className="w-full h-full object-contain p-1"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
                     />
                   ) : (
                     <ImageIcon className="text-muted-foreground opacity-20" size={32} />

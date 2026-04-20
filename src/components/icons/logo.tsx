@@ -17,15 +17,28 @@ export function Logo({ src, className, ...props }: LogoProps) {
     setError(false);
   }, [src]);
 
+  // Check if URL is valid before passing to Next.js Image
+  const isUrlLikelyValid = (url: string) => {
+    if (!url) return false;
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return url.startsWith('/') || url.startsWith('data:');
+    }
+  };
+
+  const finalSrc = !error && isUrlLikelyValid(src) ? src : fallbackLogo;
+
   return (
     <div className={cn("relative flex items-center justify-center bg-white overflow-hidden", className)}>
       <Image
-        src={error ? fallbackLogo : src}
+        src={finalSrc}
         alt="Pousada Bela Vista"
         width={400}
         height={150}
         priority
-        unoptimized={src.includes('canva.link')}
+        unoptimized={finalSrc.includes('canva.link')}
         className="w-full h-full object-contain"
         onError={() => setError(true)}
         {...props}
