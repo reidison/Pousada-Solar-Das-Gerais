@@ -1,4 +1,3 @@
-
 export type Locale = 'pt' | 'en';
 
 export type Translation = {
@@ -288,8 +287,8 @@ export const translations: Record<Locale, Translation> = {
     lodgeConfigModal: {
       title: 'Configurações da Pousada',
       description: 'Atualize as informações gerais que aparecem para os hóspedes.',
-      logoLabel: 'URL do Logo',
-      logoPlaceholder: 'Cole a URL da imagem do logo',
+      logoLabel: 'Logotipo',
+      logoPlaceholder: 'Selecione uma imagem',
       whatsappLabel: 'WhatsApp (apenas números com DDD)',
       whatsappPlaceholder: 'Ex: 31988887777',
       breakfastHoursLabel: 'Horário do Café',
@@ -415,7 +414,7 @@ export const translations: Record<Locale, Translation> = {
       importingButton: 'Importing...',
       deleteCategoryConfirm: (categoryName) => `Are you sure you want to delete the category "${categoryName}" and all its items?`,
       saveButton: 'Save',
-      cancelButton: 'Cancel',
+      cancelButton: 'Cancelar',
       deleteButton: 'Yes',
       addServiceButton: 'Add Service',
       addServiceItemNamePlaceholder: 'Service name',
@@ -438,8 +437,8 @@ export const translations: Record<Locale, Translation> = {
     lodgeConfigModal: {
       title: 'Lodge Settings',
       description: 'Update the general information displayed to guests.',
-      logoLabel: 'Logo URL',
-      logoPlaceholder: 'Paste the logo image URL',
+      logoLabel: 'Logo',
+      logoPlaceholder: 'Select an image',
       whatsappLabel: 'WhatsApp (numbers only with DDD)',
       whatsappPlaceholder: 'Ex: 31988887777',
       breakfastHoursLabel: 'Breakfast Hours',
