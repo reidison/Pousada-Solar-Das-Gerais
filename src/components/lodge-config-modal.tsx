@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -19,7 +20,7 @@ import { useDoc, useFirestore, useMemoFirebase, useFirebase } from '@/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import type { LodgeInfo } from '@/types/lodge-info';
-import { Settings, Loader2, Upload, Image as ImageIcon } from 'lucide-react';
+import { Settings, Loader2, Upload, Image as ImageIcon, Check } from 'lucide-react';
 import Image from 'next/image';
 
 export function LodgeConfigModal() {
@@ -34,7 +35,7 @@ export function LodgeConfigModal() {
     () => (firestore ? doc(firestore, 'lodge_info', 'main') : null),
     [firestore]
   );
-  const { data: lodgeInfo, isLoading } = useDoc<LodgeInfo>(lodgeInfoRef);
+  const { data: lodgeInfo, isLoading: isInitialLoading } = useDoc<LodgeInfo>(lodgeInfoRef);
 
   const [formData, setFormData] = useState({
     logoUrl: '',
@@ -46,9 +47,10 @@ export function LodgeConfigModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadComplete, setUploadComplete] = useState(false);
 
   useEffect(() => {
-    if (lodgeInfo) {
+    if (lodgeInfo && !isUploading && !isSaving) {
       setFormData({
         logoUrl: lodgeInfo.logoUrl || '',
         whatsappNumber: lodgeInfo.whatsappNumber || '',
@@ -56,29 +58,43 @@ export function LodgeConfigModal() {
         breakfastLocation: lodgeInfo.breakfastLocation || '',
       });
     }
-  }, [lodgeInfo]);
+  }, [lodgeInfo, isUploading, isSaving]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !storage) return;
 
+    // Limites básicos de segurança (ex: 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      toast({
+        variant: "destructive",
+        title: "Arquivo muito grande",
+        description: "O logotipo deve ter no máximo 2MB.",
+      });
+      return;
+    }
+
     setIsUploading(true);
+    setUploadComplete(false);
+    
     try {
-      const storageRef = ref(storage, `lodge/logo_${Date.now()}`);
+      const storageRef = ref(storage, `lodge/logo_${Date.now()}_${file.name}`);
       const snapshot = await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(snapshot.ref);
       
       setFormData(prev => ({ ...prev, logoUrl: downloadURL }));
+      setUploadComplete(true);
+      
       toast({
-        title: "Upload concluído",
-        description: "A imagem do logo foi carregada com sucesso.",
+        title: "Upload concluído!",
+        description: "A nova imagem já está pronta. Não esqueça de Salvar as alterações.",
       });
     } catch (error) {
       console.error("Erro no upload:", error);
       toast({
         variant: "destructive",
         title: "Erro no upload",
-        description: "Não foi possível carregar a imagem.",
+        description: "Não foi possível carregar a imagem. Tente novamente.",
       });
     } finally {
       setIsUploading(false);
@@ -96,6 +112,7 @@ export function LodgeConfigModal() {
         description: t.successToastDescription,
       });
       setIsOpen(false);
+      setUploadComplete(false);
     } catch (error) {
       console.error("Erro ao salvar configurações:", error);
       toast({
@@ -111,7 +128,7 @@ export function LodgeConfigModal() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
+        <Button variant="outline" size="sm" className="gap-2 shadow-sm border-primary/20 hover:border-primary/50 transition-colors">
           <Settings size={16} />
           {t.adminButton}
         </Button>
@@ -125,48 +142,61 @@ export function LodgeConfigModal() {
         </DialogHeader>
         <div className="grid gap-6 py-4">
           <div className="grid gap-3">
-            <Label>{t.logoLabel}</Label>
-            <div className="flex items-center gap-4">
-              <div className="relative h-20 w-20 border rounded-md overflow-hidden bg-muted flex items-center justify-center">
+            <Label className="text-primary font-semibold">{t.logoLabel}</Label>
+            <div className="flex flex-col sm:flex-row items-center gap-6 p-4 border rounded-lg bg-muted/5">
+              <div className="relative h-24 w-24 border-2 border-dashed rounded-lg overflow-hidden bg-white flex items-center justify-center shadow-inner">
                 {formData.logoUrl ? (
                   <Image 
                     src={formData.logoUrl} 
                     alt="Logo Preview" 
                     fill 
-                    className="object-contain"
+                    unoptimized={true}
+                    className="object-contain p-2"
                   />
                 ) : (
-                  <ImageIcon className="text-muted-foreground" size={32} />
+                  <ImageIcon className="text-muted-foreground opacity-30" size={40} />
+                )}
+                {isUploading && (
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-sm">
+                    <Loader2 className="text-white animate-spin" size={24} />
+                  </div>
                 )}
               </div>
-              <div className="flex-1 space-y-2">
+              <div className="flex-1 space-y-3 w-full">
                 <input
                   type="file"
                   ref={fileInputRef}
                   onChange={handleFileChange}
-                  accept="image/*"
+                  accept="image/png,image/jpeg,image/webp"
                   className="hidden"
                 />
                 <Button 
                   type="button" 
-                  variant="secondary" 
+                  variant={uploadComplete ? "outline" : "secondary"} 
                   size="sm" 
-                  className="w-full gap-2"
+                  className="w-full gap-2 transition-all"
                   disabled={isUploading}
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  {isUploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
-                  {isUploading ? "Enviando..." : "Alterar Logotipo"}
+                  {isUploading ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : uploadComplete ? (
+                    <Check size={16} className="text-green-600" />
+                  ) : (
+                    <Upload size={16} />
+                  )}
+                  {isUploading ? "Enviando..." : uploadComplete ? "Logotipo Alterado!" : "Selecionar Arquivo"}
                 </Button>
-                <p className="text-[10px] text-muted-foreground text-center">
-                  Recomendado: PNG ou JPG com fundo transparente ou branco.
+                <p className="text-[11px] text-muted-foreground leading-tight text-center sm:text-left">
+                  Formatos aceitos: PNG, JPG ou WebP.<br/>
+                  A imagem aparecerá aqui no preview assim que o upload terminar.
                 </p>
               </div>
             </div>
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="whatsapp">{t.whatsappLabel}</Label>
+            <Label htmlFor="whatsapp" className="text-primary font-semibold">{t.whatsappLabel}</Label>
             <Input
               id="whatsapp"
               placeholder={t.whatsappPlaceholder}
@@ -175,7 +205,7 @@ export function LodgeConfigModal() {
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="breakfastHours">{t.breakfastHoursLabel}</Label>
+            <Label htmlFor="breakfastHours" className="text-primary font-semibold">{t.breakfastHoursLabel}</Label>
             <Input
               id="breakfastHours"
               placeholder={t.breakfastHoursPlaceholder}
@@ -184,7 +214,7 @@ export function LodgeConfigModal() {
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="breakfastLocation">{t.breakfastLocationLabel}</Label>
+            <Label htmlFor="breakfastLocation" className="text-primary font-semibold">{t.breakfastLocationLabel}</Label>
             <Input
               id="breakfastLocation"
               placeholder={t.breakfastLocationPlaceholder}
@@ -193,8 +223,11 @@ export function LodgeConfigModal() {
             />
           </div>
         </div>
-        <DialogFooter>
-          <Button onClick={handleSave} disabled={isSaving || isLoading || isUploading}>
+        <DialogFooter className="gap-2">
+          <Button variant="ghost" onClick={() => setIsOpen(false)} disabled={isSaving}>
+            Cancelar
+          </Button>
+          <Button onClick={handleSave} disabled={isSaving || isInitialLoading || isUploading} className="min-w-[120px]">
             {isSaving ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
