@@ -231,7 +231,8 @@ export const translations: Record<Locale, Translation> = {
 4. TABAGISMO: É terminantemente proibido fumar nos quartos e dependências internas.
 5. ECONOMIA: Pedimos a gentileza de desligar luzes, TV e aparelhos ao sair do quarto.
 6. DANOS: Eventuais danos ao enxoval ou estrutura serão debitados no checkout.
-7. VISITAS: Visitas devem ser recebidas apenas nas áreas comuns da pousada.`,
+7. VISITAS: Visitas devem ser recebidas apenas nas áreas comuns da pousada.
+8. CHECK-OUT: No momento da saída, favor entregar a chave na recepção e verificar se não esqueceu nenhum pertence no quarto.`,
     },
     cityTourModal: {
       title: 'Programação do City Tour',
@@ -384,7 +385,8 @@ export const translations: Record<Locale, Translation> = {
 4. SMOKING: Smoking is strictly prohibited in rooms and indoor areas.
 5. CONSERVATION: Please turn off lights, TV, and appliances when leaving the room.
 6. DAMAGES: Any damage to linens or structure will be charged at checkout.
-7. VISITORS: Visitors should be received only in the common areas of the lodge.`,
+7. VISITORS: Visitors should be received only in the common areas of the lodge.
+8. CHECK-OUT: Upon departure, please return the key to the reception and check that no belongings are left behind in the room.`,
     },
     cityTourModal: {
       title: 'City Tour Schedule',
