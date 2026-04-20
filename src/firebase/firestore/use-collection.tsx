@@ -64,6 +64,7 @@ export function useCollection<T = any>(
 
     const unsubscribe = onSnapshot(
       memoizedTargetRefOrQuery,
+      { includeMetadataChanges: true },
       (snapshot: QuerySnapshot<DocumentData>) => {
         const results: ResultItemType[] = [];
         for (const doc of snapshot.docs) {
@@ -75,7 +76,6 @@ export function useCollection<T = any>(
       },
       (error: FirestoreError) => {
         // Only trigger global fatal error if it's specifically a permission denial.
-        // Other errors (like 'unavailable' due to timeout) should just be handled locally or logged.
         if (error.code === 'permission-denied') {
           const path: string =
             memoizedTargetRefOrQuery.type === 'collection'
@@ -89,12 +89,17 @@ export function useCollection<T = any>(
 
           setError(contextualError);
           errorEmitter.emit('permission-error', contextualError);
+          setData(null);
+        } else if (error.code === 'unavailable') {
+          // If the backend is unavailable, we don't clear data. 
+          // Firestore will keep serving from cache.
+          console.warn('Firestore is unavailable. Operating in offline mode.');
         } else {
-          console.warn('Firestore subscription warning (offline or transient):', error.message);
+          console.warn('Firestore subscription warning:', error.message);
           setError(error);
+          setData(null);
         }
         
-        setData(null);
         setIsLoading(false);
       }
     );

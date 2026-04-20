@@ -49,6 +49,7 @@ export function useDoc<T = any>(
 
     const unsubscribe = onSnapshot(
       memoizedDocRef,
+      { includeMetadataChanges: true },
       (snapshot: DocumentSnapshot<DocumentData>) => {
         if (snapshot.exists()) {
           setData({ ...(snapshot.data() as T), id: snapshot.id });
@@ -60,7 +61,6 @@ export function useDoc<T = any>(
       },
       (error: FirestoreError) => {
         // Only trigger global fatal error if it's specifically a permission denial.
-        // Other errors (like 'unavailable' due to network timeout) should be logged but not crash the app.
         if (error.code === 'permission-denied') {
           const contextualError = new FirestorePermissionError({
             operation: 'get',
@@ -68,12 +68,16 @@ export function useDoc<T = any>(
           });
           setError(contextualError);
           errorEmitter.emit('permission-error', contextualError);
+          setData(null);
+        } else if (error.code === 'unavailable') {
+          // Stay quiet and keep current data if possible.
+          console.warn('Firestore is unavailable. Operating in offline mode.');
         } else {
-          console.warn('Firestore document fetch warning (offline or transient):', error.message);
+          console.warn('Firestore document fetch warning:', error.message);
           setError(error);
+          setData(null);
         }
         
-        setData(null);
         setIsLoading(false);
       }
     );
