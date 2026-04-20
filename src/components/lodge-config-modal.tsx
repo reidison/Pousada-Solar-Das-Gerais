@@ -119,8 +119,8 @@ export function LodgeConfigModal() {
     }
   };
 
-  // Helper to validate URL before rendering preview
   const isValidUrl = (url: string) => {
+    if (!url) return false;
     try {
       new URL(url);
       return true;
@@ -155,7 +155,6 @@ export function LodgeConfigModal() {
               <div className="flex flex-col sm:flex-row items-center gap-4">
                 <div className="relative h-20 w-20 border rounded-md overflow-hidden bg-white flex items-center justify-center shadow-sm flex-shrink-0">
                   {formData.logoUrl && isValidUrl(formData.logoUrl) ? (
-                    /* Using standard img for preview to avoid strict Next.js Image URL validation while typing */
                     <img 
                       src={formData.logoUrl} 
                       alt="Logo Preview" 

@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -10,7 +11,7 @@ interface LogoProps extends Omit<React.ComponentProps<typeof Image>, 'alt' | 'sr
 
 export function Logo({ src, className, ...props }: LogoProps) {
   const [error, setError] = useState(false);
-  const fallbackLogo = "https://i.imgur.com/jRjiohM.png";
+  const fallbackLogo = "https://i.imgur.com/NDqUUNp.png";
 
   useEffect(() => {
     setError(false);
@@ -26,7 +27,15 @@ export function Logo({ src, className, ...props }: LogoProps) {
     }
   };
 
-  const finalSrc = !error && isUrlLikelyValid(src) ? src : fallbackLogo;
+  const processSrc = (url: string) => {
+    if (url.includes('imgur.com/') && !url.includes('i.imgur.com') && !url.includes('.png') && !url.includes('.jpg')) {
+      const id = url.split('/').pop();
+      return `https://i.imgur.com/${id}.png`;
+    }
+    return url;
+  };
+
+  const finalSrc = !error && isUrlLikelyValid(src) ? processSrc(src) : fallbackLogo;
 
   return (
     <div className={cn("relative flex items-center justify-center bg-white overflow-hidden", className)}>
@@ -36,7 +45,7 @@ export function Logo({ src, className, ...props }: LogoProps) {
         width={400}
         height={150}
         priority
-        unoptimized={finalSrc.includes('canva.link')}
+        unoptimized={finalSrc.includes('canva.link') || finalSrc.includes('imgur.com/')}
         className="w-full h-full object-contain"
         onError={() => setError(true)}
         {...props}

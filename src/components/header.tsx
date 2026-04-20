@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useLanguage } from '@/contexts/language-context';
@@ -26,8 +27,8 @@ export function Header() {
       <div className="container relative mx-auto px-4 h-20 flex items-center justify-between">
         <Link href="/" className="flex items-center">
           <Logo 
-            src={lodgeInfo?.logoUrl || "https://i.imgur.com/jRjiohM.png"} 
-            className="h-14 w-auto" 
+            src={lodgeInfo?.logoUrl || "https://i.imgur.com/NDqUUNp.png"} 
+            className="h-[59px] w-auto" 
           />
         </Link>
 
