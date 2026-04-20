@@ -76,6 +76,7 @@ export type Translation = {
     successToastTitle: string;
     successToastDescription: string;
     loading: string;
+    defaultText: string;
   };
   cityTourModal: {
     title: string;
@@ -218,12 +219,19 @@ export const translations: Record<Locale, Translation> = {
     },
     regulationModal: {
       title: 'Regulamento Interno',
-      description: 'Para garantir conforto, segurança e bem-estar de todos, solicitamos a leitura e cumprimento das normas a seguir',
+      description: 'Normas de convivência da Pousada Bela Vista',
       placeholder: 'Digite o regulamento aqui...',
       confirmButton: 'Confirmar',
       successToastTitle: 'Sucesso!',
       successToastDescription: 'O regulamento foi atualizado.',
       loading: 'Carregando...',
+      defaultText: `1. HORÁRIOS: Check-in a partir das 14:00h e Check-out até as 12:00h.
+2. CAFÉ DA MANHÃ: Servido diariamente das 07:30h às 10:00h no Salão de Café.
+3. SILÊNCIO: Solicitamos silêncio entre 22:00h e 08:00h para o conforto de todos.
+4. TABAGISMO: É terminantemente proibido fumar nos quartos e dependências internas.
+5. ECONOMIA: Pedimos a gentileza de desligar luzes, TV e aparelhos ao sair do quarto.
+6. DANOS: Eventuais danos ao enxoval ou estrutura serão debitados no checkout.
+7. VISITAS: Visitas devem ser recebidas apenas nas áreas comuns da pousada.`,
     },
     cityTourModal: {
       title: 'Programação do City Tour',
@@ -364,12 +372,19 @@ export const translations: Record<Locale, Translation> = {
     },
     regulationModal: {
       title: 'Internal Regulations',
-      description: 'To ensure the comfort, safety, and well-being of everyone, we request the reading and compliance with the following rules',
+      description: 'Code of conduct for Pousada Bela Vista',
       placeholder: 'Type the regulation here...',
       confirmButton: 'Confirm',
       successToastTitle: 'Success!',
       successToastDescription: 'The regulations have been updated.',
       loading: 'Loading...',
+      defaultText: `1. SCHEDULE: Check-in from 2:00 pm and Check-out by 12:00 pm.
+2. BREAKFAST: Served daily from 7:30 am to 10:00 am in the Breakfast Hall.
+3. SILENCE: We request silence between 10:00 pm and 8:00 am for everyone's comfort.
+4. SMOKING: Smoking is strictly prohibited in rooms and indoor areas.
+5. CONSERVATION: Please turn off lights, TV, and appliances when leaving the room.
+6. DAMAGES: Any damage to linens or structure will be charged at checkout.
+7. VISITORS: Visitors should be received only in the common areas of the lodge.`,
     },
     cityTourModal: {
       title: 'City Tour Schedule',

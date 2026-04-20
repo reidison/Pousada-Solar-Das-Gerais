@@ -44,16 +44,16 @@ export function RegulationModal() {
   useEffect(() => {
     if (lodgeInfo?.regulation) {
       setRegulationText(lodgeInfo.regulation);
+    } else {
+      setRegulationText(t.defaultText);
     }
-  }, [lodgeInfo]);
+  }, [lodgeInfo, t.defaultText]);
 
   const handleConfirm = () => {
     if (!lodgeInfoRef || !isAdmin) return;
 
     setIsSaving(true);
     
-    // Usamos setDoc com merge: true para evitar o erro "No document to update"
-    // caso o documento ainda não tenha sido criado.
     setDoc(lodgeInfoRef, {
       regulation: regulationText,
     }, { merge: true })
@@ -67,7 +67,6 @@ export function RegulationModal() {
       errorEmitter.emit('permission-error', permissionError);
     });
 
-    // Feedback visual otimista e imediato
     toast({
       title: t.successToastTitle,
       description: t.successToastDescription,
@@ -106,9 +105,7 @@ export function RegulationModal() {
           ) : (
             <ScrollArea className="h-[400px] w-full rounded-md border p-4 bg-muted/20">
               <div className="whitespace-pre-wrap text-sm leading-relaxed text-foreground">
-                {regulationText || (
-                    <span className="italic text-muted-foreground">O regulamento ainda não foi cadastrado.</span>
-                )}
+                {regulationText || t.defaultText}
               </div>
             </ScrollArea>
           )}
