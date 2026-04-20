@@ -20,7 +20,7 @@ import { useDoc, useFirestore, useMemoFirebase, useFirebase } from '@/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import type { LodgeInfo } from '@/types/lodge-info';
-import { Settings, Loader2, Upload, Image as ImageIcon, Check, Link as LinkIcon } from 'lucide-react';
+import { Settings, Loader2, Upload, Image as ImageIcon, Link as LinkIcon } from 'lucide-react';
 
 export function LodgeConfigModal() {
   const { storage } = useFirebase();
@@ -119,14 +119,12 @@ export function LodgeConfigModal() {
     }
   };
 
-  const isValidUrl = (url: string) => {
-    if (!url) return false;
-    try {
-      new URL(url);
-      return true;
-    } catch {
-      return url.startsWith('/') || url.startsWith('data:');
+  const processImgurUrl = (url: string) => {
+    if (url.includes('imgur.com/') && !url.includes('i.imgur.com')) {
+      const id = url.split('/').pop()?.replace('a/', '');
+      if (id && id.length > 3) return `https://i.imgur.com/${id}.png`;
     }
+    return url;
   };
 
   return (
@@ -153,14 +151,14 @@ export function LodgeConfigModal() {
             
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row items-center gap-4">
-                <div className="relative h-20 w-20 border rounded-md overflow-hidden bg-transparent flex items-center justify-center shadow-sm flex-shrink-0">
-                  {formData.logoUrl && isValidUrl(formData.logoUrl) ? (
+                <div className="relative h-20 w-20 border rounded-md overflow-hidden flex items-center justify-center bg-white shadow-sm flex-shrink-0">
+                  {formData.logoUrl ? (
                     <img 
-                      src={formData.logoUrl} 
+                      src={processImgurUrl(formData.logoUrl)} 
                       alt="Logo Preview" 
                       className="w-full h-full object-contain p-1"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
+                        (e.target as HTMLImageElement).src = "https://i.imgur.com/NDqUUNp.png";
                       }}
                     />
                   ) : (
@@ -203,7 +201,7 @@ export function LodgeConfigModal() {
                     className="hidden"
                   />
                   <p className="text-[10px] text-muted-foreground leading-tight italic">
-                    Insira uma URL direta ou faça upload. Formatos: PNG, JPG, WebP (Máx 2MB).
+                    Use links diretos (.png/.jpg) ou faça upload. Links do Imgur são convertidos automaticamente.
                   </p>
                 </div>
               </div>
