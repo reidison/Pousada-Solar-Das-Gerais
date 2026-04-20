@@ -1,35 +1,18 @@
+
 'use client';
 
-import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
-import { doc } from 'firebase/firestore';
-import { Logo } from '@/components/icons/logo';
-import type { LodgeInfo } from '@/types/lodge-info';
-import { BrazilFlagIcon } from '@/components/icons/brazil-flag-icon';
-import { UsaFlagIcon } from '@/components/icons/usa-flag-icon';
 import { useLanguage } from '@/contexts/language-context';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { BrazilFlagIcon } from '@/components/icons/brazil-flag-icon';
+import { UsaFlagIcon } from '@/components/icons/usa-flag-icon';
 
 export function Header() {
-  const firestore = useFirestore();
-  const { translations } = useLanguage();
-  const lodgeInfoRef = useMemoFirebase(
-    () => (firestore ? doc(firestore, 'lodge_info', 'main') : null),
-    [firestore]
-  );
-  const { data: lodgeInfo } = useDoc<LodgeInfo>(lodgeInfoRef);
-
-  // Logo padrão da Pousada Bela Vista
-  const logoUrl = lodgeInfo?.logoUrl || "https://i.imgur.com/jRjiohM.png";
-  
   const { language, setLanguage } = useLanguage();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-white shadow-sm border-b">
-      <div className="container relative mx-auto px-4 h-20 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Logo src={logoUrl} className="h-[59px] w-auto object-contain" />
-        </div>
+      <div className="container relative mx-auto px-4 h-20 flex items-center justify-end">
         <div className="flex items-center gap-2">
             <Button
                 variant="ghost"
