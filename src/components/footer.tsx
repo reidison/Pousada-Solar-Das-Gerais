@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Instagram, Lock } from 'lucide-react';
@@ -38,13 +37,13 @@ export function Footer() {
           </div>
           <div className="text-center">
              <a 
-              href="https://www.instagram.com/pousadabelavista" 
+              href="https://www.instagram.com/pousada.belavistaop" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-[10px] font-semibold hover:text-accent transition-colors"
             >
               <Instagram size={20} />
-              <span>@pousadabelavista</span>
+              <span>@pousada.belavistaop</span>
             </a>
           </div>
         </div>
