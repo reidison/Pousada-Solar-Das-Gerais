@@ -100,8 +100,16 @@ export function LodgeConfigModal() {
     if (!lodgeInfoRef) return;
     setIsSaving(true);
     
+    // Trim de todos os campos para evitar erros de inicialização de imagem
+    const trimmedData = {
+      logoUrl: formData.logoUrl.trim(),
+      whatsappNumber: formData.whatsappNumber.trim(),
+      breakfastHours: formData.breakfastHours.trim(),
+      breakfastLocation: formData.breakfastLocation.trim(),
+    };
+    
     try {
-      await setDoc(lodgeInfoRef, formData, { merge: true });
+      await setDoc(lodgeInfoRef, trimmedData, { merge: true });
       toast({
         title: t.successToastTitle,
         description: t.successToastDescription,
@@ -117,15 +125,6 @@ export function LodgeConfigModal() {
     } finally {
       setIsSaving(false);
     }
-  };
-
-  const processImgurUrl = (url: string) => {
-    if (!url) return "https://i.imgur.com/NDqUUNp.png";
-    if (url.includes('imgur.com/') && !url.includes('i.imgur.com')) {
-      const id = url.split('/').pop()?.replace('a/', '');
-      if (id && id.length > 3) return `https://i.imgur.com/${id}.png`;
-    }
-    return url;
   };
 
   return (
@@ -153,9 +152,9 @@ export function LodgeConfigModal() {
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row items-center gap-4">
                 <div className="relative h-20 w-20 border rounded-md overflow-hidden flex items-center justify-center bg-white shadow-sm flex-shrink-0">
-                  {formData.logoUrl ? (
+                  {formData.logoUrl.trim() ? (
                     <img 
-                      src={processImgurUrl(formData.logoUrl)} 
+                      src={formData.logoUrl.trim()} 
                       alt="Logo Preview" 
                       className="w-full h-full object-contain p-1"
                       onError={(e) => {
@@ -202,7 +201,7 @@ export function LodgeConfigModal() {
                     className="hidden"
                   />
                   <p className="text-[10px] text-muted-foreground leading-tight italic">
-                    Use links diretos (.png/.jpg) ou faça upload. Links do Imgur são convertidos automaticamente.
+                    Use links diretos (.png/.jpg) ou faça upload. Links do Imgur são convertidos automaticamente no cabeçalho.
                   </p>
                 </div>
               </div>

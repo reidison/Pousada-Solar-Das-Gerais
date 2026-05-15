@@ -20,21 +20,25 @@ export function Logo({ src, className, ...props }: LogoProps) {
   const processSrc = (url: string) => {
     if (!url) return fallbackLogo;
     
+    // Remove espaços em branco no início e fim para evitar erro do Next.js Image
+    const trimmedUrl = url.trim();
+    if (!trimmedUrl) return fallbackLogo;
+    
     // Se já for um link direto de imagem, retorna ele mesmo
-    if (url.match(/\.(jpeg|jpg|gif|png|webp)$/) !== null || url.includes('i.imgur.com')) {
-      return url;
+    if (trimmedUrl.match(/\.(jpeg|jpg|gif|png|webp)$/) !== null || trimmedUrl.includes('i.imgur.com')) {
+      return trimmedUrl;
     }
 
     // Converte links de álbuns ou páginas do Imgur para links diretos de imagem (.png)
-    if (url.includes('imgur.com/')) {
-      const parts = url.split('/');
+    if (trimmedUrl.includes('imgur.com/')) {
+      const parts = trimmedUrl.split('/');
       const id = parts[parts.length - 1] || parts[parts.length - 2];
       const cleanId = id.replace('a/', '').split('?')[0].split('#')[0];
       if (cleanId && cleanId.length > 3) {
         return `https://i.imgur.com/${cleanId}.png`;
       }
     }
-    return url;
+    return trimmedUrl;
   };
 
   const finalSrc = !error ? processSrc(src) : fallbackLogo;
