@@ -1,4 +1,3 @@
-
 export type Locale = 'pt' | 'en';
 
 export type Translation = {
@@ -133,8 +132,6 @@ export type Translation = {
   lodgeConfigModal: {
     title: string;
     description: string;
-    logoLabel: string;
-    logoPlaceholder: string;
     whatsappLabel: string;
     whatsappPlaceholder: string;
     breakfastHoursLabel: string;
@@ -282,8 +279,6 @@ export const translations: Record<Locale, Translation> = {
     lodgeConfigModal: {
       title: 'Configurações da Pousada',
       description: 'Atualize as informações gerais que aparecem para os hóspedes.',
-      logoLabel: 'Logotipo',
-      logoPlaceholder: 'Selecione uma imagem',
       whatsappLabel: 'WhatsApp (apenas números com DDD)',
       whatsappPlaceholder: 'Ex: 31992580325',
       breakfastHoursLabel: 'Horário do Café',
@@ -429,8 +424,6 @@ export const translations: Record<Locale, Translation> = {
     lodgeConfigModal: {
       title: 'Lodge Settings',
       description: 'Update the general information displayed to guests.',
-      logoLabel: 'Logo',
-      logoPlaceholder: 'Select an image',
       whatsappLabel: 'WhatsApp (numbers only with DDD)',
       whatsappPlaceholder: 'Ex: 31992580325',
       breakfastHoursLabel: 'Breakfast Hours',
