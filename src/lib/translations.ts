@@ -226,18 +226,7 @@ export const translations: Record<Locale, Translation> = {
       successToastTitle: 'Sucesso!',
       successToastDescription: 'O regulamento foi atualizado.',
       loading: 'Carregando...',
-      defaultText: `INTERNET – WI-FI
-Rede: Pousada bela vista 
-Senha: pousada2026
-
-NORMAS E ORIENTAÇÕES:
-1. HORÁRIOS: Check-in a partir das 14:00h e Check-out até as 12:00h.
-2. CAFÉ DA MANHÃ: Servido diariamente das 07:30h às 10:00h no Salão de Café.
-3. SILÊNCIO: Solicitamos silêncio entre 22:00h e 08:00h para o conforto de todos.
-4. TABAGISMO: É terminantemente proibido fumar nos quartos e dependências internas.
-5. ORIENTAÇÕES DE SAÍDA: Ao sair, deixar a chave na recepção. No check out, verifique se não está esquecendo algum pertence no quarto.
-6. ECONOMIA: Pedimos a gentileza de desligar luzes, TV e aparelhos ao sair do quarto.
-7. DANOS: Eventuais danos ao enxoval ou estrutura serão debitados no checkout.`,
+      defaultText: `INTERNET – WI-FI\nRede: Pousada bela vista \nSenha: pousada2026\n\nNORMAS E ORIENTAÇÕES:\n1. HORÁRIOS: Check-in a partir das 14:00h e Check-out até as 12:00h.\n2. CAFÉ DA MANHÃ: Servido diariamente das 07:30h às 10:00h no Salão de Café.\n3. SILÊNCIO: Solicitamos silêncio entre 22:00h e 08:00h para o conforto de todos.\n4. TABAGISMO: É terminantemente proibido fumar nos quartos e dependências internas.\n5. ORIENTAÇÕES DE SAÍDA: Ao sair, deixar a chave na recepção. No check out, verifique se não está esquecendo algum pertence no quarto.\n6. ECONOMIA: Pedimos a gentileza de desligar luzes, TV e aparelhos ao sair do quarto.\n7. DANOS: Eventuais danos ao enxoval ou estrutura serão debitados no checkout.`,
     },
     cityTourModal: {
       title: 'Programação do City Tour',
@@ -384,18 +373,7 @@ NORMAS E ORIENTAÇÕES:
       successToastTitle: 'Success!',
       successToastDescription: 'The regulations have been updated.',
       loading: 'Loading...',
-      defaultText: `INTERNET – WI-FI
-Network: Pousada bela vista 
-Password: pousada2026
-
-RULES AND GUIDELINES:
-1. SCHEDULE: Check-in from 2:00 pm and Check-out by 12:00 pm.
-2. BREAKFAST: Served daily from 7:30 am to 10:00 am in the Breakfast Hall.
-3. SILENCE: We request silence between 10:00 pm and 8:00 am for everyone's comfort.
-4. SMOKING: Smoking is strictly prohibited in rooms and indoor areas.
-5. CHECK-OUT GUIDELINES: When leaving, please leave the key at the reception. At check-out, make sure you are not forgetting any belongings in the room.
-6. CONSERVATION: Please turn off lights, TV, and appliances when leaving the room.
-7. DAMAGES: Any damage to linens or structure will be charged at checkout.`,
+      defaultText: `INTERNET – WI-FI\nNetwork: Pousada bela vista \nPassword: pousada2026\n\nRULES AND GUIDELINES:\n1. SCHEDULE: Check-in from 2:00 pm and Check-out by 12:00 pm.\n2. BREAKFAST: Served daily from 7:30 am to 10:00 am in the Breakfast Hall.\n3. SILENCE: We request silence between 10:00 pm and 8:00 am for everyone's comfort.\n4. SMOKING: Smoking is strictly prohibited in rooms and indoor areas.\n5. CHECK-OUT GUIDELINES: When leaving, please leave the key at the reception. At check-out, make sure you are not forgetting any belongings in the room.\n6. CONSERVATION: Please turn off lights, TV, and appliances when leaving the room.\n7. DAMAGES: Any damage to linens or structure will be charged at checkout.`,
     },
     cityTourModal: {
       title: 'City Tour Schedule',

@@ -18,7 +18,7 @@ import type { LodgeInfo } from '@/types/lodge-info';
 import { useLanguage } from '@/contexts/language-context';
 import Link from 'next/link';
 
-export default function SolarInfoHubPage() {
+export default function Page() {
   const firestore = useFirestore();
   const { translations } = useLanguage();
   const { user } = useUser();
@@ -39,8 +39,8 @@ export default function SolarInfoHubPage() {
       title: translations.infoCards.breakfast.title,
       content: (
         <>
-          <p>{lodgeInfo?.breakfastHours ? lodgeInfo.breakfastHours : translations.infoCards.breakfast.line1}</p>
-          <p>{lodgeInfo?.breakfastLocation ? lodgeInfo.breakfastLocation : translations.infoCards.breakfast.line2}</p>
+          <p>{lodgeInfo?.breakfastHours || translations.infoCards.breakfast.line1}</p>
+          <p>{lodgeInfo?.breakfastLocation || translations.infoCards.breakfast.line2}</p>
         </>
       ),
     },
