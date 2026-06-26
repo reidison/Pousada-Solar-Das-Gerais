@@ -149,7 +149,7 @@ export type Translation = {
 export const translations: Record<Locale, Translation> = {
   pt: {
     welcomeMessage: {
-      title: "Bem-vindo(a) à Pousada Bela Vista!",
+      title: "Bem-vindo(a) à Pousada Solar das Gerais!",
       subtitle: "Horários, comodidades e informações para você aproveitar ao máximo sua estadia conosco.",
     },
     infoCards: {
@@ -162,8 +162,8 @@ export const translations: Record<Locale, Translation> = {
         title: "Wi-Fi",
         line1: "Rede:",
         line2: "Senha:",
-        networkName: "Pousada bela vista",
-        password: "pousada2026",
+        networkName: "Pousada_Solar_Das_Gerais",
+        password: "pousada2023",
       },
       mainAccess: {
         title: "Acesso Principal",
@@ -217,13 +217,13 @@ export const translations: Record<Locale, Translation> = {
     },
     regulationModal: {
       title: 'Regulamento Interno',
-      description: 'Normas de convivência da Pousada Bela Vista',
+      description: 'Normas de convivência da Pousada Solar das Gerais',
       placeholder: 'Digite o regulamento aqui...',
       confirmButton: 'Confirmar',
       successToastTitle: 'Sucesso!',
       successToastDescription: 'O regulamento foi atualizado.',
       loading: 'Carregando...',
-      defaultText: `INTERNET – WI-FI\nRede: Pousada bela vista \nSenha: pousada2026\n\nNORMAS E ORIENTAÇÕES:\n1. HORÁRIOS: Check-in a partir das 14:00h e Check-out até as 12:00h.\n2. CAFÉ DA MANHÃ: Servido diariamente das 07:30h às 10:00h no Salão de Café.\n3. SILÊNCIO: Solicitamos silêncio entre 22:00h e 08:00h para o conforto de todos.\n4. TABAGISMO: É terminantemente proibido fumar nos quartos e dependências internas.\n5. ORIENTAÇÕES DE SAÍDA: Ao sair, deixar a chave na recepção. No check out, verifique se não está esquecendo algum pertence no quarto.\n6. ECONOMIA: Pedimos a gentileza de desligar luzes, TV e aparelhos ao sair do quarto.\n7. DANOS: Eventuais danos ao enxoval ou estrutura serão debitados no checkout.`,
+      defaultText: `INTERNET – WI-FI\nRede: Pousada_Solar_Das_Gerais \nSenha: pousada2023\n\nNORMAS E ORIENTAÇÕES:\n1. HORÁRIOS: Check-in a partir das 14:00h e Check-out até as 12:00h.\n2. CAFÉ DA MANHÃ: Servido diariamente das 07:30h às 10:00h no Salão de Café.\n3. SILÊNCIO: Solicitamos silêncio entre 22:00h e 08:00h para o conforto de todos.\n4. TABAGISMO: É terminantemente proibido fumar nos quartos e dependências internas.\n5. ORIENTAÇÕES DE SAÍDA: Ao sair, deixar a chave na recepção. No check out, verifique se não está esquecendo algum pertence no quarto.\n6. ECONOMIA: Pedimos a gentileza de desligar luzes, TV e aparelhos ao sair do quarto.\n7. DANOS: Eventuais danos ao enxoval ou estrutura serão debitados no checkout.`,
     },
     cityTourModal: {
       title: 'Programação do City Tour',
@@ -294,7 +294,7 @@ export const translations: Record<Locale, Translation> = {
   },
   en: {
     welcomeMessage: {
-      title: "Welcome to Pousada Bela Vista!",
+      title: "Welcome to Pousada Solar das Gerais!",
       subtitle: "Schedules, amenities, and information for you to make the most of your stay with us.",
     },
     infoCards: {
@@ -307,8 +307,8 @@ export const translations: Record<Locale, Translation> = {
         title: "Wi-Fi",
         line1: "Network:",
         line2: "Password:",
-        networkName: "Pousada bela vista",
-        password: "pousada2026",
+        networkName: "Pousada_Solar_Das_Gerais",
+        password: "pousada2023",
       },
       mainAccess: {
         title: "Main Access",
@@ -362,13 +362,13 @@ export const translations: Record<Locale, Translation> = {
     },
     regulationModal: {
       title: 'Internal Regulations',
-      description: 'Code of conduct for Pousada Bela Vista',
+      description: 'Code of conduct for Pousada Solar das Gerais',
       placeholder: 'Type the regulation here...',
       confirmButton: 'Confirm',
       successToastTitle: 'Success!',
       successToastDescription: 'The regulations have been updated.',
       loading: 'Loading...',
-      defaultText: `INTERNET – WI-FI\nNetwork: Pousada bela vista \nPassword: pousada2026\n\nRULES AND GUIDELINES:\n1. SCHEDULE: Check-in from 2:00 pm and Check-out by 12:00 pm.\n2. BREAKFAST: Served daily from 7:30 am to 10:00 am in the Breakfast Hall.\n3. SILENCE: We request silence between 10:00 pm and 8:00 am for everyone's comfort.\n4. SMOKING: Smoking is strictly prohibited in rooms and indoor areas.\n5. CHECK-OUT GUIDELINES: When leaving, please leave the key at the reception. At check-out, make sure you are not forgetting any belongings in the room.\n6. CONSERVATION: Please turn off lights, TV, and appliances when leaving the room.\n7. DAMAGES: Any damage to linens or structure will be charged at checkout.`,
+      defaultText: `INTERNET – WI-FI\nNetwork: Pousada_Solar_Das_Gerais \nPassword: pousada2023\n\nRULES AND GUIDELINES:\n1. SCHEDULE: Check-in from 2:00 pm and Check-out by 12:00 pm.\n2. BREAKFAST: Served daily from 7:30 am to 10:00 am in the Breakfast Hall.\n3. SILENCE: We request silence between 10:00 pm and 8:00 am for everyone's comfort.\n4. SMOKING: Smoking is strictly prohibited in rooms and indoor areas.\n5. CHECK-OUT GUIDELINES: When leaving, please leave the key at the reception. At check-out, make sure you are not forgetting any belongings in the room.\n6. CONSERVATION: Please turn off lights, TV, and appliances when leaving the room.\n7. DAMAGES: Any damage to linens or structure will be charged at checkout.`,
     },
     cityTourModal: {
       title: 'City Tour Schedule',
