@@ -2,7 +2,9 @@
 
 import React from 'react';
 import { useLanguage } from '@/contexts/language-context';
-import Image from 'next/image';
+import { useUser } from '@/firebase';
+import { LodgeConfigModal } from '@/components/lodge-config-modal';
+import { Camera } from 'lucide-react';
 
 interface WelcomeMessageProps {
   customTitle?: string;
@@ -12,23 +14,45 @@ interface WelcomeMessageProps {
 
 export function WelcomeMessage({ customTitle, customSubtitle, customHeroImage }: WelcomeMessageProps = {}) {
   const { translations } = useLanguage();
+  const { user } = useUser();
+  const isAdmin = user && !user.isAnonymous;
 
   const title = customTitle || translations.welcomeMessage.title;
   const subtitle = customSubtitle || translations.welcomeMessage.subtitle;
-  const heroSrc = customHeroImage || "/images/hero-ouro-preto.png";
+  const heroSrc = customHeroImage?.trim() ? customHeroImage : undefined;
 
   return (
     <div className="relative -mx-4 -mt-6 sm:-mx-8 md:-mx-12 mb-10 overflow-hidden">
-      {/* Container com Imagem de Ouro Preto e Degradê */}
+      {/* Container da Hero (espaço preservado para receber upload de imagens) */}
       <div className="relative min-h-[320px] sm:min-h-[380px] md:min-h-[420px] w-full flex items-center">
-        {/* Imagem de Fundo Espelhada para o texto ocupar o lado esquerdo */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
-          <img
-            src={heroSrc}
-            alt="Paisagem histórica de Ouro Preto"
-            className="w-full h-full object-cover object-center transform -scale-x-100"
-          />
-        </div>
+        {/* Imagem de Fundo (renderizada exclusivamente caso haja imagem carregada via upload) */}
+        {heroSrc && (
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            <img
+              src={heroSrc}
+              alt="Capa da Pousada"
+              className="w-full h-full object-cover object-center transform -scale-x-100"
+            />
+          </div>
+        )}
+
+        {/* Atalho de Upload para o Administrador */}
+        {isAdmin && (
+          <div className="absolute top-4 right-4 z-30">
+            <LodgeConfigModal
+              trigger={
+                <button
+                  type="button"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-white/90 hover:bg-white text-solar-navy text-xs font-semibold rounded-lg shadow-sm backdrop-blur-xs transition-all cursor-pointer border border-solar-navy/10"
+                  title="Configurar imagem de capa"
+                >
+                  <Camera size={14} />
+                  <span>{heroSrc ? 'Alterar Capa' : 'Enviar Capa'}</span>
+                </button>
+              }
+            />
+          </div>
+        )}
 
         {/* Texto de Boas-Vindas */}
         <div className="container relative z-10 mx-auto px-6 sm:px-10 py-12 md:py-16 max-w-3xl">
