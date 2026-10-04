@@ -21,6 +21,21 @@ export function WelcomeMessage({ customTitle, customSubtitle, customHeroImage }:
   const subtitle = customSubtitle || translations.welcomeMessage.subtitle;
   const heroSrc = customHeroImage?.trim() ? customHeroImage : undefined;
 
+  const renderTitle = (text: string) => {
+    const match = text.match(/^(.*?)(Pousada Solar [dD]as Gerais.*)$/i);
+    if (match) {
+      const prefix = match[1].trim();
+      const rest = match[2].trim();
+      return (
+        <>
+          {prefix && <span className="block sm:inline">{prefix}</span>}{' '}
+          <span className="block sm:inline">{rest}</span>
+        </>
+      );
+    }
+    return text;
+  };
+
   return (
     <div className="relative mb-8 sm:mb-10">
       {/* 1. Container da Hero (espaço para imagem de capa) com linha inferior bem fininha */}
@@ -69,7 +84,7 @@ export function WelcomeMessage({ customTitle, customSubtitle, customHeroImage }:
           Ouro Preto • Minas Gerais
         </div>
         <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold font-headline text-solar-navy leading-tight mb-2 tracking-tight">
-          {title}
+          {renderTitle(title)}
         </h1>
         {subtitle && (
           <p className="text-xs sm:text-sm md:text-base text-slate-600 font-medium leading-relaxed max-w-2xl">

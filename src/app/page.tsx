@@ -217,10 +217,12 @@ export default function Page() {
                   <MapPin size={22} />
                 </div>
                 <div>
-                  <h3 className="font-headline font-bold text-lg sm:text-xl text-white">
-                    Pousada Solar Das Gerais
+                  <h3 className="font-headline font-bold text-base sm:text-xl text-white leading-tight sm:leading-normal">
+                    <span className="block sm:inline">Pousada Solar</span>{' '}
+                    <span className="block sm:inline">Das</span>{' '}
+                    <span className="block sm:inline">Gerais</span>
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-300 mt-0.5">
+                  <p className="text-xs sm:text-sm text-slate-300 mt-1 leading-snug">
                     Rua Manuel Cabral, 119, centro - Ouro Preto
                   </p>
                 </div>
