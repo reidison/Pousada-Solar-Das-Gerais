@@ -93,11 +93,6 @@ export function Footer() {
           className="w-full h-12 sm:h-16 md:h-20 block"
           preserveAspectRatio="none"
         >
-          {/* Onda Amarela Dourada */}
-          <path
-            d="M0,50 C240,10 520,80 840,40 C1100,5 1300,60 1440,30 L1440,90 L0,90 Z"
-            fill="#F6B726"
-          />
           {/* Onda Azul Royal Escuro */}
           <path
             d="M0,60 C300,30 650,85 1020,45 C1240,25 1380,65 1440,50 L1440,90 L0,90 Z"

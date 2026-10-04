@@ -46,7 +46,7 @@ export function WelcomeMessage({ customTitle, customSubtitle, customHeroImage }:
           </p>
         </div>
 
-        {/* Ondas Orgânicas Decorativas Inferiores com Sol Nascente (Fiel ao Layout) */}
+        {/* Ondas Orgânicas Decorativas Inferiores (Fiel ao Layout) */}
         <div className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none leading-none">
           <svg
             viewBox="0 0 1440 160"
@@ -55,9 +55,6 @@ export function WelcomeMessage({ customTitle, customSubtitle, customHeroImage }:
             className="w-full h-16 sm:h-24 md:h-28 object-fill block"
             preserveAspectRatio="none"
           >
-            {/* Sol Dourado subindo atrás das colinas à direita */}
-            <circle cx="1180" cy="65" r="48" fill="#F6B726" />
-
             {/* Colina / Onda Azul Royal Escuro */}
             <path
               d="M0,80 C320,100 640,55 960,38 C1140,28 1320,44 1440,32 L1440,160 L0,160 Z"
