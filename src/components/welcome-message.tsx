@@ -28,9 +28,9 @@ export function WelcomeMessage({ customTitle, customSubtitle, customHeroImage }:
             alt="Paisagem histórica de Ouro Preto"
             className="w-full h-full object-cover object-center brightness-95 contrast-105 transform -scale-x-100"
           />
-          {/* Degradê Suave para destacar o texto */}
-          <div className="absolute inset-0 bg-gradient-to-r from-solar-cream via-solar-cream/90 to-transparent w-full md:w-3/4" />
-          <div className="absolute inset-0 bg-gradient-to-t from-solar-cream/70 via-transparent to-solar-cream/30" />
+          {/* Degradê Suave para destacar o texto (reduzido 30% para maior nitidez da paisagem) */}
+          <div className="absolute inset-0 bg-gradient-to-r from-solar-cream/70 via-solar-cream/55 to-transparent w-full md:w-3/5" />
+          <div className="absolute inset-0 bg-gradient-to-t from-solar-cream/45 via-transparent to-transparent" />
         </div>
 
         {/* Texto de Boas-Vindas */}
