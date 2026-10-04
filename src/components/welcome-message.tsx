@@ -38,8 +38,8 @@ export function WelcomeMessage({ customTitle, customSubtitle, customHeroImage }:
 
   return (
     <div className="relative mb-8 sm:mb-10">
-      {/* 1. Container da Hero (espaço para imagem de capa) com linha inferior bem fininha */}
-      <div className="relative -mx-4 sm:-mx-6 md:-mx-8 lg:-mx-12 overflow-hidden border-b border-[#113F52]">
+      {/* 1. Container da Hero (espaço para imagem de capa) sem bordas */}
+      <div className="relative -mx-4 sm:-mx-6 md:-mx-8 lg:-mx-12 overflow-hidden">
         <div className="relative h-44 sm:h-56 md:h-64 lg:h-72 w-full flex items-center justify-center bg-solar-cream/60">
           {/* Imagem de Fundo (renderizada exclusivamente caso haja imagem carregada via upload) */}
           {heroSrc ? (
