@@ -1,6 +1,6 @@
 'use client';
 
-import { Home, MapPin, Instagram, LogOut, Settings } from 'lucide-react';
+import { Instagram, LogOut, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { useUser, useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
@@ -17,12 +17,12 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative mt-16 pt-8 pb-0 overflow-hidden bg-transparent select-none border-t border-[#113F52]">
-      {/* Informações Principais do Rodapé */}
+    <footer className="relative mt-16 pt-6 pb-0 overflow-hidden bg-transparent select-none border-t border-[#113F52]">
+      {/* Informações Principais do Rodapé: Apenas admin, @pousadasolardasgeraisop e copyright */}
       <div className="container mx-auto px-4 sm:px-6 mb-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
           {/* Link Admin à Esquerda */}
-          <div className="flex items-center gap-2 order-2 md:order-1">
+          <div className="flex items-center gap-2">
             {isAdmin ? (
               <div className="flex items-center gap-2">
                 <LodgeConfigModal
@@ -54,28 +54,15 @@ export function Footer() {
             )}
           </div>
 
-          {/* Linha Centralizada: Pousada Solar Das Gerais | Ouro Preto - MG */}
-          <div className="flex flex-row items-center justify-center flex-wrap sm:flex-nowrap gap-1.5 sm:gap-2.5 font-semibold text-solar-navy order-1 md:order-2 text-center">
-            <span className="flex items-center gap-1.5 whitespace-nowrap text-xs sm:text-sm font-bold tracking-tight">
-              <Home size={14} className="text-solar-navy shrink-0" />
-              <span>Pousada Solar Das Gerais</span>
-            </span>
-            <span className="text-solar-navy/40">|</span>
-            <span className="flex items-center gap-1 text-solar-navy/80 whitespace-nowrap text-xs">
-              <MapPin size={13} className="text-solar-navy shrink-0" />
-              <span>Ouro Preto - MG</span>
-            </span>
-          </div>
-
-          {/* Redes Sociais e Copyright à Direita */}
-          <div className="flex items-center gap-3 text-slate-500 order-3">
+          {/* Redes Sociais (@pousadasolardasgeraisop) e Copyright à Direita */}
+          <div className="flex items-center gap-3 text-slate-500 font-medium">
             <a
               href="https://www.instagram.com/pousadasolardasgeraisop"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-solar-navy transition-colors font-medium"
+              className="flex items-center gap-1.5 hover:text-solar-navy transition-colors"
             >
-              <Instagram size={14} className="text-solar-navy" />
+              <Instagram size={14} className="text-solar-navy shrink-0" />
               <span>@pousadasolardasgeraisop</span>
             </a>
             <span className="opacity-30">•</span>
