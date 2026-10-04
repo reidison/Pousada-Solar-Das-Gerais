@@ -37,7 +37,7 @@ export function InfoCard({
         className
       )}
     >
-      <div className="p-5 sm:p-6 pb-2">
+      <div className="p-5 sm:p-6">
         {/* Ícone Circular com Fundo Suave Pastel */}
         <div className="flex items-center justify-between mb-4">
           <div
@@ -82,28 +82,6 @@ export function InfoCard({
             {children}
           </div>
         )}
-      </div>
-
-      {/* Onda Orgânica Decorativa no Rodapé do Cartão em Azul Petróleo #113F52 */}
-      <div className="mt-4 overflow-hidden leading-none pointer-events-none select-none">
-        <svg
-          viewBox="0 0 300 22"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-3 sm:h-3.5 block"
-          preserveAspectRatio="none"
-        >
-          {/* Onda sutil em azul petróleo */}
-          <path
-            d="M0,10 C70,22 150,0 230,14 C265,20 285,12 300,16 L300,22 L0,22 Z"
-            fill={waveAccentColor === '#F6B726' ? '#F6B726' : '#113F52'}
-          />
-          {/* Onda de base em azul petróleo #113F52 */}
-          <path
-            d="M0,16 C85,5 175,20 255,12 C275,10 290,14 300,16 L300,22 L0,22 Z"
-            fill="#0C2B3A"
-          />
-        </svg>
       </div>
     </Card>
   );

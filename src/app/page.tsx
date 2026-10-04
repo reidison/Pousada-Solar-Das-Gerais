@@ -72,7 +72,6 @@ export default function Page() {
                   title="Café da Manhã"
                   subtitle="Horários e local"
                   iconBgColor="bg-amber-100/80 text-solar-navy border border-[#113F52]"
-                  waveAccentColor="#F6B726"
                 />
               </div>
             }
@@ -90,7 +89,6 @@ export default function Page() {
                   title="Wi-Fi"
                   subtitle="Rede e senha"
                   iconBgColor="bg-solar-cream text-solar-navy border border-[#113F52]"
-                  waveAccentColor="#113F52"
                 />
               </div>
             }
@@ -104,7 +102,6 @@ export default function Page() {
               title="City Tour"
               subtitle="Agenda e instruções"
               iconBgColor="bg-solar-cream text-solar-navy border border-[#113F52]"
-              waveAccentColor="#113F52"
             />
           </Link>
 
@@ -116,7 +113,6 @@ export default function Page() {
               title="Loja"
               subtitle="Produtos da pousada"
               iconBgColor="bg-solar-cream text-solar-navy border border-[#113F52]"
-              waveAccentColor="#113F52"
             />
           </Link>
 
@@ -133,7 +129,6 @@ export default function Page() {
               title="Recepção"
               subtitle="Fale com a recepção no WhatsApp"
               iconBgColor="bg-amber-100/80 text-solar-navy border border-[#113F52]"
-              waveAccentColor="#F6B726"
             />
           </a>
 
@@ -147,7 +142,6 @@ export default function Page() {
                   title="Frigobar"
                   subtitle="Itens e preços"
                   iconBgColor="bg-solar-cream text-solar-navy border border-[#113F52]"
-                  waveAccentColor="#113F52"
                 />
               </div>
             }
@@ -163,7 +157,6 @@ export default function Page() {
                   title="Telefones úteis"
                   subtitle="Serviços locais"
                   iconBgColor="bg-solar-cream text-solar-navy border border-[#113F52]"
-                  waveAccentColor="#113F52"
                 />
               </div>
             }
@@ -179,7 +172,6 @@ export default function Page() {
                   title="Regulamento"
                   subtitle="Regras da pousada"
                   iconBgColor="bg-solar-cream text-solar-navy border border-[#113F52]"
-                  waveAccentColor="#113F52"
                 />
               </div>
             }
@@ -195,7 +187,6 @@ export default function Page() {
                   title="Boas-vindas com IA"
                   subtitle="Mensagem personalizada conforme o clima"
                   iconBgColor="bg-amber-100/80 text-solar-navy border border-[#113F52]"
-                  waveAccentColor="#F6B726"
                 />
               </div>
             }
