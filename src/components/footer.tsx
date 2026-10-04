@@ -70,13 +70,13 @@ export function Footer() {
           {/* Redes Sociais e Copyright à Direita */}
           <div className="flex items-center gap-3 text-slate-500 order-3">
             <a
-              href="https://www.instagram.com/pousadasolardasgerais"
+              href="https://www.instagram.com/pousadasolardasgeraisop"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 hover:text-solar-navy transition-colors font-medium"
             >
               <Instagram size={14} className="text-solar-navy" />
-              <span>@pousadasolardasgerais</span>
+              <span>@pousadasolardasgeraisop</span>
             </a>
             <span className="opacity-30">•</span>
             <span>&copy; {new Date().getFullYear()}</span>
