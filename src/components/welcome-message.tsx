@@ -26,22 +26,19 @@ export function WelcomeMessage({ customTitle, customSubtitle, customHeroImage }:
           <img
             src={heroSrc}
             alt="Paisagem histórica de Ouro Preto"
-            className="w-full h-full object-cover object-center brightness-95 contrast-105 transform -scale-x-100"
+            className="w-full h-full object-cover object-center transform -scale-x-100"
           />
-          {/* Degradê Suave para destacar o texto (reduzido 30% para maior nitidez da paisagem) */}
-          <div className="absolute inset-0 bg-gradient-to-r from-solar-cream/70 via-solar-cream/55 to-transparent w-full md:w-3/5" />
-          <div className="absolute inset-0 bg-gradient-to-t from-solar-cream/45 via-transparent to-transparent" />
         </div>
 
         {/* Texto de Boas-Vindas */}
         <div className="container relative z-10 mx-auto px-6 sm:px-10 py-12 md:py-16 max-w-3xl">
-          <div className="inline-block bg-solar-gold/25 border border-solar-gold/40 text-solar-navy px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-3">
+          <div className="inline-block bg-solar-gold text-solar-navy px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 shadow-sm">
             Ouro Preto • Minas Gerais
           </div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold font-headline text-solar-navy leading-tight mb-4 drop-shadow-xs">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold font-headline text-solar-navy leading-tight mb-4 drop-shadow-sm">
             {title}
           </h1>
-          <p className="text-base sm:text-lg text-solar-navy/85 font-medium max-w-xl leading-relaxed">
+          <p className="text-base sm:text-lg text-solar-navy font-medium max-w-xl leading-relaxed drop-shadow-xs">
             {subtitle}
           </p>
         </div>
