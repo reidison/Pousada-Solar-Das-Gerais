@@ -93,7 +93,7 @@ export function Header({ logoUrl }: HeaderProps = {}) {
               onClick={() => setMenuOpen(false)}
               className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-solar-navy font-medium hover:bg-solar-cream transition-colors"
             >
-              <ShoppingBag size={18} className="text-emerald-600" />
+              <ShoppingBag size={18} className="text-solar-green" />
               Lojinha da Pousada
             </Link>
             <Link

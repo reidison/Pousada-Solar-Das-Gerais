@@ -16,7 +16,7 @@ import {
   PhoneCall,
   BookText,
   Bot,
-  Lock,
+  MapPin,
   ChevronRight,
 } from 'lucide-react';
 import { WhatsappIcon } from '@/components/icons/whatsapp-icon';
@@ -89,8 +89,8 @@ export default function Page() {
                   customIconUrl={lodgeInfo?.cardIcons?.wifi}
                   title="Wi-Fi"
                   subtitle="Rede e senha"
-                  iconBgColor="bg-emerald-100/80 text-emerald-700"
-                  waveAccentColor="#265C49"
+                  iconBgColor="bg-blue-100/80 text-solar-green"
+                  waveAccentColor="#1E3A8A"
                 />
               </div>
             }
@@ -178,8 +178,8 @@ export default function Page() {
                   customIconUrl={lodgeInfo?.cardIcons?.regulation}
                   title="Regulamento"
                   subtitle="Regras da pousada"
-                  iconBgColor="bg-emerald-100/80 text-emerald-800"
-                  waveAccentColor="#15803D"
+                  iconBgColor="bg-blue-100/80 text-solar-green"
+                  waveAccentColor="#1E3A8A"
                 />
               </div>
             }
@@ -202,68 +202,39 @@ export default function Page() {
           />
         </div>
 
-        {/* Banner Horizontal do Modo Admin com Silhueta de Ouro Preto */}
+        {/* Banner Horizontal Institucional com Endereço e Silhueta de Ouro Preto */}
         <div className="mt-8 sm:mt-10">
-          {isAdmin ? (
-            <LodgeConfigModal
-              trigger={
-                <div className="cursor-pointer group relative bg-solar-navy text-white rounded-2xl p-5 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300 flex items-center justify-between overflow-hidden">
-                  <div className="flex items-center gap-4 z-10">
-                    <div className="w-12 h-12 rounded-full bg-solar-gold text-solar-navy flex items-center justify-center font-bold shadow-sm shrink-0">
-                      <Lock size={22} />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-headline font-bold text-lg text-white">
-                          Modo Admin Ativo
-                        </h3>
-                        <span className="text-[10px] bg-emerald-500/90 text-white font-semibold px-2 py-0.5 rounded-full">
-                          Conectado
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-300 mt-0.5">
-                        Clique para configurar WhatsApp, horários e dados da pousada
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4 z-10">
-                    <AdminIllustration />
-                    <ChevronRight
-                      size={22}
-                      className="text-slate-300 group-hover:translate-x-1 group-hover:text-white transition-all shrink-0"
-                    />
-                  </div>
+          <a
+            href="https://www.google.com/maps/search/?api=1&query=Pousada+Solar+Das+Gerais+Rua+Manuel+Cabral+119+centro+Ouro+Preto"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block group"
+            title="Ver localização no Google Maps"
+          >
+            <div className="relative bg-solar-navy text-white rounded-2xl p-5 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300 flex items-center justify-between overflow-hidden">
+              <div className="flex items-center gap-4 z-10">
+                <div className="w-12 h-12 rounded-full bg-solar-gold text-solar-navy flex items-center justify-center font-bold shadow-sm shrink-0 group-hover:scale-105 transition-transform">
+                  <MapPin size={22} />
                 </div>
-              }
-            />
-          ) : (
-            <Link href="/login" className="block group">
-              <div className="relative bg-solar-navy text-white rounded-2xl p-5 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300 flex items-center justify-between overflow-hidden">
-                <div className="flex items-center gap-4 z-10">
-                  <div className="w-12 h-12 rounded-full bg-solar-gold text-solar-navy flex items-center justify-center font-bold shadow-sm shrink-0">
-                    <Lock size={22} />
-                  </div>
-                  <div>
-                    <h3 className="font-headline font-bold text-lg text-white">
-                      Modo Admin
-                    </h3>
-                    <p className="text-xs text-slate-300 mt-0.5">
-                      Edição de conteúdo via Firebase
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4 z-10">
-                  <AdminIllustration />
-                  <ChevronRight
-                    size={22}
-                    className="text-slate-300 group-hover:translate-x-1 group-hover:text-white transition-all shrink-0"
-                  />
+                <div>
+                  <h3 className="font-headline font-bold text-lg sm:text-xl text-white">
+                    Pousada Solar Das Gerais
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-300 mt-0.5">
+                    Rua Manuel Cabral, 119, centro - Ouro Preto
+                  </p>
                 </div>
               </div>
-            </Link>
-          )}
+
+              <div className="flex items-center gap-4 z-10">
+                <AdminIllustration />
+                <ChevronRight
+                  size={22}
+                  className="text-slate-300 group-hover:translate-x-1 group-hover:text-white transition-all shrink-0"
+                />
+              </div>
+            </div>
+          </a>
         </div>
       </main>
 

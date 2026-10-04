@@ -89,7 +89,7 @@ export function AiWelcomeModal({ trigger }: AiWelcomeModalProps) {
 
         <div className="space-y-4 py-3">
           {/* Status do Clima em Ouro Preto */}
-          <div className="flex items-center justify-between p-3.5 bg-gradient-to-r from-amber-50 to-emerald-50 border border-amber-200/60 rounded-xl">
+          <div className="flex items-center justify-between p-3.5 bg-gradient-to-r from-amber-50 to-blue-50 border border-amber-200/60 rounded-xl">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-amber-200/60 text-amber-800 flex items-center justify-center">
                 <CloudSun size={20} />
@@ -103,7 +103,7 @@ export function AiWelcomeModal({ trigger }: AiWelcomeModalProps) {
                 </span>
               </div>
             </div>
-            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-full">
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-solar-green bg-blue-100/80 px-2 py-0.5 rounded-full">
               <Sparkles size={12} />
               GenAI
             </span>

@@ -1,10 +1,10 @@
 'use client';
 
-import { Home, MapPin, Instagram, Lock, LogOut } from 'lucide-react';
+import { Home, MapPin, Instagram, LogOut, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { useUser, useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
-import { Button } from '@/components/ui/button';
+import { LodgeConfigModal } from '@/components/lodge-config-modal';
 
 export function Footer() {
   const { user } = useUser();
@@ -25,13 +25,16 @@ export function Footer() {
           <div className="flex items-center gap-2 order-2 md:order-1">
             {isAdmin ? (
               <div className="flex items-center gap-2">
-                <Link
-                  href="/login"
-                  className="flex items-center gap-1.5 font-semibold text-solar-green hover:underline bg-solar-green/10 px-2.5 py-1 rounded-lg"
-                >
-                  <Lock size={12} />
-                  <span>Admin Conectado</span>
-                </Link>
+                <LodgeConfigModal
+                  trigger={
+                    <button
+                      className="flex items-center gap-1.5 font-semibold text-solar-green hover:underline bg-solar-green/10 px-2.5 py-1 rounded-lg cursor-pointer"
+                    >
+                      <Settings size={13} />
+                      <span>Configurações</span>
+                    </button>
+                  }
+                />
                 <button
                   onClick={handleLogout}
                   className="flex items-center gap-1 text-red-600 hover:text-red-700 font-semibold p-1 hover:bg-red-50 rounded"
@@ -44,10 +47,9 @@ export function Footer() {
             ) : (
               <Link
                 href="/login"
-                className="flex items-center gap-1.5 font-medium text-slate-500 hover:text-solar-navy transition-colors px-2.5 py-1 rounded-md hover:bg-slate-100/60"
+                className="font-medium text-slate-400 hover:text-solar-navy transition-colors px-2 py-1 rounded-md hover:bg-slate-100/60"
               >
-                <Lock size={13} className="text-solar-navy/70" />
-                <span>Admin</span>
+                admin
               </Link>
             )}
           </div>
@@ -96,10 +98,10 @@ export function Footer() {
             d="M0,50 C240,10 520,80 840,40 C1100,5 1300,60 1440,30 L1440,90 L0,90 Z"
             fill="#F6B726"
           />
-          {/* Onda Verde Mata */}
+          {/* Onda Azul Royal Escuro */}
           <path
             d="M0,60 C300,30 650,85 1020,45 C1240,25 1380,65 1440,50 L1440,90 L0,90 Z"
-            fill="#265C49"
+            fill="#1E3A8A"
           />
           {/* Onda Azul Petróleo Inferior */}
           <path

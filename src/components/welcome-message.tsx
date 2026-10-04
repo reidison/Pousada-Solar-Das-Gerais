@@ -58,10 +58,10 @@ export function WelcomeMessage({ customTitle, customSubtitle, customHeroImage }:
             {/* Sol Dourado subindo atrás das colinas à direita */}
             <circle cx="1180" cy="65" r="48" fill="#F6B726" />
 
-            {/* Colina / Onda Verde Mata */}
+            {/* Colina / Onda Azul Royal Escuro */}
             <path
               d="M0,80 C320,100 640,55 960,38 C1140,28 1320,44 1440,32 L1440,160 L0,160 Z"
-              fill="#265C49"
+              fill="#1E3A8A"
             />
 
             {/* Faixa Ondulada Azul Petróleo (Navy) */}

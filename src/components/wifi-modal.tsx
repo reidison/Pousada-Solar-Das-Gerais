@@ -51,7 +51,7 @@ export function WifiModal({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[420px]">
         <DialogHeader className="text-center sm:text-left">
-          <div className="mx-auto sm:mx-0 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 mb-2">
+          <div className="mx-auto sm:mx-0 w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-solar-green mb-2">
             <Wifi size={24} />
           </div>
           <DialogTitle className="text-xl font-headline text-solar-navy">
@@ -73,7 +73,7 @@ export function WifiModal({
                 {networkName}
               </span>
             </div>
-            <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-blue-50 text-solar-green flex items-center justify-center">
               <Wifi size={18} />
             </div>
           </div>
@@ -84,14 +84,14 @@ export function WifiModal({
               <span className="text-xs uppercase tracking-wider text-slate-500 font-semibold block">
                 Senha de Acesso
               </span>
-              <span className="text-lg font-mono font-bold text-emerald-700 tracking-wide">
+              <span className="text-lg font-mono font-bold text-solar-green tracking-wide">
                 {password}
               </span>
             </div>
             <Button
               onClick={handleCopy}
               size="sm"
-              className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-3 gap-1.5 shadow-sm"
+              className="bg-solar-green hover:bg-solar-navy text-white rounded-lg px-3 gap-1.5 shadow-sm"
             >
               {copied ? <Check size={16} /> : <Copy size={16} />}
               <span>{copied ? "Copiado!" : "Copiar"}</span>

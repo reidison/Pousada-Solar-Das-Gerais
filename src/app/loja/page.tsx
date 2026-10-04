@@ -83,7 +83,7 @@ export default function LojaPage() {
             >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-solar-green bg-emerald-50 px-2.5 py-0.5 rounded-full">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-solar-green bg-blue-50 px-2.5 py-0.5 rounded-full">
                     {item.category}
                   </span>
                   <span className="text-base font-extrabold text-solar-navy">
