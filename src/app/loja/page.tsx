@@ -79,11 +79,11 @@ export default function LojaPage() {
           {products.map((item, index) => (
             <Card
               key={index}
-              className="bg-white rounded-2xl border border-solar-navy/10 shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col justify-between"
+              className="bg-white rounded-2xl border border-[#113F52] shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col justify-between"
             >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-solar-green bg-blue-50 px-2.5 py-0.5 rounded-full">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-solar-navy bg-solar-navy/10 border border-[#113F52] px-2.5 py-0.5 rounded-full">
                     {item.category}
                   </span>
                   <span className="text-base font-extrabold text-solar-navy">
@@ -100,7 +100,7 @@ export default function LojaPage() {
                   asChild
                   variant="outline"
                   size="sm"
-                  className="w-full rounded-xl border-solar-navy/20 text-solar-navy hover:bg-solar-navy hover:text-white transition-all gap-1.5"
+                  className="w-full rounded-xl border border-[#113F52] text-solar-navy hover:bg-solar-navy hover:text-white transition-all gap-1.5"
                 >
                   <a
                     href={`https://wa.me/55${cleanWhatsappNumber}?text=${encodeURIComponent(`Olá! Gostaria de reservar o item: ${item.name}`)}`}

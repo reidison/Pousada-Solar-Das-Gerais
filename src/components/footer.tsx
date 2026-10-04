@@ -17,7 +17,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative mt-16 pt-8 pb-0 overflow-hidden bg-transparent select-none">
+    <footer className="relative mt-16 pt-8 pb-0 overflow-hidden bg-transparent select-none border-t border-[#113F52]">
       {/* Informações Principais do Rodapé */}
       <div className="container mx-auto px-4 sm:px-6 mb-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
@@ -28,7 +28,7 @@ export function Footer() {
                 <LodgeConfigModal
                   trigger={
                     <button
-                      className="flex items-center gap-1.5 font-semibold text-solar-green hover:underline bg-solar-green/10 px-2.5 py-1 rounded-lg cursor-pointer"
+                      className="flex items-center gap-1.5 font-semibold text-solar-navy hover:underline bg-solar-navy/10 border border-[#113F52] px-2.5 py-1 rounded-lg cursor-pointer"
                     >
                       <Settings size={13} />
                       <span>Configurações</span>
@@ -62,7 +62,7 @@ export function Footer() {
             </span>
             <span className="hidden sm:inline text-solar-navy/40">|</span>
             <span className="flex items-center gap-1.5 text-solar-navy/80">
-              <MapPin size={15} className="text-solar-green" />
+              <MapPin size={15} className="text-solar-navy" />
               Ouro Preto - MG
             </span>
           </div>
@@ -93,12 +93,7 @@ export function Footer() {
           className="w-full h-12 sm:h-16 md:h-20 block"
           preserveAspectRatio="none"
         >
-          {/* Onda Azul Royal Escuro */}
-          <path
-            d="M0,60 C300,30 650,85 1020,45 C1240,25 1380,65 1440,50 L1440,90 L0,90 Z"
-            fill="#1E3A8A"
-          />
-          {/* Onda Azul Petróleo Inferior */}
+          {/* Onda Azul Petróleo #113F52 */}
           <path
             d="M0,75 C280,50 620,85 960,65 C1180,50 1340,75 1440,70 L1440,90 L0,90 Z"
             fill="#113F52"

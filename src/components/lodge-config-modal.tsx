@@ -44,15 +44,15 @@ interface LodgeConfigModalProps {
 }
 
 const CARD_DEFINITIONS = [
-  { id: 'breakfast', name: 'Café da Manhã', Icon: Coffee, iconBg: 'bg-amber-100 text-amber-700' },
-  { id: 'wifi', name: 'Wi-Fi', Icon: Wifi, iconBg: 'bg-blue-100 text-solar-green' },
-  { id: 'cityTour', name: 'City Tour', Icon: Map, iconBg: 'bg-sky-100 text-sky-700' },
-  { id: 'loja', name: 'Loja', Icon: ShoppingBag, iconBg: 'bg-teal-100 text-teal-700' },
-  { id: 'reception', name: 'Recepção (WhatsApp)', Icon: MessageCircle, iconBg: 'bg-amber-100 text-amber-700' },
-  { id: 'minibar', name: 'Frigobar', Icon: GlassWater, iconBg: 'bg-blue-100 text-blue-700' },
-  { id: 'usefulServices', name: 'Telefones úteis', Icon: PhoneCall, iconBg: 'bg-cyan-100 text-cyan-700' },
-  { id: 'regulation', name: 'Regulamento', Icon: BookText, iconBg: 'bg-blue-100 text-solar-green' },
-  { id: 'aiWelcome', name: 'Boas-vindas com IA', Icon: Bot, iconBg: 'bg-amber-100 text-amber-700' },
+  { id: 'breakfast', name: 'Café da Manhã', Icon: Coffee, iconBg: 'bg-solar-cream text-solar-navy border border-[#113F52]' },
+  { id: 'wifi', name: 'Wi-Fi', Icon: Wifi, iconBg: 'bg-solar-cream text-solar-navy border border-[#113F52]' },
+  { id: 'cityTour', name: 'City Tour', Icon: Map, iconBg: 'bg-solar-cream text-solar-navy border border-[#113F52]' },
+  { id: 'loja', name: 'Loja', Icon: ShoppingBag, iconBg: 'bg-solar-cream text-solar-navy border border-[#113F52]' },
+  { id: 'reception', name: 'Recepção (WhatsApp)', Icon: MessageCircle, iconBg: 'bg-solar-cream text-solar-navy border border-[#113F52]' },
+  { id: 'minibar', name: 'Frigobar', Icon: GlassWater, iconBg: 'bg-solar-cream text-solar-navy border border-[#113F52]' },
+  { id: 'usefulServices', name: 'Telefones úteis', Icon: PhoneCall, iconBg: 'bg-solar-cream text-solar-navy border border-[#113F52]' },
+  { id: 'regulation', name: 'Regulamento', Icon: BookText, iconBg: 'bg-solar-cream text-solar-navy border border-[#113F52]' },
+  { id: 'aiWelcome', name: 'Boas-vindas com IA', Icon: Bot, iconBg: 'bg-solar-cream text-solar-navy border border-[#113F52]' },
 ];
 
 export function LodgeConfigModal({ trigger }: LodgeConfigModalProps = {}) {
@@ -357,7 +357,7 @@ export function LodgeConfigModal({ trigger }: LodgeConfigModalProps = {}) {
                         {card.name}
                       </span>
                       {customIcon ? (
-                        <span className="text-[9px] bg-blue-100 text-solar-green font-bold px-1.5 py-0.2 rounded-full">
+                        <span className="text-[9px] bg-solar-navy/10 text-solar-navy border border-[#113F52] font-bold px-1.5 py-0.2 rounded-full">
                           Personalizado
                         </span>
                       ) : (

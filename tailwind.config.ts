@@ -26,8 +26,8 @@ export default {
           navy: '#113f52',
           navyDark: '#0c2b3a',
           navyLight: '#1b5670',
-          green: '#1e3a8a', // Azul royal escuro (substitui o verde em todo o layout)
-          greenLight: '#2563eb', // Azul royal
+          green: '#113f52', // Unificado para azul petróleo #113F52
+          greenLight: '#1b5670',
           gold: '#f6b726',
           goldLight: '#fad674',
           cream: '#fbf9f4',

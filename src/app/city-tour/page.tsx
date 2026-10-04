@@ -22,7 +22,7 @@ export default function CityTourPage() {
       distance: "1,2 km da Pousada",
       description: "O coração histórico de Ouro Preto, cercado pelo Museu da Inconfidência e pelo Museu de Ciência e Técnica da Escola de Minas.",
       badge: "Histórico",
-      icon: <Landmark className="w-5 h-5 text-solar-green" />,
+      icon: <Landmark className="w-5 h-5 text-solar-navy" />,
     },
     {
       title: "Mina da Passagem (Mariana / Ouro Preto)",
@@ -71,21 +71,21 @@ export default function CityTourPage() {
           {tours.map((tour, index) => (
             <Card
               key={index}
-              className="bg-white rounded-2xl border border-solar-navy/10 shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col justify-between"
+              className="bg-white rounded-2xl border border-[#113F52] shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col justify-between"
             >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-solar-cream flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-solar-cream border border-[#113F52] flex items-center justify-center">
                     {tour.icon}
                   </div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider bg-solar-gold/20 text-solar-navy px-2.5 py-0.5 rounded-full">
+                  <span className="text-[11px] font-bold uppercase tracking-wider bg-solar-gold/30 border border-[#113F52] text-solar-navy px-2.5 py-0.5 rounded-full">
                     {tour.badge}
                   </span>
                 </div>
                 <h3 className="font-headline font-bold text-lg text-solar-navy mb-1 leading-snug">
                   {tour.title}
                 </h3>
-                <div className="flex items-center gap-1.5 text-xs text-solar-green font-medium mb-3">
+                <div className="flex items-center gap-1.5 text-xs text-solar-navy font-semibold mb-3">
                   <MapPin size={13} />
                   <span>{tour.distance}</span>
                 </div>

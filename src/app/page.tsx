@@ -71,7 +71,7 @@ export default function Page() {
                   customIconUrl={lodgeInfo?.cardIcons?.breakfast}
                   title="Café da Manhã"
                   subtitle="Horários e local"
-                  iconBgColor="bg-amber-100/80 text-amber-700"
+                  iconBgColor="bg-amber-100/80 text-solar-navy border border-[#113F52]"
                   waveAccentColor="#F6B726"
                 />
               </div>
@@ -89,8 +89,8 @@ export default function Page() {
                   customIconUrl={lodgeInfo?.cardIcons?.wifi}
                   title="Wi-Fi"
                   subtitle="Rede e senha"
-                  iconBgColor="bg-blue-100/80 text-solar-green"
-                  waveAccentColor="#1E3A8A"
+                  iconBgColor="bg-solar-cream text-solar-navy border border-[#113F52]"
+                  waveAccentColor="#113F52"
                 />
               </div>
             }
@@ -103,8 +103,8 @@ export default function Page() {
               customIconUrl={lodgeInfo?.cardIcons?.cityTour}
               title="City Tour"
               subtitle="Agenda e instruções"
-              iconBgColor="bg-sky-100/80 text-sky-700"
-              waveAccentColor="#0284C7"
+              iconBgColor="bg-solar-cream text-solar-navy border border-[#113F52]"
+              waveAccentColor="#113F52"
             />
           </Link>
 
@@ -115,8 +115,8 @@ export default function Page() {
               customIconUrl={lodgeInfo?.cardIcons?.loja}
               title="Loja"
               subtitle="Produtos da pousada"
-              iconBgColor="bg-teal-100/80 text-teal-700"
-              waveAccentColor="#0F766E"
+              iconBgColor="bg-solar-cream text-solar-navy border border-[#113F52]"
+              waveAccentColor="#113F52"
             />
           </Link>
 
@@ -128,12 +128,12 @@ export default function Page() {
             className="block h-full"
           >
             <InfoCard
-              icon={<WhatsappIcon className="w-6 h-6 text-amber-600 fill-current" />}
+              icon={<WhatsappIcon className="w-6 h-6 text-solar-navy fill-current" />}
               customIconUrl={lodgeInfo?.cardIcons?.reception}
               title="Recepção"
               subtitle="Fale com a recepção no WhatsApp"
-              iconBgColor="bg-amber-100/80 text-amber-700"
-              waveAccentColor="#EAB308"
+              iconBgColor="bg-amber-100/80 text-solar-navy border border-[#113F52]"
+              waveAccentColor="#F6B726"
             />
           </a>
 
@@ -146,8 +146,8 @@ export default function Page() {
                   customIconUrl={lodgeInfo?.cardIcons?.minibar}
                   title="Frigobar"
                   subtitle="Itens e preços"
-                  iconBgColor="bg-blue-100/80 text-blue-700"
-                  waveAccentColor="#2563EB"
+                  iconBgColor="bg-solar-cream text-solar-navy border border-[#113F52]"
+                  waveAccentColor="#113F52"
                 />
               </div>
             }
@@ -162,8 +162,8 @@ export default function Page() {
                   customIconUrl={lodgeInfo?.cardIcons?.usefulServices}
                   title="Telefones úteis"
                   subtitle="Serviços locais"
-                  iconBgColor="bg-cyan-100/80 text-cyan-700"
-                  waveAccentColor="#0891B2"
+                  iconBgColor="bg-solar-cream text-solar-navy border border-[#113F52]"
+                  waveAccentColor="#113F52"
                 />
               </div>
             }
@@ -178,8 +178,8 @@ export default function Page() {
                   customIconUrl={lodgeInfo?.cardIcons?.regulation}
                   title="Regulamento"
                   subtitle="Regras da pousada"
-                  iconBgColor="bg-blue-100/80 text-solar-green"
-                  waveAccentColor="#1E3A8A"
+                  iconBgColor="bg-solar-cream text-solar-navy border border-[#113F52]"
+                  waveAccentColor="#113F52"
                 />
               </div>
             }
@@ -194,7 +194,7 @@ export default function Page() {
                   customIconUrl={lodgeInfo?.cardIcons?.aiWelcome}
                   title="Boas-vindas com IA"
                   subtitle="Mensagem personalizada conforme o clima"
-                  iconBgColor="bg-amber-100/80 text-amber-700"
+                  iconBgColor="bg-amber-100/80 text-solar-navy border border-[#113F52]"
                   waveAccentColor="#F6B726"
                 />
               </div>
@@ -211,9 +211,9 @@ export default function Page() {
             className="block group"
             title="Ver localização no Google Maps"
           >
-            <div className="relative bg-solar-navy text-white rounded-2xl p-5 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300 flex items-center justify-between overflow-hidden">
+            <div className="relative bg-solar-navy text-white rounded-2xl p-5 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300 flex items-center justify-between overflow-hidden border border-[#113F52]">
               <div className="flex items-center gap-4 z-10">
-                <div className="w-12 h-12 rounded-full bg-solar-gold text-solar-navy flex items-center justify-center font-bold shadow-sm shrink-0 group-hover:scale-105 transition-transform">
+                <div className="w-12 h-12 rounded-full bg-solar-gold text-solar-navy flex items-center justify-center font-bold shadow-sm shrink-0 group-hover:scale-105 transition-transform border border-[#113F52]">
                   <MapPin size={22} />
                 </div>
                 <div>

@@ -56,7 +56,7 @@ export default function LoginPage() {
         <Logo />
       </div>
 
-      <Card className="w-full max-w-md shadow-xl border border-solar-navy/10 border-t-4 border-t-solar-gold rounded-2xl bg-white">
+      <Card className="w-full max-w-md shadow-xl border border-[#113F52] border-t-4 border-t-[#113F52] rounded-2xl bg-white">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold font-headline text-solar-navy">Área Administrativa</CardTitle>
           <CardDescription className="text-slate-500">

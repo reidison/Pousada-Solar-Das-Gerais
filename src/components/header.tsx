@@ -20,7 +20,7 @@ export function Header({ logoUrl }: HeaderProps = {}) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-solar-navy/5">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-[#113F52]">
       <div className="container relative mx-auto px-4 h-20 flex items-center justify-between">
         <Link href="/" className="flex items-center hover:opacity-95 transition-opacity">
           <Logo src={logoUrl} />
@@ -28,7 +28,7 @@ export function Header({ logoUrl }: HeaderProps = {}) {
 
         <div className="flex items-center gap-3">
           {/* Seletor de Idiomas */}
-          <div className="flex items-center gap-1.5 bg-slate-100/80 p-1 rounded-md">
+          <div className="flex items-center gap-1.5 bg-slate-100/80 p-1 rounded-md border border-[#113F52]">
             <Button
               variant="ghost"
               size="icon"
@@ -59,7 +59,7 @@ export function Header({ logoUrl }: HeaderProps = {}) {
           <Button
             variant="ghost"
             size="icon"
-            className="text-solar-navy hover:bg-solar-navy/10 h-10 w-10 rounded-xl"
+            className="text-solar-navy hover:bg-solar-navy/10 h-10 w-10 rounded-xl border border-[#113F52]"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Menu de Navegação"
           >
@@ -70,7 +70,7 @@ export function Header({ logoUrl }: HeaderProps = {}) {
 
       {/* Menu Drawer Retrátil */}
       {menuOpen && (
-        <div className="bg-white border-b border-solar-navy/10 px-4 py-4 shadow-xl animate-in slide-in-from-top duration-200">
+        <div className="bg-white border-b border-[#113F52] px-4 py-4 shadow-xl animate-in slide-in-from-top duration-200">
           <nav className="container mx-auto flex flex-col gap-2 max-w-md">
             <Link
               href="/"
@@ -85,7 +85,7 @@ export function Header({ logoUrl }: HeaderProps = {}) {
               onClick={() => setMenuOpen(false)}
               className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-solar-navy font-medium hover:bg-solar-cream transition-colors"
             >
-              <Map size={18} className="text-sky-600" />
+              <Map size={18} className="text-solar-navy" />
               City Tour Ouro Preto
             </Link>
             <Link
@@ -93,7 +93,7 @@ export function Header({ logoUrl }: HeaderProps = {}) {
               onClick={() => setMenuOpen(false)}
               className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-solar-navy font-medium hover:bg-solar-cream transition-colors"
             >
-              <ShoppingBag size={18} className="text-solar-green" />
+              <ShoppingBag size={18} className="text-solar-navy" />
               Lojinha da Pousada
             </Link>
             <Link

@@ -30,7 +30,7 @@ export function InfoCard({
     <Card
       onClick={onClick}
       className={cn(
-        "group relative flex flex-col justify-between h-full bg-white rounded-2xl border border-solar-navy/5",
+        "group relative flex flex-col justify-between h-full bg-white rounded-2xl border border-[#113F52]",
         "shadow-[0_4px_20px_rgba(17,63,82,0.06)] hover:shadow-[0_12px_28px_rgba(17,63,82,0.12)]",
         "transition-all duration-300 transform hover:-translate-y-1 overflow-hidden select-none",
         onClick && "cursor-pointer",
@@ -78,13 +78,13 @@ export function InfoCard({
 
         {/* Conteúdo adicional/botões (se houver) */}
         {children && (
-          <div className="mt-4 pt-3 border-t border-slate-100 flex flex-col items-center justify-center text-center">
+          <div className="mt-4 pt-3 border-t border-[#113F52]/20 flex flex-col items-center justify-center text-center">
             {children}
           </div>
         )}
       </div>
 
-      {/* Onda Orgânica Decorativa no Rodapé do Cartão */}
+      {/* Onda Orgânica Decorativa no Rodapé do Cartão em Azul Petróleo #113F52 */}
       <div className="mt-4 overflow-hidden leading-none pointer-events-none select-none">
         <svg
           viewBox="0 0 300 22"
@@ -93,15 +93,15 @@ export function InfoCard({
           className="w-full h-3 sm:h-3.5 block"
           preserveAspectRatio="none"
         >
-          {/* Onda colorida de destaque */}
+          {/* Onda sutil em azul petróleo */}
           <path
             d="M0,10 C70,22 150,0 230,14 C265,20 285,12 300,16 L300,22 L0,22 Z"
-            fill={waveAccentColor}
+            fill={waveAccentColor === '#F6B726' ? '#F6B726' : '#113F52'}
           />
-          {/* Onda secundária em azul petróleo */}
+          {/* Onda de base em azul petróleo #113F52 */}
           <path
             d="M0,16 C85,5 175,20 255,12 C275,10 290,14 300,16 L300,22 L0,22 Z"
-            fill="#113F52"
+            fill="#0C2B3A"
           />
         </svg>
       </div>
