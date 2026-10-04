@@ -6,7 +6,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Upload, X, RotateCcw, Link2, Loader2, Image as ImageIcon } from 'lucide-react';
+import { Upload, X, RotateCcw, Link2, Loader2, Image as ImageIcon, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ImageUploaderProps {
@@ -37,44 +37,78 @@ export function ImageUploader({
   const [urlInputValue, setUrlInputValue] = useState('');
   const [dragOver, setDragOver] = useState(false);
 
-  // Função para comprimir e converter em Data URL como fallback seguro
-  const compressToDataUrl = (file: File, maxDim: number): Promise<string> => {
+  // Default images for download
+  const defaultImageUrl =
+    aspectRatio === 'logo'
+      ? '/images/logo.png'
+      : aspectRatio === 'hero'
+      ? '/images/hero-ouro-preto.png'
+      : '';
+
+  // Processa e comprime a imagem diretamente no navegador de forma instantânea
+  const processAndCompressImage = (file: File, maxDim: number, quality: number = 0.8): Promise<string> => {
     return new Promise((resolve, reject) => {
+      // SVGs podem ser lidos diretamente como Data URL sem passar por canvas
+      if (file.type === 'image/svg+xml') {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => reject(new Error('Falha ao ler arquivo SVG'));
+        reader.readAsDataURL(file);
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = (e) => {
-        const img = new Image();
+        const rawResult = e.target?.result as string;
+        const img = new window.Image();
+
         img.onload = () => {
-          const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
+          try {
+            const canvas = document.createElement('canvas');
+            let width = img.naturalWidth || img.width;
+            let height = img.naturalHeight || img.height;
 
-          if (width > height) {
-            if (width > maxDim) {
-              height = Math.round((height * maxDim) / width);
-              width = maxDim;
+            if (width > maxDim || height > maxDim) {
+              if (width > height) {
+                height = Math.round((height * maxDim) / width);
+                width = maxDim;
+              } else {
+                width = Math.round((width * maxDim) / height);
+                height = maxDim;
+              }
             }
-          } else {
-            if (height > maxDim) {
-              width = Math.round((width * maxDim) / height);
-              height = maxDim;
-            }
-          }
 
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          if (ctx) {
+            canvas.width = Math.max(1, width);
+            canvas.height = Math.max(1, height);
+            const ctx = canvas.getContext('2d');
+
+            if (!ctx) {
+              resolve(rawResult);
+              return;
+            }
+
             ctx.drawImage(img, 0, 0, width, height);
-            const format = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
-            resolve(canvas.toDataURL(format, 0.85));
-          } else {
-            resolve(e.target?.result as string);
+
+            const isPng = file.type === 'image/png';
+            // PNG para ícones/logos menores com transparência, JPEG para fotos grandes como hero
+            const outputType = isPng && maxDim <= 400 ? 'image/png' : 'image/jpeg';
+            const compressedDataUrl = canvas.toDataURL(outputType, quality);
+            resolve(compressedDataUrl);
+          } catch (canvasErr) {
+            console.warn('Compressão em canvas falhou, usando imagem original:', canvasErr);
+            resolve(rawResult);
           }
         };
-        img.onerror = () => reject(new Error('Falha ao processar imagem'));
-        img.src = e.target?.result as string;
+
+        img.onerror = () => {
+          // Fallback seguro caso o navegador não renderize a tag Image
+          resolve(rawResult);
+        };
+
+        img.src = rawResult;
       };
-      reader.onerror = () => reject(new Error('Falha ao ler arquivo'));
+
+      reader.onerror = () => reject(new Error('Falha ao ler o arquivo'));
       reader.readAsDataURL(file);
     });
   };
@@ -86,31 +120,42 @@ export function ImageUploader({
     }
 
     setIsUploading(true);
-    const maxDim = aspectRatio === 'icon' ? 256 : aspectRatio === 'logo' ? 600 : 1400;
+    const maxDim = aspectRatio === 'icon' ? 192 : aspectRatio === 'logo' ? 500 : 1200;
+    const quality = aspectRatio === 'hero' ? 0.75 : 0.85;
 
     try {
-      // 1. Tentar upload para o Firebase Storage se configurado
+      // 1. Processamento e compressão local imediata (< 100ms)
+      const compressedDataUrl = await processAndCompressImage(file, maxDim, quality);
+
+      // Aplica imediatamente para que o usuário veja a pré-visualização sem travar
+      onChange(compressedDataUrl);
+      setIsUploading(false);
+
+      // 2. Tentativa assíncrona em background para Firebase Storage com timeout estrito de 2.5s
       if (storage) {
         try {
           const cleanName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
           const storageRef = ref(storage, `lodge_${folder}/${Date.now()}_${cleanName}`);
-          const snapshot = await uploadBytes(storageRef, file);
+
+          const uploadTask = uploadBytes(storageRef, file);
+          const timeoutTask = new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error('Timeout Firebase Storage')), 2500)
+          );
+
+          const snapshot = await Promise.race([uploadTask, timeoutTask]);
           const downloadUrl = await getDownloadURL(snapshot.ref);
-          onChange(downloadUrl);
-          setIsUploading(false);
-          return;
-        } catch (storageError) {
-          console.warn('Firebase Storage inacessível ou sem permissão pública. Usando compressão local Data URL:', storageError);
+
+          if (downloadUrl) {
+            onChange(downloadUrl);
+          }
+        } catch (storageErr) {
+          // Ignora erro de Storage/CORS silenciosamente pois a Data URL compactada já está salva e pronta
+          console.warn('Firebase Storage inacessível ou sem permissão pública. Usando Data URL otimizada:', storageErr);
         }
       }
-
-      // 2. Fallback: Compressão local e conversão em Data URL
-      const dataUrl = await compressToDataUrl(file, maxDim);
-      onChange(dataUrl);
     } catch (err) {
       console.error('Erro ao processar imagem:', err);
       alert('Ocorreu um erro ao carregar a imagem. Tente novamente.');
-    } finally {
       setIsUploading(false);
     }
   };
@@ -119,6 +164,10 @@ export function ImageUploader({
     const file = e.target.files?.[0];
     if (file) {
       handleFileProcess(file);
+    }
+    // Reseta o input para permitir selecionar o mesmo arquivo novamente se desejar
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -151,6 +200,9 @@ export function ImageUploader({
     }
   };
 
+  // Imagem para exibição (customizada ou padrão)
+  const displayImage = value || defaultImageUrl;
+
   return (
     <div className={cn("space-y-2", className)}>
       <div className="flex items-center justify-between">
@@ -158,16 +210,31 @@ export function ImageUploader({
           <ImageIcon size={14} className="text-amber-600" />
           {label}
         </Label>
-        {onReset && (
-          <button
-            type="button"
-            onClick={onReset}
-            className="text-[11px] text-slate-500 hover:text-solar-navy flex items-center gap-1 transition-colors"
-          >
-            <RotateCcw size={11} />
-            Restaurar padrão
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {defaultImageUrl && (
+            <a
+              href={defaultImageUrl}
+              download={aspectRatio === 'logo' ? 'logo-pousada-solar-das-gerais.png' : 'hero-ouro-preto.png'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[11px] text-solar-navy/70 hover:text-solar-navy flex items-center gap-1 transition-colors underline"
+              title="Baixar imagem oficial padrão"
+            >
+              <Download size={11} />
+              Baixar padrão
+            </a>
+          )}
+          {onReset && value && (
+            <button
+              type="button"
+              onClick={onReset}
+              className="text-[11px] text-slate-500 hover:text-solar-navy flex items-center gap-1 transition-colors ml-1"
+            >
+              <RotateCcw size={11} />
+              Restaurar
+            </button>
+          )}
+        </div>
       </div>
 
       {description && <p className="text-[11px] text-slate-500">{description}</p>}
@@ -194,7 +261,7 @@ export function ImageUploader({
           className="hidden"
         />
 
-        {value ? (
+        {displayImage ? (
           <div className="flex flex-col items-center justify-center gap-3">
             <div
               className={cn(
@@ -203,7 +270,7 @@ export function ImageUploader({
               )}
             >
               <img
-                src={value}
+                src={displayImage}
                 alt={label}
                 className={cn(
                   "object-contain max-h-full max-w-full",
@@ -212,30 +279,51 @@ export function ImageUploader({
               />
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-2">
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isUploading}
-                className="h-7 text-xs rounded-lg gap-1 border-slate-200 hover:bg-white"
+                className="h-7 text-xs rounded-lg gap-1 border-slate-200 hover:bg-white text-solar-navy"
               >
                 <Upload size={12} />
-                Substituir
+                {value ? 'Substituir' : 'Fazer Upload'}
               </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => onChange('')}
-                disabled={isUploading}
-                className="h-7 text-xs rounded-lg text-red-600 hover:text-red-700 hover:bg-red-50"
+
+              <a
+                href={displayImage}
+                download={aspectRatio === 'logo' ? 'logo-pousada.png' : 'hero-pousada.png'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="h-7 text-xs rounded-lg gap-1 border border-slate-200 hover:bg-white px-2.5 inline-flex items-center text-slate-700 transition-colors"
+                title="Fazer download desta imagem"
               >
-                <X size={12} />
-                Remover
-              </Button>
+                <Download size={12} />
+                Baixar
+              </a>
+
+              {value && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onChange('')}
+                  disabled={isUploading}
+                  className="h-7 text-xs rounded-lg text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  <X size={12} />
+                  Remover
+                </Button>
+              )}
             </div>
+
+            {!value && (
+              <span className="text-[10px] text-slate-400 italic">
+                (Exibindo imagem padrão atual. Clique em &quot;Fazer Upload&quot; para enviar a sua imagem personalizada)
+              </span>
+            )}
           </div>
         ) : (
           <div className="py-2 flex flex-col items-center justify-center gap-2">
@@ -277,7 +365,7 @@ export function ImageUploader({
         )}
 
         {/* Inserção manual de URL */}
-        {showUrlInput && !value && (
+        {showUrlInput && (
           <div className="mt-3 pt-3 border-t border-slate-200 flex gap-2">
             <Input
               placeholder="https://exemplo.com/imagem.png"
