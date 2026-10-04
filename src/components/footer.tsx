@@ -54,16 +54,16 @@ export function Footer() {
             )}
           </div>
 
-          {/* Linha Centralizada: Pousada Solar das Gerais | Ouro Preto - MG */}
-          <div className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2.5 font-semibold text-solar-navy order-1 md:order-2">
-            <span className="flex items-center gap-1.5">
-              <Home size={15} className="text-solar-navy" />
-              Pousada Solar das Gerais
+          {/* Linha Centralizada: Pousada Solar Das Gerais | Ouro Preto - MG */}
+          <div className="flex flex-row items-center justify-center flex-wrap sm:flex-nowrap gap-1.5 sm:gap-2.5 font-semibold text-solar-navy order-1 md:order-2 text-center">
+            <span className="flex items-center gap-1.5 whitespace-nowrap text-xs sm:text-sm font-bold tracking-tight">
+              <Home size={14} className="text-solar-navy shrink-0" />
+              <span>Pousada Solar Das Gerais</span>
             </span>
-            <span className="hidden sm:inline text-solar-navy/40">|</span>
-            <span className="flex items-center gap-1.5 text-solar-navy/80">
-              <MapPin size={15} className="text-solar-navy" />
-              Ouro Preto - MG
+            <span className="text-solar-navy/40">|</span>
+            <span className="flex items-center gap-1 text-solar-navy/80 whitespace-nowrap text-xs">
+              <MapPin size={13} className="text-solar-navy shrink-0" />
+              <span>Ouro Preto - MG</span>
             </span>
           </div>
 
