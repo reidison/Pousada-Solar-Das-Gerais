@@ -18,7 +18,7 @@ export function WelcomeMessage({ customTitle, customSubtitle, customHeroImage }:
   const heroSrc = customHeroImage || "/images/hero-ouro-preto.png";
 
   return (
-    <div className="relative -mx-4 -mt-6 sm:-mx-8 md:-mx-12 mb-10 overflow-hidden shadow-sm">
+    <div className="relative -mx-4 -mt-6 sm:-mx-8 md:-mx-12 mb-10 overflow-hidden">
       {/* Container com Imagem de Ouro Preto e Degradê */}
       <div className="relative min-h-[320px] sm:min-h-[380px] md:min-h-[420px] w-full flex items-center">
         {/* Imagem de Fundo Espelhada para o texto ocupar o lado esquerdo */}
@@ -46,28 +46,34 @@ export function WelcomeMessage({ customTitle, customSubtitle, customHeroImage }:
           </p>
         </div>
 
-        {/* Ondas Orgânicas Decorativas Inferiores com Sol Nascente */}
+        {/* Ondas Orgânicas Decorativas Inferiores com Sol Nascente (Fiel ao Layout) */}
         <div className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none leading-none">
           <svg
-            viewBox="0 0 1440 130"
+            viewBox="0 0 1440 160"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-14 sm:h-20 md:h-24 object-fill block"
+            className="w-full h-16 sm:h-24 md:h-28 object-fill block"
             preserveAspectRatio="none"
           >
-            {/* Sol Dourado subindo atrás da colina direita */}
-            <circle cx="1180" cy="85" r="48" fill="#F6B726" />
-            
-            {/* Onda Verde Mata */}
+            {/* Sol Dourado subindo atrás das colinas à direita */}
+            <circle cx="1180" cy="65" r="48" fill="#F6B726" />
+
+            {/* Colina / Onda Verde Mata */}
             <path
-              d="M0,55 C320,110 680,20 1020,55 C1220,75 1360,40 1440,65 L1440,130 L0,130 Z"
+              d="M0,80 C320,100 640,55 960,38 C1140,28 1320,44 1440,32 L1440,160 L0,160 Z"
               fill="#265C49"
             />
 
-            {/* Onda Azul Petróleo Profundo */}
+            {/* Faixa Ondulada Azul Petróleo (Navy) */}
             <path
-              d="M0,75 C260,35 580,105 920,68 C1160,42 1340,92 1440,80 L1440,130 L0,130 Z"
+              d="M0,48 C240,42 500,85 800,80 C1040,75 1260,95 1440,60 L1440,160 L0,160 Z"
               fill="#113F52"
+            />
+
+            {/* Base Creme Suave que se funde com o fundo da página (remove a barra escura grossa) */}
+            <path
+              d="M0,86 C260,82 520,122 820,118 C1060,114 1270,128 1440,98 L1440,160 L0,160 Z"
+              fill="#FBF9F4"
             />
           </svg>
         </div>
