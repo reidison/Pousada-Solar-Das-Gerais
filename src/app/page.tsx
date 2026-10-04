@@ -1,22 +1,36 @@
 
 'use client';
 
+import React from 'react';
+import Link from 'next/link';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { WelcomeMessage } from '@/components/welcome-message';
 import { InfoCard } from '@/components/info-card';
-import { Button } from '@/components/ui/button';
-import { Coffee, Wifi, Map, Phone, GlassWater, PhoneCall, BookText, ShoppingBag } from 'lucide-react';
+import {
+  Coffee,
+  Wifi,
+  Map,
+  ShoppingBag,
+  GlassWater,
+  PhoneCall,
+  BookText,
+  Bot,
+  Lock,
+  ChevronRight,
+} from 'lucide-react';
+import { WhatsappIcon } from '@/components/icons/whatsapp-icon';
 import { UsefulServicesModal } from '@/components/useful-services-modal';
 import { MinibarModal } from '@/components/minibar-modal';
 import { RegulationModal } from '@/components/regulation-modal';
 import { LodgeConfigModal } from '@/components/lodge-config-modal';
-import { WhatsappIcon } from '@/components/icons/whatsapp-icon';
+import { WifiModal } from '@/components/wifi-modal';
+import { BreakfastModal } from '@/components/breakfast-modal';
+import { AiWelcomeModal } from '@/components/ai-welcome-modal';
 import { useDoc, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import type { LodgeInfo } from '@/types/lodge-info';
 import { useLanguage } from '@/contexts/language-context';
-import Link from 'next/link';
 
 export default function Page() {
   const firestore = useFirestore();
@@ -33,110 +47,266 @@ export default function Page() {
   const whatsappNumber = lodgeInfo?.whatsappNumber || '31992580325';
   const cleanWhatsappNumber = whatsappNumber.replace(/\D/g, '');
 
-  const infoCards = [
-    {
-      icon: <Coffee size={28} />,
-      title: translations.infoCards.breakfast.title,
-      content: (
-        <>
-          <p>{lodgeInfo?.breakfastHours || translations.infoCards.breakfast.line1}</p>
-          <p>{lodgeInfo?.breakfastLocation || translations.infoCards.breakfast.line2}</p>
-        </>
-      ),
-    },
-    {
-      icon: <Wifi size={28} />,
-      title: translations.infoCards.wifi.title,
-      content: (
-          <div className="space-y-2 w-full text-center">
-            <p className="text-sm font-medium">{translations.infoCards.wifi.line1} <span className="font-bold text-primary">{translations.infoCards.wifi.networkName}</span></p>
-            <p className="text-sm font-medium">{translations.infoCards.wifi.line2} <span className="font-bold text-primary">{translations.infoCards.wifi.password}</span></p>
-          </div>
-      ),
-    },
-    {
-      icon: <Map size={28} />,
-      title: translations.infoCards.cityTour.title,
-      content: (
-        <Button asChild variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">
-          <Link href="/city-tour">
-            {translations.infoCards.cityTour.button}
-          </Link>
-        </Button>
-      ),
-    },
-    {
-      icon: <ShoppingBag size={28} />,
-      title: "Nossa Loja",
-      content: (
-        <Button asChild variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">
-          <Link href="/loja">
-            Ver produtos
-          </Link>
-        </Button>
-      ),
-    },
-    {
-      icon: <Phone size={28} />,
-      title: translations.infoCards.reception.title,
-      content: (
-        <>
-          <p className="mb-4">{translations.infoCards.reception.line1}</p>
-          <Button asChild className="bg-primary text-primary-foreground hover:bg-green-600">
-            <a href={`https://wa.me/55${cleanWhatsappNumber}`} target="_blank" rel="noopener noreferrer">
-              <WhatsappIcon className="mr-2 h-5 w-5" />
-              {translations.infoCards.reception.button}
-            </a>
-          </Button>
-        </>
-      ),
-    },
-    {
-      icon: <GlassWater size={28} />,
-      title: translations.infoCards.minibar.title,
-      content: (
-        <MinibarModal />
-      ),
-    },
-    {
-      icon: <PhoneCall size={28} />,
-      title: translations.infoCards.usefulPhones.title,
-      content: (
-        <div className="text-sm text-center w-full space-y-2">
-          <UsefulServicesModal />
-        </div>
-      ),
-    },
-    {
-      icon: <BookText size={28} />,
-      title: translations.infoCards.regulation.title,
-      content: (
-        <div className="text-sm text-center w-full space-y-2">
-            <RegulationModal />
-        </div>
-      ),
-    },
-  ];
-
   return (
-    <div className="bg-background text-foreground flex min-h-screen flex-col font-body">
-      <Header />
-      <main className="container mx-auto flex-grow px-4 py-8 pt-28 md:pt-32 relative">
-        <div className="flex justify-center mb-6">
-          {isAdmin && <LodgeConfigModal />}
+    <div className="bg-solar-cream text-solar-navy flex min-h-screen flex-col font-body selection:bg-solar-gold selection:text-solar-navy">
+      <Header logoUrl={lodgeInfo?.logoUrl} />
+
+      <main className="container mx-auto flex-grow px-4 sm:px-6 pt-24 md:pt-28 pb-12 max-w-5xl">
+        {/* Banner Hero com Foto de Ouro Preto e Ondas */}
+        <WelcomeMessage
+          customSubtitle={lodgeInfo?.welcomeMessage}
+          customHeroImage={lodgeInfo?.heroImageUrl}
+        />
+
+        {/* Grid dos 9 Cartões no Estilo Exato da Maquete */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+          {/* 1. Café da Manhã */}
+          <BreakfastModal
+            hours={lodgeInfo?.breakfastHours || translations.infoCards.breakfast.line1}
+            location={lodgeInfo?.breakfastLocation || translations.infoCards.breakfast.line2}
+            trigger={
+              <div>
+                <InfoCard
+                  icon={<Coffee size={24} />}
+                  customIconUrl={lodgeInfo?.cardIcons?.breakfast}
+                  title="Café da Manhã"
+                  subtitle="Horários e local"
+                  iconBgColor="bg-amber-100/80 text-amber-700"
+                  waveAccentColor="#F6B726"
+                />
+              </div>
+            }
+          />
+
+          {/* 2. Wi-Fi */}
+          <WifiModal
+            networkName={lodgeInfo?.wifiName || "Pousada_Solar_Das_Gerais"}
+            password={lodgeInfo?.wifiPassword || "pousada2023"}
+            trigger={
+              <div>
+                <InfoCard
+                  icon={<Wifi size={24} />}
+                  customIconUrl={lodgeInfo?.cardIcons?.wifi}
+                  title="Wi-Fi"
+                  subtitle="Rede e senha"
+                  iconBgColor="bg-emerald-100/80 text-emerald-700"
+                  waveAccentColor="#265C49"
+                />
+              </div>
+            }
+          />
+
+          {/* 3. City Tour */}
+          <Link href="/city-tour" className="block h-full">
+            <InfoCard
+              icon={<Map size={24} />}
+              customIconUrl={lodgeInfo?.cardIcons?.cityTour}
+              title="City Tour"
+              subtitle="Agenda e instruções"
+              iconBgColor="bg-sky-100/80 text-sky-700"
+              waveAccentColor="#0284C7"
+            />
+          </Link>
+
+          {/* 4. Loja */}
+          <Link href="/loja" className="block h-full">
+            <InfoCard
+              icon={<ShoppingBag size={24} />}
+              customIconUrl={lodgeInfo?.cardIcons?.loja}
+              title="Loja"
+              subtitle="Produtos da pousada"
+              iconBgColor="bg-teal-100/80 text-teal-700"
+              waveAccentColor="#0F766E"
+            />
+          </Link>
+
+          {/* 5. Recepção (WhatsApp) */}
+          <a
+            href={`https://wa.me/55${cleanWhatsappNumber}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block h-full"
+          >
+            <InfoCard
+              icon={<WhatsappIcon className="w-6 h-6 text-amber-600 fill-current" />}
+              customIconUrl={lodgeInfo?.cardIcons?.reception}
+              title="Recepção"
+              subtitle="Fale com a recepção no WhatsApp"
+              iconBgColor="bg-amber-100/80 text-amber-700"
+              waveAccentColor="#EAB308"
+            />
+          </a>
+
+          {/* 6. Frigobar */}
+          <MinibarModal
+            trigger={
+              <div>
+                <InfoCard
+                  icon={<GlassWater size={24} />}
+                  customIconUrl={lodgeInfo?.cardIcons?.minibar}
+                  title="Frigobar"
+                  subtitle="Itens e preços"
+                  iconBgColor="bg-blue-100/80 text-blue-700"
+                  waveAccentColor="#2563EB"
+                />
+              </div>
+            }
+          />
+
+          {/* 7. Telefones úteis */}
+          <UsefulServicesModal
+            trigger={
+              <div>
+                <InfoCard
+                  icon={<PhoneCall size={24} />}
+                  customIconUrl={lodgeInfo?.cardIcons?.usefulServices}
+                  title="Telefones úteis"
+                  subtitle="Serviços locais"
+                  iconBgColor="bg-cyan-100/80 text-cyan-700"
+                  waveAccentColor="#0891B2"
+                />
+              </div>
+            }
+          />
+
+          {/* 8. Regulamento */}
+          <RegulationModal
+            trigger={
+              <div>
+                <InfoCard
+                  icon={<BookText size={24} />}
+                  customIconUrl={lodgeInfo?.cardIcons?.regulation}
+                  title="Regulamento"
+                  subtitle="Regras da pousada"
+                  iconBgColor="bg-emerald-100/80 text-emerald-800"
+                  waveAccentColor="#15803D"
+                />
+              </div>
+            }
+          />
+
+          {/* 9. Boas-vindas com IA */}
+          <AiWelcomeModal
+            trigger={
+              <div>
+                <InfoCard
+                  icon={<Bot size={24} />}
+                  customIconUrl={lodgeInfo?.cardIcons?.aiWelcome}
+                  title="Boas-vindas com IA"
+                  subtitle="Mensagem personalizada conforme o clima"
+                  iconBgColor="bg-amber-100/80 text-amber-700"
+                  waveAccentColor="#F6B726"
+                />
+              </div>
+            }
+          />
         </div>
-        
-        <WelcomeMessage />
-        
-        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {infoCards.map((card, index) => (
-            <InfoCard key={index} icon={card.icon} title={card.title}>
-              {card.content}
-            </InfoCard>
-          ))}
+
+        {/* Banner Horizontal do Modo Admin com Silhueta de Ouro Preto */}
+        <div className="mt-8 sm:mt-10">
+          {isAdmin ? (
+            <LodgeConfigModal
+              trigger={
+                <div className="cursor-pointer group relative bg-solar-navy text-white rounded-2xl p-5 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300 flex items-center justify-between overflow-hidden">
+                  <div className="flex items-center gap-4 z-10">
+                    <div className="w-12 h-12 rounded-full bg-solar-gold text-solar-navy flex items-center justify-center font-bold shadow-sm shrink-0">
+                      <Lock size={22} />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-headline font-bold text-lg text-white">
+                          Modo Admin Ativo
+                        </h3>
+                        <span className="text-[10px] bg-emerald-500/90 text-white font-semibold px-2 py-0.5 rounded-full">
+                          Conectado
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-300 mt-0.5">
+                        Clique para configurar WhatsApp, horários e dados da pousada
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 z-10">
+                    <AdminIllustration />
+                    <ChevronRight
+                      size={22}
+                      className="text-slate-300 group-hover:translate-x-1 group-hover:text-white transition-all shrink-0"
+                    />
+                  </div>
+                </div>
+              }
+            />
+          ) : (
+            <Link href="/login" className="block group">
+              <div className="relative bg-solar-navy text-white rounded-2xl p-5 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300 flex items-center justify-between overflow-hidden">
+                <div className="flex items-center gap-4 z-10">
+                  <div className="w-12 h-12 rounded-full bg-solar-gold text-solar-navy flex items-center justify-center font-bold shadow-sm shrink-0">
+                    <Lock size={22} />
+                  </div>
+                  <div>
+                    <h3 className="font-headline font-bold text-lg text-white">
+                      Modo Admin
+                    </h3>
+                    <p className="text-xs text-slate-300 mt-0.5">
+                      Edição de conteúdo via Firebase
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 z-10">
+                  <AdminIllustration />
+                  <ChevronRight
+                    size={22}
+                    className="text-slate-300 group-hover:translate-x-1 group-hover:text-white transition-all shrink-0"
+                  />
+                </div>
+              </div>
+            </Link>
+          )}
         </div>
       </main>
+
       <Footer />
+    </div>
+  );
+}
+
+// Ilustração com silhueta vetorial de igrejas barrocas, montanhas e sol de Ouro Preto
+function AdminIllustration() {
+  return (
+    <div className="hidden md:block opacity-75 group-hover:opacity-100 transition-opacity select-none pointer-events-none">
+      <svg
+        width="160"
+        height="50"
+        viewBox="0 0 160 50"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Sol Dourado */}
+        <circle cx="68" cy="22" r="13" fill="#F6B726" />
+        
+        {/* Linhas das Montanhas das Gerais */}
+        <path
+          d="M0,48 C40,32 80,30 110,44 C125,38 142,39 160,48"
+          stroke="#4D839B"
+          strokeWidth="2"
+          fill="none"
+        />
+
+        {/* Silhueta da Igreja Colonial com Torres e Cruzes */}
+        <g stroke="#71A8BE" strokeWidth="1.8">
+          {/* Torre Esquerda */}
+          <path d="M116,46 L116,22 L124,14 L132,22 L132,46" fill="#113F52" />
+          <path d="M124,14 L124,8" />
+          <path d="M121,11 L127,11" />
+          
+          {/* Torre Direita */}
+          <path d="M136,46 L136,25 L143,19 L150,25 L150,46" fill="#113F52" />
+          <path d="M143,19 L143,14" />
+          <path d="M140,16 L146,16" />
+        </g>
+      </svg>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { Instagram, Lock } from 'lucide-react';
+import { Home, MapPin, Instagram, Lock, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { useUser, useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
@@ -17,36 +17,96 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-primary text-primary-foreground mt-16 border-t-4 border-accent">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="flex flex-col items-center md:items-start gap-3 text-center md:text-left">
-            <p className="text-sm">
-              &copy; {new Date().getFullYear()} Pousada Bela Vista.
-            </p>
+    <footer className="relative mt-16 pt-8 pb-0 overflow-hidden bg-transparent select-none">
+      {/* Informações Principais do Rodapé */}
+      <div className="container mx-auto px-4 sm:px-6 mb-6">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
+          {/* Link Admin à Esquerda */}
+          <div className="flex items-center gap-2 order-2 md:order-1">
             {isAdmin ? (
-               <Button variant="link" onClick={handleLogout} className="text-primary-foreground p-0 h-auto text-xs opacity-50 hover:opacity-100">
-                  Sair do Modo Admin
-               </Button>
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/login"
+                  className="flex items-center gap-1.5 font-semibold text-solar-green hover:underline bg-solar-green/10 px-2.5 py-1 rounded-lg"
+                >
+                  <Lock size={12} />
+                  <span>Admin Conectado</span>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-1 text-red-600 hover:text-red-700 font-semibold p-1 hover:bg-red-50 rounded"
+                  title="Sair do modo administrador"
+                >
+                  <LogOut size={12} />
+                  <span>Sair</span>
+                </button>
+              </div>
             ) : (
-              <Link href="/login" className="flex items-center gap-1 text-[10px] opacity-30 hover:opacity-100 transition-opacity">
-                <Lock size={10} />
-                Admin
+              <Link
+                href="/login"
+                className="flex items-center gap-1.5 font-medium text-slate-500 hover:text-solar-navy transition-colors px-2.5 py-1 rounded-md hover:bg-slate-100/60"
+              >
+                <Lock size={13} className="text-solar-navy/70" />
+                <span>Admin</span>
               </Link>
             )}
           </div>
-          <div className="text-center">
-             <a 
-              href="https://www.instagram.com/pousada.belavistaop" 
-              target="_blank" 
+
+          {/* Linha Centralizada: Pousada Solar das Gerais | Ouro Preto - MG */}
+          <div className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2.5 font-semibold text-solar-navy order-1 md:order-2">
+            <span className="flex items-center gap-1.5">
+              <Home size={15} className="text-solar-navy" />
+              Pousada Solar das Gerais
+            </span>
+            <span className="hidden sm:inline text-solar-navy/40">|</span>
+            <span className="flex items-center gap-1.5 text-solar-navy/80">
+              <MapPin size={15} className="text-solar-green" />
+              Ouro Preto - MG
+            </span>
+          </div>
+
+          {/* Redes Sociais e Copyright à Direita */}
+          <div className="flex items-center gap-3 text-slate-500 order-3">
+            <a
+              href="https://www.instagram.com/pousadasolardasgerais"
+              target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-[10px] font-semibold hover:text-accent transition-colors"
+              className="flex items-center gap-1.5 hover:text-solar-navy transition-colors font-medium"
             >
-              <Instagram size={20} />
-              <span>@pousada.belavistaop</span>
+              <Instagram size={14} className="text-solar-navy" />
+              <span>@pousadasolardasgerais</span>
             </a>
+            <span className="opacity-30">•</span>
+            <span>&copy; {new Date().getFullYear()}</span>
           </div>
         </div>
+      </div>
+
+      {/* Ondas Orgânicas Decorativas da Base da Tela */}
+      <div className="relative w-full overflow-hidden leading-none pointer-events-none">
+        <svg
+          viewBox="0 0 1440 90"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-12 sm:h-16 md:h-20 block"
+          preserveAspectRatio="none"
+        >
+          {/* Onda Amarela Dourada */}
+          <path
+            d="M0,50 C240,10 520,80 840,40 C1100,5 1300,60 1440,30 L1440,90 L0,90 Z"
+            fill="#F6B726"
+          />
+          {/* Onda Verde Mata */}
+          <path
+            d="M0,60 C300,30 650,85 1020,45 C1240,25 1380,65 1440,50 L1440,90 L0,90 Z"
+            fill="#265C49"
+          />
+          {/* Onda Azul Petróleo Inferior */}
+          <path
+            d="M0,75 C280,50 620,85 960,65 C1180,50 1340,75 1440,70 L1440,90 L0,90 Z"
+            fill="#113F52"
+          />
+        </svg>
       </div>
     </footer>
   );

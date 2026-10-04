@@ -69,7 +69,11 @@ const defaultServicesData = [
   }
 ];
 
-export function UsefulServicesModal() {
+interface UsefulServicesModalProps {
+  trigger?: React.ReactNode;
+}
+
+export function UsefulServicesModal({ trigger }: UsefulServicesModalProps = {}) {
   const firestore = useFirestore();
   const { user } = useUser();
   const { toast } = useToast();
@@ -114,7 +118,7 @@ export function UsefulServicesModal() {
             for (const category of categories) {
                 const itemsCollectionRef = collection(firestore, 'service_categories', category.id, 'items');
                 const itemsSnapshot = await getDocs(itemsCollectionRef);
-                itemsSnapshot.docs.forEach(doc => batch.delete(doc.ref));
+                itemsSnapshot.docs.forEach((docItem: any) => batch.delete(docItem.ref));
                 
                 const categoryDocRef = doc(firestore, 'service_categories', category.id);
                 batch.delete(categoryDocRef);
@@ -145,7 +149,9 @@ export function UsefulServicesModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">{tInfoCard.button}</Button>
+        {trigger || (
+          <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">{tInfoCard.button}</Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] md:sm:max-w-[600px]">
         <DialogHeader>
@@ -227,7 +233,7 @@ function CategoryItem({ category, isAdmin }: { category: WithId<ServiceCategory>
     try {
       const itemsSnapshot = await getDocs(itemsRef);
       const batch = writeBatch(firestore);
-      itemsSnapshot.docs.forEach(doc => batch.delete(doc.ref));
+      itemsSnapshot.docs.forEach((docItem: any) => batch.delete(docItem.ref));
       await batch.commit();
       await deleteDoc(categoryDocRef);
     } catch(e) {

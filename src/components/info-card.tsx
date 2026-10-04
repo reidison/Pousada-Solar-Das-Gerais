@@ -1,29 +1,110 @@
 import type { ReactNode } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { ChevronRight } from 'lucide-react';
 
 interface InfoCardProps {
-  icon: ReactNode;
+  icon?: ReactNode;
+  customIconUrl?: string;
   title: string;
-  children: ReactNode;
+  subtitle?: string;
+  iconBgColor?: string;
+  waveAccentColor?: string;
+  children?: ReactNode;
   className?: string;
+  onClick?: () => void;
 }
 
-export function InfoCard({ icon, title, children, className }: InfoCardProps) {
+export function InfoCard({
+  icon,
+  customIconUrl,
+  title,
+  subtitle,
+  iconBgColor = 'bg-amber-100/70 text-amber-700',
+  waveAccentColor = '#F6B726',
+  children,
+  className,
+  onClick,
+}: InfoCardProps) {
   return (
-    <Card className={cn(
-      "flex flex-col h-full shadow-md hover:shadow-xl transition-shadow duration-300 rounded-lg overflow-hidden",
-      className
-    )}>
-      <CardHeader className="items-center text-center pt-6">
-        <div className="flex items-center justify-center h-16 w-16 bg-accent/10 rounded-full mb-3 text-accent">
-          {icon}
+    <Card
+      onClick={onClick}
+      className={cn(
+        "group relative flex flex-col justify-between h-full bg-white rounded-2xl border border-solar-navy/5",
+        "shadow-[0_4px_20px_rgba(17,63,82,0.06)] hover:shadow-[0_12px_28px_rgba(17,63,82,0.12)]",
+        "transition-all duration-300 transform hover:-translate-y-1 overflow-hidden select-none",
+        onClick && "cursor-pointer",
+        className
+      )}
+    >
+      <div className="p-5 sm:p-6 pb-2">
+        {/* Ícone Circular com Fundo Suave Pastel */}
+        <div className="flex items-center justify-between mb-4">
+          <div
+            className={cn(
+              "flex items-center justify-center h-13 w-13 rounded-full transition-transform group-hover:scale-105 duration-300 overflow-hidden",
+              iconBgColor
+            )}
+          >
+            {customIconUrl ? (
+              <img
+                src={customIconUrl}
+                alt={title}
+                className="w-7 h-7 object-contain"
+              />
+            ) : (
+              icon
+            )}
+          </div>
         </div>
-        <CardTitle className="font-headline text-xl text-primary">{title}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex-grow flex flex-col justify-center items-center text-center text-muted-foreground space-y-1 px-4 pb-6">
-        {children}
-      </CardContent>
+
+        {/* Título com Seta Chevron à Direita */}
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="font-headline font-bold text-base sm:text-lg text-solar-navy group-hover:text-solar-navyLight transition-colors">
+            {title}
+          </h2>
+          <ChevronRight
+            size={18}
+            className="text-solar-navy/40 group-hover:text-solar-navy group-hover:translate-x-1 transition-all shrink-0"
+          />
+        </div>
+
+        {/* Subtítulo Descritivo */}
+        {subtitle && (
+          <p className="text-xs text-slate-500 font-medium mt-1 leading-snug">
+            {subtitle}
+          </p>
+        )}
+
+        {/* Conteúdo adicional/botões (se houver) */}
+        {children && (
+          <div className="mt-4 pt-3 border-t border-slate-100 flex flex-col items-center justify-center text-center">
+            {children}
+          </div>
+        )}
+      </div>
+
+      {/* Onda Orgânica Decorativa no Rodapé do Cartão */}
+      <div className="mt-4 overflow-hidden leading-none pointer-events-none select-none">
+        <svg
+          viewBox="0 0 300 22"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-3 sm:h-3.5 block"
+          preserveAspectRatio="none"
+        >
+          {/* Onda colorida de destaque */}
+          <path
+            d="M0,10 C70,22 150,0 230,14 C265,20 285,12 300,16 L300,22 L0,22 Z"
+            fill={waveAccentColor}
+          />
+          {/* Onda secundária em azul petróleo */}
+          <path
+            d="M0,16 C85,5 175,20 255,12 C275,10 290,14 300,16 L300,22 L0,22 Z"
+            fill="#113F52"
+          />
+        </svg>
+      </div>
     </Card>
   );
 }

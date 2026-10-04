@@ -6,8 +6,8 @@ import { LanguageProvider } from '@/contexts/language-context';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Painel do Hóspede – Pousada Bela Vista',
-  description: 'Painel de informações para hóspedes da Pousada Bela Vista.',
+  title: 'Pousada Solar das Gerais – Ouro Preto MG',
+  description: 'Painel de informações e comodidades para hóspedes da Pousada Solar das Gerais em Ouro Preto, Minas Gerais.',
 };
 
 export default function RootLayout({

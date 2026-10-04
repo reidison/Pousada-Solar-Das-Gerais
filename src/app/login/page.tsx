@@ -13,6 +13,8 @@ import { ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 
+import { Logo } from '@/components/icons/logo';
+
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -44,17 +46,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-      <Link href="/" className="mb-8 flex items-center text-sm text-muted-foreground hover:text-foreground">
-        <ArrowLeft size={16} className="mr-1" />
-        Voltar para o Painel
+    <div className="min-h-screen bg-solar-cream flex flex-col items-center justify-center p-4">
+      <Link href="/" className="mb-6 flex items-center text-sm font-semibold text-solar-navy hover:text-solar-navyLight transition-colors">
+        <ArrowLeft size={16} className="mr-1.5" />
+        Voltar para a Pousada
       </Link>
       
-      <Card className="w-full max-w-md shadow-lg border-t-4 border-primary">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Área Administrativa</CardTitle>
-          <CardDescription className="text-center">
-            Faça login para habilitar a edição de informações.
+      <div className="mb-6">
+        <Logo />
+      </div>
+
+      <Card className="w-full max-w-md shadow-xl border border-solar-navy/10 border-t-4 border-t-solar-gold rounded-2xl bg-white">
+        <CardHeader className="space-y-1 text-center">
+          <CardTitle className="text-2xl font-bold font-headline text-solar-navy">Área Administrativa</CardTitle>
+          <CardDescription className="text-slate-500">
+            Acesse o painel para gerenciar os dados da pousada.
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleLogin}>
@@ -82,14 +88,14 @@ export default function LoginPage() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button className="w-full" type="submit" disabled={isLoading}>
+            <Button className="w-full bg-solar-navy hover:bg-solar-navyLight text-white rounded-xl py-2.5 font-semibold transition-colors" type="submit" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Entrando...
                 </>
               ) : (
-                'Entrar como Admin'
+                'Entrar como Administrador'
               )}
             </Button>
           </CardFooter>

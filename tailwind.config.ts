@@ -5,27 +5,14 @@ export default {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/footer.tsx',
-    './src/components/header.tsx',
-    './src/components/icons/brazil-flag-icon.tsx',
-    './src/components/icons/logo.tsx',
-    './src/components/icons/qr-code.tsx',
-    './src/components/icons/usa-flag-icon.tsx',
-    './src/components/icons/whatsapp-icon.tsx',
-    './src/components/info-card.tsx',
-    './src/components/minibar-modal.tsx',
-    './src/components/regulation-modal.tsx',
-    './src/components/useful-services-modal.tsx',
-    './src/components/welcome-message.tsx',
-    './src/components/city-tour-modal.tsx',
-    './src/components/ui/**/*.tsx'
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: "1rem",
       screens: {
-        "2xl": "1400px",
+        "2xl": "1200px",
       },
     },
     extend: {
@@ -35,6 +22,16 @@ export default {
         code: ['monospace'],
       },
       colors: {
+        solar: {
+          navy: '#113f52',
+          navyDark: '#0c2b3a',
+          navyLight: '#1b5670',
+          green: '#265c49',
+          greenLight: '#2e7057',
+          gold: '#f6b726',
+          goldLight: '#fad674',
+          cream: '#fbf9f4',
+        },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
