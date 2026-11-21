@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
+import { MapPin } from 'lucide-react';
 import { useLanguage } from '@/contexts/language-context';
 import { SolarLogo } from '@/components/solar-logo';
 import { useUser, useFirestore, useMemoFirebase, useDoc } from '@/firebase';
@@ -9,11 +10,15 @@ import { doc } from 'firebase/firestore';
 import { LodgeConfigModal } from '@/components/lodge-config-modal';
 import type { LodgeInfo } from '@/types/lodge-info';
 
+const DEFAULT_HERO_IMAGE =
+  'https://images.unsplash.com/photo-1589999014168-3e589841f5a5?w=1000&q=85';
+
 export function HeroHeader() {
   const { language, setLanguage, translations } = useLanguage();
   const { user } = useUser();
   const firestore = useFirestore();
   const isAdmin = user && !user.isAnonymous;
+  const [imgError, setImgError] = useState(false);
 
   const lodgeInfoRef = useMemoFirebase(
     () => (firestore ? doc(firestore, 'lodge_info', 'main') : null),
@@ -21,43 +26,30 @@ export function HeroHeader() {
   );
   const { data: lodgeInfo } = useDoc<LodgeInfo>(lodgeInfoRef);
 
-  const heroImage =
-    lodgeInfo?.heroImageUrl?.trim() ||
-    'https://images.unsplash.com/photo-1589999014168-3e589841f5a5?w=1000&q=85';
+  const heroImage = lodgeInfo?.heroImageUrl?.trim() || DEFAULT_HERO_IMAGE;
 
   return (
-    <div className="relative w-full bg-gradient-to-b from-[#F2F7FA] to-[#E9F1F6] overflow-hidden pt-6">
-      <div className="container mx-auto px-4 max-w-6xl">
-        {/* Top bar with Admin config if admin */}
-        <div className="flex items-center justify-between mb-4">
+    <header className="w-full bg-gradient-to-b from-[#F4EFE4]/80 via-[#FAF9F5] to-[#FAF9F5] border-b border-stone-200/80">
+      {/* Top Bar: Logo on left, Admin & Language Switcher on right */}
+      <div className="border-b border-stone-200/70 bg-white/75 backdrop-blur-md">
+        <div className="container mx-auto px-4 max-w-6xl h-20 flex items-center justify-between gap-4">
           <SolarLogo size="md" />
-          {isAdmin && (
-            <div className="flex items-center gap-2">
-              <LodgeConfigModal />
-            </div>
-          )}
-        </div>
 
-        {/* Hero Grid: Text on left, Colonial building on right */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center min-h-[260px] md:min-h-[320px] pb-6 md:pb-8">
-          {/* Left Column: Welcome & Info */}
-          <div className="md:col-span-7 flex flex-col justify-center pr-0 md:pr-4 z-10">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#11314C] tracking-tight leading-tight mb-3">
-              {translations.welcomeMessage.title}
-            </h1>
-            <p className="text-sm sm:text-base text-slate-700 leading-relaxed mb-6 max-w-xl font-normal">
-              {translations.welcomeMessage.subtitle}
-            </p>
+          <div className="flex items-center gap-3">
+            {isAdmin && <LodgeConfigModal />}
 
-            {/* Language Switcher Buttons (Pill design matching layout) */}
-            <div className="flex items-center gap-2.5">
+            <div
+              className="flex items-center gap-1 bg-stone-200/70 p-1 rounded-full"
+              role="group"
+              aria-label="Selecionar idioma"
+            >
               <button
                 type="button"
                 onClick={() => setLanguage('pt')}
-                className={`px-4 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all shadow-xs ${
+                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
                   language === 'pt'
-                    ? 'bg-[#11314C] text-white shadow-sm ring-2 ring-[#11314C]/30'
-                    : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-50'
+                    ? 'bg-[#11314C] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-[#11314C]'
                 }`}
               >
                 PT-BR
@@ -65,62 +57,70 @@ export function HeroHeader() {
               <button
                 type="button"
                 onClick={() => setLanguage('en')}
-                className={`px-4 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all shadow-xs ${
+                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
                   language === 'en'
-                    ? 'bg-[#11314C] text-white shadow-sm ring-2 ring-[#11314C]/30'
-                    : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-50'
+                    ? 'bg-[#11314C] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-[#11314C]'
                 }`}
               >
                 EN
               </button>
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* Right Column: Historic Colonial Architecture (Museu da Inconfidência or custom Hero image) */}
-          <div className="md:col-span-5 relative h-56 sm:h-72 md:h-80 w-full rounded-2xl overflow-hidden shadow-lg border-2 border-white/80 bg-slate-200">
-            <Image
-              src={heroImage}
-              alt="Pousada Solar das Gerais - Destaque"
-              fill
-              priority
-              referrerPolicy="no-referrer"
-              unoptimized={heroImage.startsWith('data:')}
-              className="object-cover object-center transform hover:scale-105 transition-transform duration-700"
-            />
-            {/* Soft inner glow gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#11314C]/40 via-transparent to-transparent pointer-events-none" />
-            <div className="absolute bottom-2 right-3 text-[10px] text-white/90 font-medium px-2 py-0.5 rounded-md bg-black/40 backdrop-blur-xs">
-              Ouro Preto, MG
+      {/* Editorial Hero Split */}
+      <div className="container mx-auto px-4 max-w-6xl py-8 sm:py-10 lg:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+          {/* Left Column: Welcome & Info */}
+          <div className="lg:col-span-7 flex flex-col justify-center">
+            <div className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#B45309] mb-3">
+              <MapPin size={14} className="shrink-0 text-[#ECA31D]" />
+              <span>Ouro Preto · Minas Gerais</span>
+            </div>
+
+            <h1 className="text-3xl sm:text-4xl lg:text-[2.6rem] font-extrabold text-[#11314C] tracking-tight leading-[1.14] text-balance mb-4">
+              {translations.welcomeMessage.title}
+            </h1>
+
+            <p className="text-base sm:text-[17px] text-slate-600 leading-relaxed max-w-xl">
+              {translations.welcomeMessage.subtitle}
+            </p>
+          </div>
+
+          {/* Right Column: Featured Photo */}
+          <div className="lg:col-span-5">
+            <div className="relative w-full aspect-[16/10] sm:aspect-[4/3] rounded-2xl overflow-hidden border border-stone-200/90 bg-stone-200 shadow-md ring-4 ring-white/80">
+              {!imgError ? (
+                <Image
+                  src={heroImage}
+                  alt="Pousada Solar das Gerais - Destaque"
+                  fill
+                  priority
+                  referrerPolicy="no-referrer"
+                  unoptimized={heroImage.startsWith('data:')}
+                  onError={() => setImgError(true)}
+                  className="object-cover object-center"
+                />
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#11314C] to-[#1E4D6E] text-white p-6 text-center">
+                  <MapPin size={32} className="text-[#ECA31D] mb-2" />
+                  <p className="font-semibold text-sm">Pousada Solar das Gerais</p>
+                  <p className="text-xs text-sky-200 mt-0.5">Ouro Preto, MG</p>
+                </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#11314C]/35 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute bottom-3 right-3 text-[11px] text-white/95 font-medium px-2.5 py-1 rounded-full bg-black/45 backdrop-blur-xs">
+                Ouro Preto, MG
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Double Wave Transition between Hero & Cards Section */}
-      <div className="w-full relative leading-none mt-2">
-        {/* Navy Top Wave */}
-        <svg
-          viewBox="0 0 1200 50"
-          preserveAspectRatio="none"
-          className="w-full h-6 sm:h-9 relative z-10"
-        >
-          <path
-            d="M0,20 C350,55 850,-15 1200,25 L1200,50 L0,50 Z"
-            fill="#11314C"
-          />
-        </svg>
-        {/* Golden Yellow Accent Wave */}
-        <svg
-          viewBox="0 0 1200 45"
-          preserveAspectRatio="none"
-          className="w-full h-5 sm:h-8 -mt-2 relative z-20"
-        >
-          <path
-            d="M0,15 C450,-5 750,45 1200,10 L1200,45 L0,45 Z"
-            fill="#ECA31D"
-          />
-        </svg>
-      </div>
-    </div>
+      {/* Subtle gold & navy accent rule */}
+      <div className="h-1 w-full bg-gradient-to-r from-[#11314C] via-[#ECA31D] to-[#11314C]" />
+    </header>
   );
 }

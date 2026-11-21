@@ -46,7 +46,7 @@ export default function Page() {
       <HeroHeader />
 
       {/* Main Content Area: 3x3 Cards Grid matching layout */}
-      <main className="container mx-auto px-4 max-w-6xl -mt-2 sm:-mt-3 z-30 flex-grow">
+      <main className="container mx-auto px-4 max-w-6xl flex-grow pt-4 sm:pt-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 pt-4">
           {/* Card 1: Café da Manhã */}
           <FeatureCard
