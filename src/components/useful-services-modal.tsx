@@ -69,11 +69,7 @@ const defaultServicesData = [
   }
 ];
 
-interface UsefulServicesModalProps {
-  trigger?: React.ReactNode;
-}
-
-export function UsefulServicesModal({ trigger }: UsefulServicesModalProps = {}) {
+export function UsefulServicesModal({ trigger }: { trigger?: React.ReactNode } = {}) {
   const firestore = useFirestore();
   const { user } = useUser();
   const { toast } = useToast();
@@ -118,7 +114,7 @@ export function UsefulServicesModal({ trigger }: UsefulServicesModalProps = {}) 
             for (const category of categories) {
                 const itemsCollectionRef = collection(firestore, 'service_categories', category.id, 'items');
                 const itemsSnapshot = await getDocs(itemsCollectionRef);
-                itemsSnapshot.docs.forEach((docItem: any) => batch.delete(docItem.ref));
+                itemsSnapshot.docs.forEach(doc => batch.delete(doc.ref));
                 
                 const categoryDocRef = doc(firestore, 'service_categories', category.id);
                 batch.delete(categoryDocRef);
@@ -150,7 +146,9 @@ export function UsefulServicesModal({ trigger }: UsefulServicesModalProps = {}) 
     <Dialog>
       <DialogTrigger asChild>
         {trigger || (
-          <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">{tInfoCard.button}</Button>
+          <Button variant="outline" size="sm" className="w-full text-xs font-semibold border-sky-300 text-sky-800 hover:bg-sky-50">
+            {tInfoCard.button}
+          </Button>
         )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] md:sm:max-w-[600px]">
@@ -233,7 +231,7 @@ function CategoryItem({ category, isAdmin }: { category: WithId<ServiceCategory>
     try {
       const itemsSnapshot = await getDocs(itemsRef);
       const batch = writeBatch(firestore);
-      itemsSnapshot.docs.forEach((docItem: any) => batch.delete(docItem.ref));
+      itemsSnapshot.docs.forEach(doc => batch.delete(doc.ref));
       await batch.commit();
       await deleteDoc(categoryDocRef);
     } catch(e) {

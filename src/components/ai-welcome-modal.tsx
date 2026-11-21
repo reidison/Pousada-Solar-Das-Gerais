@@ -11,147 +11,132 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Bot, Sparkles, CloudSun, Loader2, RefreshCw } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Sparkles, Loader2, CloudSun, RefreshCw } from 'lucide-react';
+import { getPersonalizedWelcomeMessage } from '@/app/actions';
 
-interface AiWelcomeModalProps {
+interface AIWelcomeModalProps {
   trigger?: React.ReactNode;
 }
 
-export function AiWelcomeModal({ trigger }: AiWelcomeModalProps) {
+export function AIWelcomeModal({ trigger }: AIWelcomeModalProps) {
+  const [open, setOpen] = useState(false);
   const [guestName, setGuestName] = useState('');
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(
-    "Olá! Seja muito bem-vindo(a) à Pousada Solar das Gerais. O dia em Ouro Preto está perfeito com 21°C e brisa suave de montanha. Aproveite um delicioso café coado e desfrute do nosso acolhimento mineiro!"
-  );
+  const [generatedMessage, setGeneratedMessage] = useState<string | null>(null);
 
-  const handleGenerate = async () => {
+  const handleGenerate = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setLoading(true);
+
+    const name = guestName.trim() || 'Hóspede';
     try {
-      const response = await fetch('/api/welcome-ai', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          guestName: guestName.trim() || 'Hóspede Especial',
-          hotelName: 'Pousada Solar das Gerais',
-          weatherInfo: {
-            temperature: 21,
-            condition: 'Ensolarado com brisa fresca de montanha',
-          },
-        }),
+      const res = await getPersonalizedWelcomeMessage({
+        guestName: name,
+        hotelName: 'Pousada Solar das Gerais',
+        weatherInfo: {
+          temperature: 22,
+          condition: 'Ensolarado e agradável em Ouro Preto',
+        },
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.welcomeMessage) {
-          setMessage(data.welcomeMessage);
-          return;
-        }
+      if (res && res.welcomeMessage) {
+        setGeneratedMessage(res.welcomeMessage);
+      } else {
+        throw new Error('Sem resposta');
       }
-
-      // Mensagem de acolhimento personalizada de alta qualidade
-      const name = guestName.trim() || 'Prezado(a) Hóspede';
-      const messages = [
-        `${name}, que alegria ter você aqui na Pousada Solar das Gerais! O clima de 21°C nas montanhas de Ouro Preto convida a um passeio inesquecível pelo centro histórico. Sinta-se em casa!`,
-        `Seja muito bem-vindo(a), ${name}! Cada cantinho da Solar das Gerais foi preparado com carinho para o seu descanso. Aproveite o ar puro de Minas e a nossa hospitalidade!`,
-        `Olá ${name}! O sol brilha suavemente sobre as ladeiras históricas de Ouro Preto. Desfrute da vista, do silêncio e do melhor café mineiro conosco!`,
-      ];
-      setMessage(messages[Math.floor(Math.random() * messages.length)]);
     } catch {
-      setMessage(
-        `Olá ${guestName.trim() || 'Hóspede'}! Seja muito bem-vindo(a) à Pousada Solar das Gerais. Desejamos uma estadia encantadora em Ouro Preto!`
+      setGeneratedMessage(
+        `Olá, ${name}! Seja muito bem-vindo(a) à Pousada Solar das Gerais. O dia em Ouro Preto está lindo e convidativo para explorar nossas ladeiras e igrejas históricas. Desejamos uma estadia inesquecível e repleta de momentos acolhedores!`
       );
     } finally {
       setLoading(false);
     }
   };
 
+  const onOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (isOpen && !generatedMessage && !loading) {
+      handleGenerate();
+    }
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button variant="outline" className="mt-4">
-            Mensagem com IA
+          <Button variant="outline" size="sm" className="gap-2">
+            <Sparkles size={14} className="text-amber-500" />
+            Ver mensagem
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[480px]">
-        <DialogHeader className="text-center sm:text-left">
-          <div className="mx-auto sm:mx-0 w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 mb-2">
-            <Bot size={24} />
+      <DialogContent className="sm:max-w-md bg-white">
+        <DialogHeader>
+          <div className="flex items-center gap-2 text-amber-600 mb-1">
+            <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
+              <Sparkles size={18} />
+            </div>
+            <DialogTitle className="text-xl text-[#11314C]">
+              Boas-vindas com IA
+            </DialogTitle>
           </div>
-          <DialogTitle className="text-xl font-headline text-solar-navy">
-            Boas-vindas Personalizadas com IA
-          </DialogTitle>
-          <DialogDescription>
-            Nosso assistente inteligente cria uma recepção sob medida considerando o clima de Ouro Preto.
+          <DialogDescription className="text-slate-600">
+            Mensagem acolhedora gerada por inteligência artificial baseada no clima de Ouro Preto.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-3">
-          {/* Status do Clima em Ouro Preto */}
-          <div className="flex items-center justify-between p-3.5 bg-solar-cream border border-[#113F52] rounded-xl">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-amber-200/60 text-amber-800 flex items-center justify-center border border-[#113F52]">
-                <CloudSun size={20} />
-              </div>
-              <div>
-                <span className="text-xs uppercase tracking-wider text-slate-500 font-bold block">
-                  Clima em Ouro Preto agora
-                </span>
-                <span className="text-sm font-bold text-solar-navy">
-                  21°C • Ensolarado e agradável
-                </span>
-              </div>
+        <div className="space-y-4 py-2">
+          {/* Weather status bar */}
+          <div className="flex items-center justify-between px-3 py-2 bg-amber-50/80 border border-amber-200/60 rounded-lg text-xs text-amber-900">
+            <div className="flex items-center gap-2">
+              <CloudSun size={18} className="text-amber-600" />
+              <span>Ouro Preto, MG: <strong>22°C</strong> • Ensolarado</span>
             </div>
-            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-solar-navy bg-solar-gold/30 border border-[#113F52] px-2 py-0.5 rounded-full">
-              <Sparkles size={12} />
-              GenAI
-            </span>
+            <span className="text-[10px] text-amber-700 bg-amber-200/60 px-2 py-0.5 rounded-full font-medium">Tempo Real</span>
           </div>
 
-          {/* Campo para o nome do hóspede */}
-          <div className="flex gap-2">
-            <Input
-              placeholder="Digite seu primeiro nome..."
-              value={guestName}
-              onChange={(e) => setGuestName(e.target.value)}
-              className="rounded-xl border-slate-200 focus:border-solar-navy"
-            />
-            <Button
-              onClick={handleGenerate}
-              disabled={loading}
-              className="bg-solar-navy hover:bg-solar-navyLight text-white rounded-xl gap-1.5 shrink-0 px-4"
-            >
-              {loading ? (
-                <Loader2 size={16} className="animate-spin" />
-              ) : (
-                <Sparkles size={16} className="text-solar-gold" />
-              )}
-              <span>Gerar</span>
-            </Button>
-          </div>
-
-          {/* Mensagem Gerada */}
-          {message && (
-            <div className="relative p-5 bg-solar-cream/70 border border-solar-gold/40 rounded-2xl shadow-xs">
-              <div className="absolute top-3 right-3 text-solar-gold">
-                <Sparkles size={18} />
+          {/* Generated message output box */}
+          <div className="p-4 rounded-xl bg-gradient-to-br from-amber-50/50 via-white to-sky-50/40 border border-slate-200/80 shadow-inner min-h-[110px] flex items-center justify-center text-center">
+            {loading ? (
+              <div className="flex flex-col items-center gap-2 text-slate-500 text-sm py-4">
+                <Loader2 size={24} className="animate-spin text-amber-500" />
+                <span>Personalizando sua recepção...</span>
               </div>
-              <p className="text-sm text-solar-navy leading-relaxed font-medium italic">
-                &ldquo;{message}&rdquo;
+            ) : generatedMessage ? (
+              <p className="text-slate-700 text-sm md:text-base leading-relaxed font-medium italic">
+                &ldquo;{generatedMessage}&rdquo;
               </p>
-              <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-200/60 pt-2">
-                <span>Concierge Virtual • Pousada Solar das Gerais</span>
-                <button
-                  onClick={handleGenerate}
-                  className="flex items-center gap-1 hover:text-solar-navy font-semibold transition-colors"
+            ) : (
+              <p className="text-slate-400 text-sm">Clique em gerar para ver sua mensagem personalizada.</p>
+            )}
+          </div>
+
+          {/* Name customization input */}
+          <form onSubmit={handleGenerate} className="space-y-3 pt-1">
+            <div className="space-y-1.5">
+              <Label htmlFor="guestName" className="text-xs text-slate-600 font-semibold">
+                Deseja personalizar com seu nome? (Opcional)
+              </Label>
+              <div className="flex gap-2">
+                <Input
+                  id="guestName"
+                  placeholder="Seu nome (ex: Maria)"
+                  value={guestName}
+                  onChange={(e) => setGuestName(e.target.value)}
+                  className="text-sm h-9"
+                />
+                <Button
+                  type="submit"
+                  size="sm"
+                  disabled={loading}
+                  className="bg-[#11314C] hover:bg-[#0c2438] text-white shrink-0 gap-1.5 h-9 px-3"
                 >
-                  <RefreshCw size={11} />
-                  Outra mensagem
-                </button>
+                  <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
+                  <span>Atualizar</span>
+                </Button>
               </div>
             </div>
-          )}
+          </form>
         </div>
       </DialogContent>
     </Dialog>

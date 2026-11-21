@@ -40,11 +40,7 @@ const defaultMinibarItems = [
     { name: 'Hambúrguer', price: 'R$ 15,00' }
 ];
 
-interface MinibarModalProps {
-  trigger?: React.ReactNode;
-}
-
-export function MinibarModal({ trigger }: MinibarModalProps = {}) {
+export function MinibarModal({ trigger }: { trigger?: React.ReactNode } = {}) {
   const firestore = useFirestore();
   const { user } = useUser();
   const { toast } = useToast();
@@ -100,7 +96,9 @@ export function MinibarModal({ trigger }: MinibarModalProps = {}) {
     <Dialog>
       <DialogTrigger asChild>
         {trigger || (
-          <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">{translations.infoCards.minibar.button}</Button>
+          <Button variant="outline" size="sm" className="w-full text-xs font-semibold border-sky-300 text-sky-800 hover:bg-sky-50">
+            {translations.infoCards.minibar.button}
+          </Button>
         )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] md:sm:max-w-[600px]">

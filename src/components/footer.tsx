@@ -1,91 +1,264 @@
 'use client';
 
-import { Instagram, LogOut, Settings } from 'lucide-react';
+import React from 'react';
+import { Instagram, Lock, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import { useUser, useAuth } from '@/firebase';
+import Image from 'next/image';
+import { useUser, useAuth, useFirestore, useMemoFirebase, useDoc } from '@/firebase';
 import { signOut } from 'firebase/auth';
+import { doc } from 'firebase/firestore';
+import { Button } from '@/components/ui/button';
 import { LodgeConfigModal } from '@/components/lodge-config-modal';
+import { SolarLogo } from '@/components/solar-logo';
+import type { LodgeInfo } from '@/types/lodge-info';
 
 export function Footer() {
   const { user } = useUser();
   const auth = useAuth();
-  
+  const firestore = useFirestore();
+
   const isAdmin = user && !user.isAnonymous;
+
+  const lodgeInfoRef = useMemoFirebase(
+    () => (firestore ? doc(firestore, 'lodge_info', 'main') : null),
+    [firestore]
+  );
+  const { data: lodgeInfo } = useDoc<LodgeInfo>(lodgeInfoRef);
+
+  const socialHandle = lodgeInfo?.socialMedia?.trim() || '@pousadasolardasgeraisop';
+  const socialUrl =
+    socialHandle.startsWith('http://') || socialHandle.startsWith('https://')
+      ? socialHandle
+      : `https://www.instagram.com/${socialHandle.replace(/^@/, '')}`;
+  const copyrightText =
+    lodgeInfo?.copyrightText?.trim() || 'Pousada Solar das Gerais';
+  const customFooterImage = lodgeInfo?.footerImageUrl?.trim();
 
   const handleLogout = async () => {
     await signOut(auth);
   };
 
   return (
-    <footer className="relative mt-16 pt-6 pb-0 overflow-hidden bg-transparent select-none border-t border-[#113F52]">
-      {/* Informações Principais do Rodapé: Apenas admin, @pousadasolardasgeraisop e copyright */}
-      <div className="container mx-auto px-4 sm:px-6 mb-6">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-          {/* Link Admin à Esquerda */}
-          <div className="flex items-center gap-2">
-            {isAdmin ? (
-              <div className="flex items-center gap-2">
-                <LodgeConfigModal
-                  trigger={
-                    <button
-                      className="flex items-center gap-1.5 font-semibold text-solar-navy hover:underline bg-solar-navy/10 border border-[#113F52] px-2.5 py-1 rounded-lg cursor-pointer"
-                    >
-                      <Settings size={13} />
-                      <span>Configurações</span>
-                    </button>
-                  }
-                />
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-1 text-red-600 hover:text-red-700 font-semibold p-1 hover:bg-red-50 rounded"
-                  title="Sair do modo administrador"
-                >
-                  <LogOut size={12} />
-                  <span>Sair</span>
-                </button>
+    <footer className="mt-16 w-full overflow-hidden">
+      <div className="container mx-auto px-4 max-w-6xl">
+        {/* Scenic Navy Banner: "Modo Admin - Edição de conteúdo via Firebase" */}
+        {isAdmin ? (
+          <div className="group relative block w-full rounded-2xl bg-[#11314C] text-white p-5 sm:p-7 shadow-xl overflow-hidden hover:bg-[#0D263B] transition-all duration-300">
+            <div className="relative z-10 flex items-center justify-between gap-4">
+              {/* Left Side: Lock badge + Modo Admin */}
+              <div className="flex items-center gap-3.5 sm:gap-4">
+                <div className="w-12 h-12 rounded-full bg-[#F5A623] text-[#11314C] flex items-center justify-center font-bold shrink-0 shadow-sm">
+                  <Lock size={22} />
+                </div>
+                <div>
+                  <h4 className="text-base sm:text-lg font-bold text-white tracking-tight leading-tight">
+                    Modo Admin
+                  </h4>
+                  <p className="text-xs text-sky-200/80 mt-0.5">
+                    Edição de conteúdo via Firebase
+                  </p>
+                </div>
               </div>
-            ) : (
-              <Link
-                href="/login"
-                className="font-medium text-slate-400 hover:text-solar-navy transition-colors px-2 py-1 rounded-md hover:bg-slate-100/60"
+
+              {/* Center / Right: Custom Footer Image or Church Silhouette + Chevron */}
+              <div className="flex items-center gap-3 sm:gap-5">
+                {customFooterImage ? (
+                  <div className="relative w-32 sm:w-48 h-14 sm:h-16 flex-shrink-0">
+                    <Image
+                      src={customFooterImage}
+                      alt="Ícone do Rodapé"
+                      fill
+                      referrerPolicy="no-referrer"
+                      unoptimized={customFooterImage.startsWith('data:')}
+                      className="object-contain"
+                    />
+                  </div>
+                ) : (
+                  <div className="relative w-32 sm:w-52 h-14 sm:h-18 flex-shrink-0">
+                    <svg
+                      viewBox="0 0 240 90"
+                      className="w-full h-full"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      {/* Golden Sun */}
+                      <circle cx="150" cy="46" r="16" fill="#F5A623" opacity="0.95" />
+                      {/* Mountain Ridge 1 */}
+                      <path
+                        d="M0,75 Q60,50 120,68 T240,70"
+                        stroke="#486581"
+                        strokeWidth="1.5"
+                        strokeDasharray="4 2"
+                        fill="none"
+                      />
+                      {/* Mountain Ridge 2 */}
+                      <path
+                        d="M0,82 C50,65 90,82 140,70 C190,58 210,75 240,78"
+                        stroke="#9FB3C8"
+                        strokeWidth="2"
+                        fill="none"
+                      />
+                      {/* Baroque Church Bell Tower Silhouette */}
+                      <g transform="translate(180, 22)">
+                        <line x1="22" y1="0" x2="22" y2="8" stroke="#F0F4F8" strokeWidth="1.5" />
+                        <line x1="18" y1="3" x2="26" y2="3" stroke="#F0F4F8" strokeWidth="1.5" />
+                        <path d="M15,14 C17,8 27,8 29,14 Z" fill="#F0F4F8" />
+                        <rect x="14" y="14" width="16" height="14" rx="2" stroke="#F0F4F8" strokeWidth="1.5" fill="none" />
+                        <path d="M18,22 C18,17 26,17 26,22 Z" fill="#F5A623" />
+                        <rect x="8" y="28" width="28" height="35" rx="1" stroke="#F0F4F8" strokeWidth="1.5" fill="none" />
+                        <rect x="11" y="32" width="6" height="12" rx="3" stroke="#9FB3C8" strokeWidth="1" fill="none" />
+                        <rect x="27" y="32" width="6" height="12" rx="3" stroke="#9FB3C8" strokeWidth="1" fill="none" />
+                        <line x1="4" y1="63" x2="40" y2="63" stroke="#F0F4F8" strokeWidth="2" />
+                      </g>
+                    </svg>
+                  </div>
+                )}
+
+                <LodgeConfigModal />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <Link
+            href="/login"
+            className="group relative block w-full rounded-2xl bg-[#11314C] text-white p-5 sm:p-7 shadow-xl overflow-hidden hover:bg-[#0D263B] transition-all duration-300"
+          >
+            <div className="relative z-10 flex items-center justify-between gap-4">
+              {/* Left Side: Lock badge + Modo Admin */}
+              <div className="flex items-center gap-3.5 sm:gap-4">
+                <div className="w-12 h-12 rounded-full bg-[#F5A623] text-[#11314C] flex items-center justify-center font-bold shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+                  <Lock size={22} />
+                </div>
+                <div>
+                  <h4 className="text-base sm:text-lg font-bold text-white tracking-tight leading-tight">
+                    Modo Admin
+                  </h4>
+                  <p className="text-xs text-sky-200/80 mt-0.5">
+                    Edição de conteúdo via Firebase
+                  </p>
+                </div>
+              </div>
+
+              {/* Center / Right: Custom Footer Image or Church Silhouette + Chevron */}
+              <div className="flex items-center gap-3 sm:gap-5">
+                {customFooterImage ? (
+                  <div className="relative w-32 sm:w-48 h-14 sm:h-16 flex-shrink-0">
+                    <Image
+                      src={customFooterImage}
+                      alt="Ícone do Rodapé"
+                      fill
+                      referrerPolicy="no-referrer"
+                      unoptimized={customFooterImage.startsWith('data:')}
+                      className="object-contain"
+                    />
+                  </div>
+                ) : (
+                  <div className="relative w-32 sm:w-52 h-14 sm:h-18 flex-shrink-0">
+                    <svg
+                      viewBox="0 0 240 90"
+                      className="w-full h-full"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <circle cx="150" cy="46" r="16" fill="#F5A623" opacity="0.95" />
+                      <path
+                        d="M0,75 Q60,50 120,68 T240,70"
+                        stroke="#486581"
+                        strokeWidth="1.5"
+                        strokeDasharray="4 2"
+                        fill="none"
+                      />
+                      <path
+                        d="M0,82 C50,65 90,82 140,70 C190,58 210,75 240,78"
+                        stroke="#9FB3C8"
+                        strokeWidth="2"
+                        fill="none"
+                      />
+                      <g transform="translate(180, 22)">
+                        <line x1="22" y1="0" x2="22" y2="8" stroke="#F0F4F8" strokeWidth="1.5" />
+                        <line x1="18" y1="3" x2="26" y2="3" stroke="#F0F4F8" strokeWidth="1.5" />
+                        <path d="M15,14 C17,8 27,8 29,14 Z" fill="#F0F4F8" />
+                        <rect x="14" y="14" width="16" height="14" rx="2" stroke="#F0F4F8" strokeWidth="1.5" fill="none" />
+                        <path d="M18,22 C18,17 26,17 26,22 Z" fill="#F5A623" />
+                        <rect x="8" y="28" width="28" height="35" rx="1" stroke="#F0F4F8" strokeWidth="1.5" fill="none" />
+                        <rect x="11" y="32" width="6" height="12" rx="3" stroke="#9FB3C8" strokeWidth="1" fill="none" />
+                        <rect x="27" y="32" width="6" height="12" rx="3" stroke="#9FB3C8" strokeWidth="1" fill="none" />
+                        <line x1="4" y1="63" x2="40" y2="63" stroke="#F0F4F8" strokeWidth="2" />
+                      </g>
+                    </svg>
+                  </div>
+                )}
+
+                <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/10 group-hover:bg-[#F5A623] group-hover:text-[#11314C] text-white flex items-center justify-center transition-all duration-300 shadow-sm shrink-0">
+                  <ChevronRight size={20} />
+                </div>
+              </div>
+            </div>
+          </Link>
+        )}
+      </div>
+
+      {/* Decorative Organic Wave Transitions */}
+      <div className="w-full relative mt-6 leading-none">
+        {/* Golden Wave Accent */}
+        <svg
+          viewBox="0 0 1200 60"
+          preserveAspectRatio="none"
+          className="w-full h-8 sm:h-12"
+        >
+          <path
+            d="M0,25 C300,55 750,0 1200,30 L1200,60 L0,60 Z"
+            fill="#ECA31D"
+            opacity="0.9"
+          />
+        </svg>
+        {/* Navy Deep Wave */}
+        <svg
+          viewBox="0 0 1200 60"
+          preserveAspectRatio="none"
+          className="w-full h-10 sm:h-14 -mt-4 sm:-mt-6"
+        >
+          <path
+            d="M0,35 C400,10 800,50 1200,20 L1200,60 L0,60 Z"
+            fill="#11314C"
+          />
+        </svg>
+      </div>
+
+      {/* Bottom Bar matching exact layout */}
+      <div className="bg-[#11314C] text-white pt-2 pb-6 border-t border-sky-950/40">
+        <div className="container mx-auto px-4 max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          {/* Left: Official Lodge Logo & Copyright */}
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
+            <SolarLogo size="sm" variant="dark" className="shrink-0" />
+            <span className="text-xs font-medium text-slate-200">
+              {copyrightText}
+            </span>
+
+            {isAdmin && (
+              <Button
+                variant="link"
+                onClick={handleLogout}
+                className="text-amber-300 hover:text-amber-200 p-0 h-auto text-xs ml-1"
               >
-                admin
-              </Link>
+                (Sair do Modo Admin)
+              </Button>
             )}
           </div>
 
-          {/* Redes Sociais (@pousadasolardasgeraisop) e Copyright à Direita */}
-          <div className="flex items-center gap-3 text-slate-500 font-medium">
+          {/* Right: Instagram handle with Instagram icon */}
+          <div>
             <a
-              href="https://www.instagram.com/pousadasolardasgeraisop"
+              href={socialUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-solar-navy transition-colors"
+              className="flex items-center gap-2 text-xs font-semibold text-slate-200 hover:text-[#F5A623] transition-colors py-1 px-2 rounded-md hover:bg-white/5"
             >
-              <Instagram size={14} className="text-solar-navy shrink-0" />
-              <span>@pousadasolardasgeraisop</span>
+              <Instagram size={16} className="text-[#F5A623]" />
+              <span>{socialHandle}</span>
             </a>
-            <span className="opacity-30">•</span>
-            <span>&copy; {new Date().getFullYear()}</span>
           </div>
         </div>
-      </div>
-
-      {/* Ondas Orgânicas Decorativas da Base da Tela */}
-      <div className="relative w-full overflow-hidden leading-none pointer-events-none">
-        <svg
-          viewBox="0 0 1440 90"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-12 sm:h-16 md:h-20 block"
-          preserveAspectRatio="none"
-        >
-          {/* Onda Azul Petróleo #113F52 */}
-          <path
-            d="M0,75 C280,50 620,85 960,65 C1180,50 1340,75 1440,70 L1440,90 L0,90 Z"
-            fill="#113F52"
-          />
-        </svg>
       </div>
     </footer>
   );

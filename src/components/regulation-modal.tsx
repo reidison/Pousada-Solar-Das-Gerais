@@ -22,11 +22,7 @@ import type { LodgeInfo } from '@/types/lodge-info';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Loader2 } from 'lucide-react';
 
-interface RegulationModalProps {
-  trigger?: React.ReactNode;
-}
-
-export function RegulationModal({ trigger }: RegulationModalProps = {}) {
+export function RegulationModal({ trigger }: { trigger?: React.ReactNode } = {}) {
   const firestore = useFirestore();
   const { user } = useUser();
   const { toast } = useToast();
@@ -87,7 +83,7 @@ export function RegulationModal({ trigger }: RegulationModalProps = {}) {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button variant="outline" className="mt-4 hover:bg-transparent hover:text-foreground">
+          <Button variant="outline" size="sm" className="w-full text-xs font-semibold border-emerald-300 text-emerald-800 hover:bg-emerald-50">
             {tInfoCard.button}
           </Button>
         )}

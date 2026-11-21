@@ -1,0 +1,6 @@
+{
+  "name": "Pousada Bela Vista",
+  "description": "Painel de informações para hóspedes da Pousada Bela Vista.",
+  "permissions": [],
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
