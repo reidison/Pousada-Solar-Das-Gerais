@@ -173,7 +173,6 @@ export default function CityTourPage() {
             <p className="text-lg font-bold text-[#11314C] tabular-nums">
               {t.metrics.durationValue}
             </p>
-            <p className="text-xs text-slate-500 mt-1">{t.metrics.durationSub}</p>
           </div>
 
           <div className="p-5">
@@ -183,7 +182,6 @@ export default function CityTourPage() {
             <p className="text-lg font-bold text-[#11314C] tabular-nums">
               {t.metrics.departuresValue}
             </p>
-            <p className="text-xs text-slate-500 mt-1">{t.metrics.departuresSub}</p>
           </div>
 
           <div className="p-5">
@@ -193,7 +191,6 @@ export default function CityTourPage() {
             <p className="text-lg font-bold text-[#11314C] tabular-nums">
               {t.metrics.priceValue}
             </p>
-            <p className="text-xs text-slate-500 mt-1">{t.metrics.priceSub}</p>
           </div>
 
           <div className="p-5">
@@ -203,7 +200,6 @@ export default function CityTourPage() {
             <p className="text-lg font-bold text-[#11314C]">
               {t.metrics.bookingValue}
             </p>
-            <p className="text-xs text-slate-500 mt-1">{t.metrics.bookingSub}</p>
           </div>
         </section>
 
