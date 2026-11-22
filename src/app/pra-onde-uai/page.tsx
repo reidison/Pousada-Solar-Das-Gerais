@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link';
 import {
   ArrowLeft,
+  ChevronDown,
   Clock,
   Compass,
   ExternalLink,
@@ -25,6 +26,7 @@ import {
   estimateWalkMinutes,
   formatDistance,
   haversineMeters,
+  type OuroPretoPlace,
 } from '@/lib/ouro-preto-places';
 
 function interpolatePoints(
@@ -59,6 +61,7 @@ export default function PraOndeUaiPage() {
     label: 'Pousada Solar das Gerais (Rua Manuel Cabral, 119)',
   });
   const [searchingOrigin, setSearchingOrigin] = useState<boolean>(false);
+  const [showOriginMenu, setShowOriginMenu] = useState<boolean>(false);
   const [destinationId, setDestinationId] = useState<string>('praca-tiradentes');
 
   const [routePoints, setRoutePoints] = useState<[number, number][]>([]);
@@ -73,6 +76,17 @@ export default function PraOndeUaiPage() {
 
   const watchIdRef = useRef<number | null>(null);
   const simTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const originMenuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (originMenuRef.current && !originMenuRef.current.contains(event.target as Node)) {
+        setShowOriginMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const destination = useMemo(
     () => OURO_PRETO_PLACES.find((p) => p.id === destinationId) || OURO_PRETO_PLACES[0],
@@ -151,6 +165,21 @@ export default function PraOndeUaiPage() {
       label: 'Pousada Solar das Gerais (Rua Manuel Cabral, 119)',
     });
     setGpsStatus('Partida definida: Pousada Solar das Gerais.');
+  };
+
+  const handleSelectOriginPlace = (place: OuroPretoPlace) => {
+    const label =
+      place.id === POUSADA_ORIGIN.id
+        ? 'Pousada Solar das Gerais - Rua Manuel Cabral, 119'
+        : place.name;
+    setOriginText(label);
+    setOriginCoords({
+      lat: place.lat,
+      lng: place.lng,
+      label: place.name,
+    });
+    setShowOriginMenu(false);
+    setGpsStatus(`Partida definida: ${place.name}`);
   };
 
   const handleSearchOrigin = async (e?: React.FormEvent) => {
@@ -365,15 +394,45 @@ export default function PraOndeUaiPage() {
                 </button>
               </div>
 
-              <div className="flex gap-2">
-                <input
-                  id="origin-input"
-                  type="text"
-                  value={originText}
-                  onChange={(e) => setOriginText(e.target.value)}
-                  placeholder="Pousada Solar das Gerais - Rua Manuel Cabral, 119"
-                  className="flex-1 h-11 rounded-xl border border-stone-200 bg-[#FAF9F5] px-3 text-sm font-medium text-[#11314C] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#11314C]/20"
-                />
+              <div className="flex gap-2" ref={originMenuRef}>
+                <div className="relative flex-1">
+                  <input
+                    id="origin-input"
+                    type="text"
+                    value={originText}
+                    onChange={(e) => setOriginText(e.target.value)}
+                    placeholder="Pousada Solar das Gerais - Rua Manuel Cabral, 119"
+                    className="w-full h-11 rounded-xl border border-stone-200 bg-[#FAF9F5] pl-3 pr-9 text-sm font-medium text-[#11314C] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#11314C]/20"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowOriginMenu((prev) => !prev)}
+                    aria-label="Escolher ponto de partida sugerido"
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-slate-500 hover:text-[#11314C] hover:bg-stone-200/60 transition-colors"
+                  >
+                    <ChevronDown size={16} />
+                  </button>
+
+                  {showOriginMenu && (
+                    <div className="absolute left-0 right-0 top-12 z-30 max-h-60 overflow-y-auto rounded-xl border border-stone-200 bg-white shadow-lg py-1">
+                      {ALL_PLACES.map((place) => (
+                        <button
+                          key={place.id}
+                          type="button"
+                          onClick={() => handleSelectOriginPlace(place)}
+                          className="w-full text-left px-3 py-2 text-sm text-[#11314C] hover:bg-stone-100 flex items-center justify-between gap-2"
+                        >
+                          <span className="font-medium truncate">
+                            {place.id === POUSADA_ORIGIN.id
+                              ? 'Pousada Solar das Gerais (Rua Manuel Cabral, 119)'
+                              : place.name}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 <Button
                   type="submit"
                   variant="outline"
