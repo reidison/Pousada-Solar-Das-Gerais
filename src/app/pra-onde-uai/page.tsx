@@ -62,7 +62,10 @@ export default function PraOndeUaiPage() {
   });
   const [searchingOrigin, setSearchingOrigin] = useState<boolean>(false);
   const [showOriginMenu, setShowOriginMenu] = useState<boolean>(false);
-  const [destinationId, setDestinationId] = useState<string>('praca-tiradentes');
+  const [destinationText, setDestinationText] = useState<string>(OURO_PRETO_PLACES[0].name);
+  const [destination, setDestination] = useState<OuroPretoPlace>(OURO_PRETO_PLACES[0]);
+  const [searchingDest, setSearchingDest] = useState<boolean>(false);
+  const [showDestMenu, setShowDestMenu] = useState<boolean>(false);
 
   const [routePoints, setRoutePoints] = useState<[number, number][]>([]);
   const [routeDistanceMeters, setRouteDistanceMeters] = useState<number>(0);
@@ -77,21 +80,20 @@ export default function PraOndeUaiPage() {
   const watchIdRef = useRef<number | null>(null);
   const simTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const originMenuRef = useRef<HTMLDivElement | null>(null);
+  const destMenuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (originMenuRef.current && !originMenuRef.current.contains(event.target as Node)) {
         setShowOriginMenu(false);
       }
+      if (destMenuRef.current && !destMenuRef.current.contains(event.target as Node)) {
+        setShowDestMenu(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  const destination = useMemo(
-    () => OURO_PRETO_PLACES.find((p) => p.id === destinationId) || OURO_PRETO_PLACES[0],
-    [destinationId]
-  );
 
   const stopWalking = useCallback(() => {
     if (watchIdRef.current !== null && typeof navigator !== 'undefined' && navigator.geolocation) {
@@ -180,6 +182,52 @@ export default function PraOndeUaiPage() {
     });
     setShowOriginMenu(false);
     setGpsStatus(`Partida definida: ${place.name}`);
+  };
+
+  const handleSelectDestPlace = (place: OuroPretoPlace) => {
+    setDestinationText(place.name);
+    setDestination(place);
+    setShowDestMenu(false);
+    setGpsStatus(`Destino definido: ${place.name}`);
+  };
+
+  const handleSearchDest = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const query = destinationText.trim();
+    if (!query) {
+      handleSelectDestPlace(OURO_PRETO_PLACES[0]);
+      return;
+    }
+    setSearchingDest(true);
+    setGpsStatus('Localizando destino em Ouro Preto...');
+    try {
+      const fullQuery = query.toLowerCase().includes('ouro preto')
+        ? query
+        : `${query}, Ouro Preto, MG, Brasil`;
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(fullQuery)}`
+      );
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        setDestination({
+          id: 'custom-dest',
+          name: query,
+          shortName: query,
+          category: 'turismo',
+          address: query,
+          lat: parseFloat(data[0].lat),
+          lng: parseFloat(data[0].lon),
+          googleMapsQuery: fullQuery,
+        });
+        setGpsStatus(`Destino definido: ${query}`);
+      } else {
+        setGpsStatus('Destino não encontrado em Ouro Preto. Tente outro endereço ou escolha na lista.');
+      }
+    } catch {
+      setGpsStatus('Não foi possível buscar o destino agora. Escolha um ponto na lista.');
+    } finally {
+      setSearchingDest(false);
+    }
   };
 
   const handleSearchOrigin = async (e?: React.FormEvent) => {
@@ -445,30 +493,69 @@ export default function PraOndeUaiPage() {
               </div>
             </form>
 
-            {/* Para (Destino) */}
-            <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5 mb-1.5">
+            {/* Para (Destino) - Campo preenchível com setinha de sugestões */}
+            <form onSubmit={handleSearchDest} className="space-y-1.5">
+              <label
+                htmlFor="dest-input"
+                className="text-xs font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5"
+              >
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
                 Para (Destino)
               </label>
-              <select
-                value={destinationId}
-                onChange={(e) => setDestinationId(e.target.value)}
-                className="w-full h-11 rounded-xl border border-emerald-200 bg-emerald-50/40 px-3 text-sm font-semibold text-[#11314C] focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
-              >
-                {OURO_PRETO_PLACES.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
-              {destination.note && (
-                <p className="text-xs text-slate-500 mt-1.5 flex items-center gap-1">
+
+              <div className="flex gap-2" ref={destMenuRef}>
+                <div className="relative flex-1">
+                  <input
+                    id="dest-input"
+                    type="text"
+                    value={destinationText}
+                    onChange={(e) => setDestinationText(e.target.value)}
+                    placeholder="Digite o destino ou escolha na lista"
+                    className="w-full h-11 rounded-xl border border-emerald-200 bg-emerald-50/40 pl-3 pr-9 text-sm font-semibold text-[#11314C] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowDestMenu((prev) => !prev)}
+                    aria-label="Escolher destino sugerido"
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-emerald-700 hover:text-[#11314C] hover:bg-emerald-100/70 transition-colors"
+                  >
+                    <ChevronDown size={16} />
+                  </button>
+
+                  {showDestMenu && (
+                    <div className="absolute left-0 right-0 top-12 z-30 max-h-60 overflow-y-auto rounded-xl border border-stone-200 bg-white shadow-lg py-1">
+                      {OURO_PRETO_PLACES.map((place) => (
+                        <button
+                          key={place.id}
+                          type="button"
+                          onClick={() => handleSelectDestPlace(place)}
+                          className="w-full text-left px-3 py-2 text-sm text-[#11314C] hover:bg-emerald-50 flex items-center justify-between gap-2"
+                        >
+                          <span className="font-medium truncate">{place.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <Button
+                  type="submit"
+                  variant="outline"
+                  disabled={searchingDest}
+                  className="h-11 px-3 rounded-xl border-emerald-200 text-emerald-800 hover:bg-emerald-50 shrink-0"
+                  title="Buscar endereço de destino"
+                >
+                  <Search size={16} />
+                </Button>
+              </div>
+
+              {destination.address && (
+                <p className="text-xs text-slate-500 flex items-center gap-1 pt-0.5">
                   <MapPin size={12} className="shrink-0 text-emerald-600" />
                   <span>{destination.address}</span>
                 </p>
               )}
-            </div>
+            </form>
 
             {/* Live Distance & Time HUD */}
             <div className="rounded-xl bg-[#FAF9F5] border border-stone-200/90 p-4 space-y-3">
@@ -587,7 +674,7 @@ export default function PraOndeUaiPage() {
               walkProgressIndex={walkProgressIndex}
               userPosition={userPosition}
               isWalking={walkMode !== 'idle'}
-              onSelectDestination={(place) => setDestinationId(place.id)}
+              onSelectDestination={handleSelectDestPlace}
             />
             <p className="text-[11px] text-slate-500 mt-2 text-center sm:text-left">
               Dica: toque em qualquer ponto no mapa ou escolha um destino abaixo para traçar a rota verde.
