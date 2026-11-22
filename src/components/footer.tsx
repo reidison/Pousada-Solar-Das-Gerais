@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Instagram, Lock, ChevronRight } from 'lucide-react';
+import { Instagram, Lock } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useUser, useAuth, useFirestore, useMemoFirebase, useDoc } from '@/firebase';
@@ -106,10 +106,6 @@ export function Footer() {
                     unoptimized
                     className="object-contain"
                   />
-                </div>
-
-                <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/10 group-hover:bg-[#F5A623] group-hover:text-[#11314C] text-white flex items-center justify-center transition-all duration-300 shadow-sm shrink-0">
-                  <ChevronRight size={20} />
                 </div>
               </div>
             </div>
