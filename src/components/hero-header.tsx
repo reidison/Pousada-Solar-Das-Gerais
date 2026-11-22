@@ -10,8 +10,6 @@ import { doc } from 'firebase/firestore';
 import { LodgeConfigModal } from '@/components/lodge-config-modal';
 import type { LodgeInfo } from '@/types/lodge-info';
 
-const DEFAULT_HERO_IMAGE = '/images/hero-ouro-preto.png';
-
 export function HeroHeader() {
   const { language, setLanguage, translations } = useLanguage();
   const { user } = useUser();
@@ -25,7 +23,7 @@ export function HeroHeader() {
   );
   const { data: lodgeInfo } = useDoc<LodgeInfo>(lodgeInfoRef);
 
-  const heroImage = lodgeInfo?.heroImageUrl?.trim() || DEFAULT_HERO_IMAGE;
+  const heroImage = lodgeInfo?.heroImageUrl?.trim() || '';
 
   return (
     <header className="w-full bg-gradient-to-b from-[#F4EFE4]/80 via-[#FAF9F5] to-[#FAF9F5] border-b border-stone-200/80">
@@ -95,31 +93,29 @@ export function HeroHeader() {
               style={{ borderRadius: '58% 42% 54% 46% / 44% 56% 44% 56%' }}
             >
               <div
-                className="relative w-full aspect-[16/10] sm:aspect-[4/3] overflow-hidden bg-stone-200"
+                className="relative w-full aspect-[16/10] sm:aspect-[4/3] overflow-hidden bg-[#FAF9F5]"
                 style={{ borderRadius: '56% 44% 52% 48% / 46% 54% 46% 54%' }}
               >
-                {!imgError ? (
-                  <Image
-                    src={heroImage}
-                    alt="Pousada Solar das Gerais - Destaque"
-                    fill
-                    priority
-                    unoptimized
-                    referrerPolicy="no-referrer"
-                    onError={() => setImgError(true)}
-                    className="object-cover object-center -scale-x-100"
-                  />
+                {heroImage && !imgError ? (
+                  <>
+                    <Image
+                      src={heroImage}
+                      alt="Pousada Solar das Gerais - Destaque"
+                      fill
+                      priority
+                      unoptimized
+                      referrerPolicy="no-referrer"
+                      onError={() => setImgError(true)}
+                      className="object-cover object-center -scale-x-100"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#11314C]/35 via-transparent to-transparent pointer-events-none" />
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[11px] text-white/95 font-medium px-3 py-1 rounded-full bg-black/45 backdrop-blur-xs whitespace-nowrap">
+                      Ouro Preto, MG
+                    </div>
+                  </>
                 ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#11314C] to-[#1E4D6E] text-white p-6 text-center">
-                    <MapPin size={32} className="text-[#ECA31D] mb-2" />
-                    <p className="font-semibold text-sm">Pousada Solar das Gerais</p>
-                    <p className="text-xs text-sky-200 mt-0.5">Ouro Preto, MG</p>
-                  </div>
+                  <div className="w-full h-full bg-[#FAF9F5]" />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#11314C]/35 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[11px] text-white/95 font-medium px-3 py-1 rounded-full bg-black/45 backdrop-blur-xs whitespace-nowrap">
-                  Ouro Preto, MG
-                </div>
               </div>
             </div>
           </div>
