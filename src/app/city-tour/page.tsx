@@ -41,7 +41,7 @@ export default function CityTourPage() {
   );
   const { data: lodgeInfo } = useDoc<LodgeInfo>(lodgeInfoRef);
 
-  const whatsappNumber = lodgeInfo?.whatsappNumber || '31992580325';
+  const whatsappNumber = lodgeInfo?.whatsappNumber || '3131052608';
   const cleanReceptionWhatsapp = whatsappNumber.replace(/\D/g, '');
 
   const departureOptions = language === 'en' ? ['09:00', '10:00', '15:00'] : ['09h', '10h', '15h'];

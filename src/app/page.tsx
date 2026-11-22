@@ -34,7 +34,7 @@ export default function Page() {
   );
   const { data: lodgeInfo } = useDoc<LodgeInfo>(lodgeInfoRef);
 
-  const whatsappNumber = lodgeInfo?.whatsappNumber || '31992580325';
+  const whatsappNumber = lodgeInfo?.whatsappNumber || '3131052608';
   const cleanWhatsappNumber = whatsappNumber.replace(/\D/g, '');
 
   return (
