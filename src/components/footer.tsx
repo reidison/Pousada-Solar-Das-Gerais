@@ -32,7 +32,7 @@ export function Footer() {
       : `https://www.instagram.com/${socialHandle.replace(/^@/, '')}`;
   const copyrightText =
     lodgeInfo?.copyrightText?.trim() || 'Pousada Solar das Gerais';
-  const customFooterImage = lodgeInfo?.footerImageUrl?.trim();
+  const footerImage = lodgeInfo?.footerImageUrl?.trim() || '/images/footer-minas-gerais.png';
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -62,57 +62,16 @@ export function Footer() {
 
               {/* Center / Right: Custom Footer Image or Church Silhouette + Chevron */}
               <div className="flex items-center gap-3 sm:gap-5">
-                {customFooterImage ? (
-                  <div className="relative w-32 sm:w-48 h-14 sm:h-16 flex-shrink-0">
-                    <Image
-                      src={customFooterImage}
-                      alt="Ícone do Rodapé"
-                      fill
-                      referrerPolicy="no-referrer"
-                      unoptimized={customFooterImage.startsWith('data:')}
-                      className="object-contain"
-                    />
-                  </div>
-                ) : (
-                  <div className="relative w-32 sm:w-52 h-14 sm:h-18 flex-shrink-0">
-                    <svg
-                      viewBox="0 0 240 90"
-                      className="w-full h-full"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      {/* Golden Sun */}
-                      <circle cx="150" cy="46" r="16" fill="#F5A623" opacity="0.95" />
-                      {/* Mountain Ridge 1 */}
-                      <path
-                        d="M0,75 Q60,50 120,68 T240,70"
-                        stroke="#486581"
-                        strokeWidth="1.5"
-                        strokeDasharray="4 2"
-                        fill="none"
-                      />
-                      {/* Mountain Ridge 2 */}
-                      <path
-                        d="M0,82 C50,65 90,82 140,70 C190,58 210,75 240,78"
-                        stroke="#9FB3C8"
-                        strokeWidth="2"
-                        fill="none"
-                      />
-                      {/* Baroque Church Bell Tower Silhouette */}
-                      <g transform="translate(180, 22)">
-                        <line x1="22" y1="0" x2="22" y2="8" stroke="#F0F4F8" strokeWidth="1.5" />
-                        <line x1="18" y1="3" x2="26" y2="3" stroke="#F0F4F8" strokeWidth="1.5" />
-                        <path d="M15,14 C17,8 27,8 29,14 Z" fill="#F0F4F8" />
-                        <rect x="14" y="14" width="16" height="14" rx="2" stroke="#F0F4F8" strokeWidth="1.5" fill="none" />
-                        <path d="M18,22 C18,17 26,17 26,22 Z" fill="#F5A623" />
-                        <rect x="8" y="28" width="28" height="35" rx="1" stroke="#F0F4F8" strokeWidth="1.5" fill="none" />
-                        <rect x="11" y="32" width="6" height="12" rx="3" stroke="#9FB3C8" strokeWidth="1" fill="none" />
-                        <rect x="27" y="32" width="6" height="12" rx="3" stroke="#9FB3C8" strokeWidth="1" fill="none" />
-                        <line x1="4" y1="63" x2="40" y2="63" stroke="#F0F4F8" strokeWidth="2" />
-                      </g>
-                    </svg>
-                  </div>
-                )}
+                <div className="relative w-32 sm:w-48 h-14 sm:h-16 flex-shrink-0">
+                  <Image
+                    src={footerImage}
+                    alt="Ícone do Rodapé"
+                    fill
+                    referrerPolicy="no-referrer"
+                    unoptimized
+                    className="object-contain"
+                  />
+                </div>
 
                 <LodgeConfigModal />
               </div>
@@ -141,53 +100,16 @@ export function Footer() {
 
               {/* Center / Right: Custom Footer Image or Church Silhouette + Chevron */}
               <div className="flex items-center gap-3 sm:gap-5">
-                {customFooterImage ? (
-                  <div className="relative w-32 sm:w-48 h-14 sm:h-16 flex-shrink-0">
-                    <Image
-                      src={customFooterImage}
-                      alt="Ícone do Rodapé"
-                      fill
-                      referrerPolicy="no-referrer"
-                      unoptimized={customFooterImage.startsWith('data:')}
-                      className="object-contain"
-                    />
-                  </div>
-                ) : (
-                  <div className="relative w-32 sm:w-52 h-14 sm:h-18 flex-shrink-0">
-                    <svg
-                      viewBox="0 0 240 90"
-                      className="w-full h-full"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <circle cx="150" cy="46" r="16" fill="#F5A623" opacity="0.95" />
-                      <path
-                        d="M0,75 Q60,50 120,68 T240,70"
-                        stroke="#486581"
-                        strokeWidth="1.5"
-                        strokeDasharray="4 2"
-                        fill="none"
-                      />
-                      <path
-                        d="M0,82 C50,65 90,82 140,70 C190,58 210,75 240,78"
-                        stroke="#9FB3C8"
-                        strokeWidth="2"
-                        fill="none"
-                      />
-                      <g transform="translate(180, 22)">
-                        <line x1="22" y1="0" x2="22" y2="8" stroke="#F0F4F8" strokeWidth="1.5" />
-                        <line x1="18" y1="3" x2="26" y2="3" stroke="#F0F4F8" strokeWidth="1.5" />
-                        <path d="M15,14 C17,8 27,8 29,14 Z" fill="#F0F4F8" />
-                        <rect x="14" y="14" width="16" height="14" rx="2" stroke="#F0F4F8" strokeWidth="1.5" fill="none" />
-                        <path d="M18,22 C18,17 26,17 26,22 Z" fill="#F5A623" />
-                        <rect x="8" y="28" width="28" height="35" rx="1" stroke="#F0F4F8" strokeWidth="1.5" fill="none" />
-                        <rect x="11" y="32" width="6" height="12" rx="3" stroke="#9FB3C8" strokeWidth="1" fill="none" />
-                        <rect x="27" y="32" width="6" height="12" rx="3" stroke="#9FB3C8" strokeWidth="1" fill="none" />
-                        <line x1="4" y1="63" x2="40" y2="63" stroke="#F0F4F8" strokeWidth="2" />
-                      </g>
-                    </svg>
-                  </div>
-                )}
+                <div className="relative w-32 sm:w-48 h-14 sm:h-16 flex-shrink-0">
+                  <Image
+                    src={footerImage}
+                    alt="Ícone do Rodapé"
+                    fill
+                    referrerPolicy="no-referrer"
+                    unoptimized
+                    className="object-contain"
+                  />
+                </div>
 
                 <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/10 group-hover:bg-[#F5A623] group-hover:text-[#11314C] text-white flex items-center justify-center transition-all duration-300 shadow-sm shrink-0">
                   <ChevronRight size={20} />
