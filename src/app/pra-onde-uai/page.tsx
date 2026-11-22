@@ -76,6 +76,7 @@ export default function PraOndeUaiPage() {
   const [walkProgressIndex, setWalkProgressIndex] = useState<number>(0);
   const [userPosition, setUserPosition] = useState<{ lat: number; lng: number } | null>(null);
   const [gpsStatus, setGpsStatus] = useState<string>('');
+  const [isMapExpanded, setIsMapExpanded] = useState<boolean>(false);
 
   const watchIdRef = useRef<number | null>(null);
   const simTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -664,21 +665,104 @@ export default function PraOndeUaiPage() {
             </div>
           </div>
 
-          {/* Right Panel: Interactive Map */}
-          <div className="lg:col-span-7">
-            <WalkingRouteMap
-              places={ALL_PLACES}
-              originCoords={originCoords}
-              destination={destination}
-              routePoints={routePoints}
-              walkProgressIndex={walkProgressIndex}
-              userPosition={userPosition}
-              isWalking={walkMode !== 'idle'}
-              onSelectDestination={handleSelectDestPlace}
-            />
-            <p className="text-[11px] text-slate-500 mt-2 text-center sm:text-left">
-              Dica: toque em qualquer ponto no mapa ou escolha um destino abaixo para traçar a rota verde.
-            </p>
+          {/* Right Panel: Interactive Map (supports fullscreen expanded mode) */}
+          <div
+            className={
+              isMapExpanded
+                ? 'fixed inset-0 z-50 bg-[#FAF9F5] flex flex-col'
+                : 'lg:col-span-7'
+            }
+          >
+            {isMapExpanded && (
+              <div className="bg-white border-b border-stone-200 px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+                <div className="min-w-0">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">
+                    Pra onde, uai?! · Rota a pé
+                  </p>
+                  <p className="text-sm font-bold text-[#11314C] truncate">
+                    {originCoords.label} → {destination.shortName}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                  <div className="flex items-center gap-2 bg-[#FAF9F5] border border-stone-200 rounded-xl px-3 py-1.5 text-xs font-bold text-[#11314C] tabular-nums">
+                    <span>{loadingRoute ? '...' : formatDistance(remainingMeters)}</span>
+                    <span className="text-stone-300">•</span>
+                    <span className="text-emerald-700">
+                      {loadingRoute
+                        ? '...'
+                        : remainingMinutes === 0
+                        ? 'Chegou!'
+                        : `${remainingMinutes} min`}
+                    </span>
+                  </div>
+
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={handleStartLiveWalk}
+                    className={`h-9 rounded-xl font-semibold text-xs ${
+                      walkMode === 'gps'
+                        ? 'bg-rose-600 hover:bg-rose-700 text-white'
+                        : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                    }`}
+                  >
+                    {walkMode === 'gps' ? (
+                      <>
+                        <Square size={13} className="mr-1.5" />
+                        Parar GPS
+                      </>
+                    ) : (
+                      <>
+                        <Navigation size={13} className="mr-1.5" />
+                        Iniciar caminhada
+                      </>
+                    )}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={handleSimulateWalk}
+                    className="h-9 rounded-xl font-semibold text-xs border-stone-300 text-[#11314C]"
+                  >
+                    {walkMode === 'sim' ? (
+                      <>
+                        <Square size={12} className="mr-1.5 text-rose-600" />
+                        Parar
+                      </>
+                    ) : (
+                      <>
+                        <Play size={12} className="mr-1.5 text-emerald-600" />
+                        Simular
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            <div className={isMapExpanded ? 'flex-1 relative' : ''}>
+              <WalkingRouteMap
+                places={ALL_PLACES}
+                originCoords={originCoords}
+                destination={destination}
+                routePoints={routePoints}
+                walkProgressIndex={walkProgressIndex}
+                userPosition={userPosition}
+                isWalking={walkMode !== 'idle'}
+                isExpanded={isMapExpanded}
+                onToggleExpand={() => setIsMapExpanded((v) => !v)}
+                onSelectDestination={handleSelectDestPlace}
+              />
+            </div>
+
+            {!isMapExpanded && (
+              <p className="text-[11px] text-slate-500 mt-2 text-center sm:text-left">
+                Dica: toque em qualquer ponto no mapa ou clique em &ldquo;Ampliar mapa&rdquo; para acompanhar a rota verde em tela cheia.
+              </p>
+            )}
           </div>
         </div>
       </main>

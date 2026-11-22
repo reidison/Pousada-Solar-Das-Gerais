@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import { Maximize2, Minimize2 } from 'lucide-react';
 import type { OuroPretoPlace } from '@/lib/ouro-preto-places';
 
 declare global {
@@ -17,6 +18,8 @@ interface WalkingRouteMapProps {
   walkProgressIndex: number;
   userPosition: { lat: number; lng: number } | null;
   isWalking: boolean;
+  isExpanded?: boolean;
+  onToggleExpand?: () => void;
   onSelectDestination: (place: OuroPretoPlace) => void;
 }
 
@@ -61,6 +64,8 @@ export function WalkingRouteMap({
   walkProgressIndex,
   userPosition,
   isWalking,
+  isExpanded = false,
+  onToggleExpand,
   onSelectDestination,
 }: WalkingRouteMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -218,9 +223,24 @@ export function WalkingRouteMap({
     onSelectDestination,
   ]);
 
+  // Recalculate Leaflet viewport when toggling expanded/fullscreen mode
+  useEffect(() => {
+    const L = window.L;
+    const map = mapRef.current;
+    if (!mapReady || !L || !map) return;
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+      if (!isWalking && routePoints.length >= 2) {
+        const bounds = L.latLngBounds(routePoints);
+        map.fitBounds(bounds, { padding: [45, 45], maxZoom: 17 });
+      }
+    }, 120);
+    return () => clearTimeout(timer);
+  }, [mapReady, isExpanded, isWalking, routePoints]);
+
   if (mapError) {
     return (
-      <div className="w-full h-[380px] sm:h-[440px] rounded-2xl border border-stone-200 bg-stone-100 flex flex-col items-center justify-center p-6 text-center text-slate-600">
+      <div className="w-full h-[420px] sm:h-[500px] lg:h-[560px] rounded-2xl border border-stone-200 bg-stone-100 flex flex-col items-center justify-center p-6 text-center text-slate-600">
         <p className="font-semibold text-[#11314C] mb-1">Mapa indisponível offline</p>
         <p className="text-xs">Use o botão &ldquo;Abrir no Google Maps&rdquo; abaixo para iniciar a navegação a pé.</p>
       </div>
@@ -228,8 +248,34 @@ export function WalkingRouteMap({
   }
 
   return (
-    <div className="relative w-full h-[380px] sm:h-[440px] rounded-2xl overflow-hidden border border-stone-200 shadow-sm bg-stone-100">
+    <div
+      className={
+        isExpanded
+          ? 'relative w-full h-full overflow-hidden bg-stone-100'
+          : 'relative w-full h-[420px] sm:h-[500px] lg:h-[560px] rounded-2xl overflow-hidden border border-stone-200 shadow-sm bg-stone-100'
+      }
+    >
       <div ref={containerRef} className="w-full h-full z-10" />
+      {onToggleExpand && (
+        <button
+          type="button"
+          onClick={onToggleExpand}
+          className="absolute top-3 right-3 z-[400] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/95 hover:bg-white text-[#11314C] text-xs font-bold shadow-md border border-stone-200 transition-all"
+          title={isExpanded ? 'Reduzir mapa' : 'Ampliar mapa em tela cheia'}
+        >
+          {isExpanded ? (
+            <>
+              <Minimize2 size={14} />
+              <span>Reduzir</span>
+            </>
+          ) : (
+            <>
+              <Maximize2 size={14} />
+              <span>Ampliar mapa</span>
+            </>
+          )}
+        </button>
+      )}
       {!mapReady && (
         <div className="absolute inset-0 flex items-center justify-center bg-[#FAF9F5] text-xs font-medium text-slate-500 z-20">
           Carregando mapa de Ouro Preto...
