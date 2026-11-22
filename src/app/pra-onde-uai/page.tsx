@@ -14,10 +14,6 @@ import {
   Play,
   Search,
   Square,
-  Utensils,
-  Landmark,
-  Pickaxe,
-  Store,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Footer } from '@/components/footer';
@@ -29,17 +25,7 @@ import {
   estimateWalkMinutes,
   formatDistance,
   haversineMeters,
-  type OuroPretoPlace,
-  type PlaceCategory,
 } from '@/lib/ouro-preto-places';
-
-const CATEGORY_LABELS: Record<'all' | Exclude<PlaceCategory, 'pousada'>, string> = {
-  all: 'Todos (12)',
-  turismo: 'Turismo & Igrejas',
-  gastronomia: 'Gastronomia',
-  minas: 'Minas',
-  servicos: 'Serviços',
-};
 
 function interpolatePoints(
   start: [number, number],
@@ -74,7 +60,6 @@ export default function PraOndeUaiPage() {
   });
   const [searchingOrigin, setSearchingOrigin] = useState<boolean>(false);
   const [destinationId, setDestinationId] = useState<string>('praca-tiradentes');
-  const [categoryFilter, setCategoryFilter] = useState<'all' | Exclude<PlaceCategory, 'pousada'>>('all');
 
   const [routePoints, setRoutePoints] = useState<[number, number][]>([]);
   const [routeDistanceMeters, setRouteDistanceMeters] = useState<number>(0);
@@ -322,24 +307,6 @@ export default function PraOndeUaiPage() {
     `${destination.lat},${destination.lng}`
   )}&travelmode=walking`;
 
-  const filteredPlaces = useMemo(() => {
-    if (categoryFilter === 'all') return OURO_PRETO_PLACES;
-    return OURO_PRETO_PLACES.filter((p) => p.category === categoryFilter);
-  }, [categoryFilter]);
-
-  const getCategoryIcon = (cat: PlaceCategory) => {
-    switch (cat) {
-      case 'gastronomia':
-        return <Utensils size={16} className="text-[#D97706]" />;
-      case 'minas':
-        return <Pickaxe size={16} className="text-[#11314C]" />;
-      case 'servicos':
-        return <Store size={16} className="text-[#24824F]" />;
-      default:
-        return <Landmark size={16} className="text-[#11314C]" />;
-    }
-  };
-
   return (
     <div className="bg-[#FAF9F5] text-slate-800 min-h-screen flex flex-col font-body">
       {/* Top Bar */}
@@ -577,78 +544,6 @@ export default function PraOndeUaiPage() {
             </p>
           </div>
         </div>
-
-        {/* Quick-Pick Landmarks Section */}
-        <section className="mt-10">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-            <h2 className="text-xl font-bold text-[#11314C]">
-              Principais Pontos do Centro Histórico
-            </h2>
-            <div className="flex flex-wrap gap-1.5">
-              {(Object.keys(CATEGORY_LABELS) as Array<keyof typeof CATEGORY_LABELS>).map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setCategoryFilter(cat)}
-                  className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
-                    categoryFilter === cat
-                      ? 'bg-[#11314C] text-white'
-                      : 'bg-white border border-stone-200 text-slate-600 hover:text-[#11314C]'
-                  }`}
-                >
-                  {CATEGORY_LABELS[cat]}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredPlaces.map((place) => {
-              const isSelected = place.id === destinationId;
-              const approxMeters =
-                haversineMeters(originCoords.lat, originCoords.lng, place.lat, place.lng) * 1.25;
-              const approxMin = estimateWalkMinutes(approxMeters);
-
-              return (
-                <button
-                  key={place.id}
-                  type="button"
-                  onClick={() => {
-                    setDestinationId(place.id);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className={`text-left p-4 rounded-2xl border transition-all ${
-                    isSelected
-                      ? 'bg-emerald-50/70 border-emerald-500 ring-2 ring-emerald-500/20 shadow-sm'
-                      : 'bg-white border-stone-200/90 hover:border-[#11314C]/40 hover:shadow-sm'
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-2 mb-1.5">
-                    <div className="flex items-center gap-2">
-                      <span className="w-8 h-8 rounded-lg bg-[#FAF9F5] border border-stone-200 flex items-center justify-center shrink-0">
-                        {getCategoryIcon(place.category)}
-                      </span>
-                      <h3 className="font-bold text-sm text-[#11314C] leading-snug">
-                        {place.name}
-                      </h3>
-                    </div>
-                    <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-full whitespace-nowrap">
-                      ~{approxMin} min
-                    </span>
-                  </div>
-                  {place.note && (
-                    <p className="text-xs text-slate-600 leading-relaxed mb-2">
-                      {place.note}
-                    </p>
-                  )}
-                  <p className="text-[11px] text-slate-400 truncate">
-                    {place.address}
-                  </p>
-                </button>
-              );
-            })}
-          </div>
-        </section>
       </main>
 
       <Footer />
