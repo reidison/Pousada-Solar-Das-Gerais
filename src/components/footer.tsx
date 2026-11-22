@@ -73,7 +73,10 @@ export function Footer() {
                   />
                 </div>
 
-                <LodgeConfigModal />
+                <LodgeConfigModal
+                  triggerVariant="ghost"
+                  triggerClassName="border-0 bg-transparent shadow-none text-white hover:bg-white/10 hover:text-white"
+                />
               </div>
             </div>
           </div>

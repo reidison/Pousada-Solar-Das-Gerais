@@ -32,7 +32,13 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 
-export function LodgeConfigModal() {
+export function LodgeConfigModal({
+  triggerVariant = 'outline',
+  triggerClassName = '',
+}: {
+  triggerVariant?: 'outline' | 'ghost';
+  triggerClassName?: string;
+} = {}) {
   const firestore = useFirestore();
   const { toast } = useToast();
   const { translations } = useLanguage();
@@ -159,9 +165,9 @@ export function LodgeConfigModal() {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          variant="outline"
+          variant={triggerVariant}
           size="sm"
-          className="gap-2 shadow-sm border-primary/20 hover:border-primary/50 transition-colors"
+          className={`gap-2 transition-colors ${triggerVariant === 'outline' ? 'shadow-sm border-primary/20 hover:border-primary/50' : ''} ${triggerClassName}`}
         >
           <Settings size={16} />
           {t.adminButton}
