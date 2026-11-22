@@ -334,7 +334,7 @@ export default function PraOndeUaiPage() {
             Guia de Mobilidade · Pousada Solar das Gerais
           </p>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#11314C] tracking-tight">
-            Pra onde uai?!
+            Pra onde, uai?!
           </h1>
           <p className="text-sm sm:text-base text-slate-600 mt-1 max-w-2xl">
             Trace sua caminhada pelo Centro Histórico saindo da pousada (Rua Manuel Cabral, 119). Acompanhe a rota verde em tempo real ou abra direto no Google Maps.

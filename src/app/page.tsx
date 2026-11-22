@@ -109,7 +109,7 @@ export default function Page() {
           {/* Card 4: Pra onde uai?! */}
           <FeatureCard
             icon={<Footprints size={24} />}
-            title="Pra onde uai?!"
+            title="Pra onde, uai?!"
             theme="green"
             action={
               <Button asChild variant="outline" size="sm" className="w-full text-xs font-semibold border-emerald-300 text-emerald-900 hover:bg-emerald-50 transition-colors whitespace-nowrap">
