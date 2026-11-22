@@ -54,9 +54,6 @@ export function Footer() {
                   <h4 className="text-base sm:text-lg font-bold text-white tracking-tight leading-tight">
                     Modo Admin
                   </h4>
-                  <p className="text-xs text-sky-200/80 mt-0.5">
-                    Edição de conteúdo via Firebase
-                  </p>
                 </div>
               </div>
 
@@ -95,9 +92,6 @@ export function Footer() {
                   <h4 className="text-base sm:text-lg font-bold text-white tracking-tight leading-tight">
                     Modo Admin
                   </h4>
-                  <p className="text-xs text-sky-200/80 mt-0.5">
-                    Edição de conteúdo via Firebase
-                  </p>
                 </div>
               </div>
 
