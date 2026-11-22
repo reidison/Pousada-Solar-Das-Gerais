@@ -12,7 +12,7 @@ import {
   Phone,
   GlassWater,
   PhoneCall,
-  BookText,
+  BookText, Footprints,
 } from 'lucide-react';
 import { UsefulServicesModal } from '@/components/useful-services-modal';
 import { MinibarModal } from '@/components/minibar-modal';
@@ -102,6 +102,29 @@ export default function Page() {
               </p>
               <p className="text-xs font-medium text-[#11314C] tabular-nums">
                 {translations.infoCards.cityTour.meta}
+              </p>
+            </div>
+          </FeatureCard>
+
+          {/* Card 4: Pra onde uai?! */}
+          <FeatureCard
+            icon={<Footprints size={24} />}
+            title="Pra onde uai?!"
+            theme="green"
+            action={
+              <Button asChild variant="outline" size="sm" className="w-full text-xs font-semibold border-emerald-300 text-emerald-900 hover:bg-emerald-50 transition-colors whitespace-nowrap">
+                <Link href="/pra-onde-uai">
+                  Traçar rota a pé
+                </Link>
+              </Button>
+            }
+          >
+            <div className="space-y-2">
+              <p className="text-slate-600">
+                Trajeto a pé pelo Centro Histórico saindo da pousada com rota verde no mapa e Google Maps.
+              </p>
+              <p className="text-xs font-medium text-[#11314C]">
+                Partida: Rua Manuel Cabral, 119
               </p>
             </div>
           </FeatureCard>
