@@ -88,10 +88,16 @@ export function HeroHeader() {
             </p>
           </div>
 
-          {/* Right Column: Featured Photo (Canva-style framed card) */}
+          {/* Right Column: Featured Photo (Canva organic oval frame, horizontally flipped) */}
           <div className="lg:col-span-5">
-            <div className="bg-white p-2 sm:p-2.5 rounded-2xl border-2 border-[#11314C] shadow-[0_6px_0_0_#ECA31D]">
-              <div className="relative w-full aspect-[16/10] sm:aspect-[4/3] rounded-xl overflow-hidden bg-stone-200">
+            <div
+              className="bg-white p-2 sm:p-2.5 border-2 border-[#11314C] shadow-[0_8px_0_0_#ECA31D]"
+              style={{ borderRadius: '58% 42% 54% 46% / 44% 56% 44% 56%' }}
+            >
+              <div
+                className="relative w-full aspect-[16/10] sm:aspect-[4/3] overflow-hidden bg-stone-200"
+                style={{ borderRadius: '56% 44% 52% 48% / 46% 54% 46% 54%' }}
+              >
                 {!imgError ? (
                   <Image
                     src={heroImage}
@@ -101,7 +107,7 @@ export function HeroHeader() {
                     unoptimized
                     referrerPolicy="no-referrer"
                     onError={() => setImgError(true)}
-                    className="object-cover object-center"
+                    className="object-cover object-center -scale-x-100"
                   />
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#11314C] to-[#1E4D6E] text-white p-6 text-center">
@@ -111,7 +117,7 @@ export function HeroHeader() {
                   </div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#11314C]/35 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-3 right-3 text-[11px] text-white/95 font-medium px-2.5 py-1 rounded-full bg-black/45 backdrop-blur-xs">
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[11px] text-white/95 font-medium px-3 py-1 rounded-full bg-black/45 backdrop-blur-xs whitespace-nowrap">
                   Ouro Preto, MG
                 </div>
               </div>
