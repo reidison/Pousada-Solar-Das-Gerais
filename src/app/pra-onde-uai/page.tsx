@@ -52,7 +52,7 @@ function totalRouteMeters(points: [number, number][]): number {
 }
 
 export default function PraOndeUaiPage() {
-  const [originText, setOriginText] = useState<string>('');
+  const [originText, setOriginText] = useState<string>('Pousada Solar das Gerais - Rua Manuel Cabral, 119');
   const [originCoords, setOriginCoords] = useState<{ lat: number; lng: number; label: string }>({
     lat: POUSADA_ORIGIN.lat,
     lng: POUSADA_ORIGIN.lng,
@@ -384,15 +384,6 @@ export default function PraOndeUaiPage() {
                   <Search size={16} />
                 </Button>
               </div>
-
-              <button
-                type="button"
-                onClick={handleUsePousada}
-                className="inline-flex items-center gap-1.5 text-[11px] font-medium text-[#11314C] bg-amber-50 hover:bg-amber-100/80 border border-[#ECA31D]/50 px-2.5 py-1 rounded-full transition-colors"
-              >
-                <MapPin size={11} className="text-[#B45309]" />
-                Sugestão: Pousada Solar das Gerais (Rua Manuel Cabral, 119)
-              </button>
             </form>
 
             {/* Para (Destino) */}
