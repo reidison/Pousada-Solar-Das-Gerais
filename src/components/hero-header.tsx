@@ -10,8 +10,7 @@ import { doc } from 'firebase/firestore';
 import { LodgeConfigModal } from '@/components/lodge-config-modal';
 import type { LodgeInfo } from '@/types/lodge-info';
 
-const DEFAULT_HERO_IMAGE =
-  'https://images.unsplash.com/photo-1589999014168-3e589841f5a5?w=1000&q=85';
+const DEFAULT_HERO_IMAGE = '/images/hero-ouro-preto.png';
 
 export function HeroHeader() {
   const { language, setLanguage, translations } = useLanguage();
@@ -89,30 +88,32 @@ export function HeroHeader() {
             </p>
           </div>
 
-          {/* Right Column: Featured Photo */}
+          {/* Right Column: Featured Photo (Canva-style framed card) */}
           <div className="lg:col-span-5">
-            <div className="relative w-full aspect-[16/10] sm:aspect-[4/3] rounded-2xl overflow-hidden border border-stone-200/90 bg-stone-200 shadow-md ring-4 ring-white/80">
-              {!imgError ? (
-                <Image
-                  src={heroImage}
-                  alt="Pousada Solar das Gerais - Destaque"
-                  fill
-                  priority
-                  referrerPolicy="no-referrer"
-                  unoptimized={heroImage.startsWith('data:')}
-                  onError={() => setImgError(true)}
-                  className="object-cover object-center"
-                />
-              ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#11314C] to-[#1E4D6E] text-white p-6 text-center">
-                  <MapPin size={32} className="text-[#ECA31D] mb-2" />
-                  <p className="font-semibold text-sm">Pousada Solar das Gerais</p>
-                  <p className="text-xs text-sky-200 mt-0.5">Ouro Preto, MG</p>
+            <div className="bg-white p-2 sm:p-2.5 rounded-2xl border-2 border-[#11314C] shadow-[0_6px_0_0_#ECA31D]">
+              <div className="relative w-full aspect-[16/10] sm:aspect-[4/3] rounded-xl overflow-hidden bg-stone-200">
+                {!imgError ? (
+                  <Image
+                    src={heroImage}
+                    alt="Pousada Solar das Gerais - Destaque"
+                    fill
+                    priority
+                    unoptimized
+                    referrerPolicy="no-referrer"
+                    onError={() => setImgError(true)}
+                    className="object-cover object-center"
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#11314C] to-[#1E4D6E] text-white p-6 text-center">
+                    <MapPin size={32} className="text-[#ECA31D] mb-2" />
+                    <p className="font-semibold text-sm">Pousada Solar das Gerais</p>
+                    <p className="text-xs text-sky-200 mt-0.5">Ouro Preto, MG</p>
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#11314C]/35 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute bottom-3 right-3 text-[11px] text-white/95 font-medium px-2.5 py-1 rounded-full bg-black/45 backdrop-blur-xs">
+                  Ouro Preto, MG
                 </div>
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#11314C]/35 via-transparent to-transparent pointer-events-none" />
-              <div className="absolute bottom-3 right-3 text-[11px] text-white/95 font-medium px-2.5 py-1 rounded-full bg-black/45 backdrop-blur-xs">
-                Ouro Preto, MG
               </div>
             </div>
           </div>
