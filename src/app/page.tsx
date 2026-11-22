@@ -9,17 +9,14 @@ import {
   Coffee,
   Wifi,
   Map,
-  ShoppingBag,
   Phone,
   GlassWater,
   PhoneCall,
   BookText,
-  Sparkles,
 } from 'lucide-react';
 import { UsefulServicesModal } from '@/components/useful-services-modal';
 import { MinibarModal } from '@/components/minibar-modal';
 import { RegulationModal } from '@/components/regulation-modal';
-import { AIWelcomeModal } from '@/components/ai-welcome-modal';
 import { WhatsappIcon } from '@/components/icons/whatsapp-icon';
 import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
@@ -109,24 +106,6 @@ export default function Page() {
             </div>
           </FeatureCard>
 
-          {/* Card 4: Loja */}
-          <FeatureCard
-            icon={<ShoppingBag size={24} />}
-            title="Loja"
-            theme="green"
-            action={
-              <Button asChild variant="outline" size="sm" className="w-full text-xs font-semibold border-emerald-300 text-emerald-900 hover:bg-emerald-50 transition-colors">
-                <Link href="/loja">
-                  Ver produtos
-                </Link>
-              </Button>
-            }
-          >
-            <p className="text-slate-600">
-              Produtos artesanais, lembranças e delícias típicas de Ouro Preto selecionadas para você.
-            </p>
-          </FeatureCard>
-
           {/* Card 5: Recepção */}
           <FeatureCard
             icon={<Phone size={24} />}
@@ -179,18 +158,6 @@ export default function Page() {
           >
             <p className="text-slate-600">
               Normas e orientações de convivência da pousada para uma estadia harmoniosa e tranquila.
-            </p>
-          </FeatureCard>
-
-          {/* Card 9: Boas-vindas com IA */}
-          <FeatureCard
-            icon={<Sparkles size={24} />}
-            title="Boas-vindas com IA"
-            theme="gold"
-            action={<AIWelcomeModal />}
-          >
-            <p className="text-slate-600">
-              Receba uma mensagem de recepção personalizada gerada por inteligência artificial baseada no clima de Ouro Preto.
             </p>
           </FeatureCard>
         </div>
