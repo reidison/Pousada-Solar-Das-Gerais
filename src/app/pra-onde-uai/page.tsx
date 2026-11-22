@@ -6,8 +6,6 @@ import {
   ArrowLeft,
   ChevronDown,
   Clock,
-  Compass,
-  ExternalLink,
   Footprints,
   LocateFixed,
   MapPin,
@@ -379,12 +377,6 @@ export default function PraOndeUaiPage() {
       : Math.max(1, Math.round(routeDurationMin * (1 - progressFraction)));
   const progressPercent = Math.round(progressFraction * 100);
 
-  const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
-    `${originCoords.lat},${originCoords.lng}`
-  )}&destination=${encodeURIComponent(
-    `${destination.lat},${destination.lng}`
-  )}&travelmode=walking`;
-
   return (
     <div className="bg-[#FAF9F5] text-slate-800 min-h-screen flex flex-col font-body">
       {/* Top Bar */}
@@ -415,7 +407,7 @@ export default function PraOndeUaiPage() {
             Pra onde, uai?!
           </h1>
           <p className="text-sm sm:text-base text-slate-600 mt-1 max-w-2xl">
-            Trace sua caminhada pelo Centro Histórico saindo da pousada (Rua Manuel Cabral, 119). Acompanhe a rota verde em tempo real ou abra direto no Google Maps.
+            Trace sua caminhada pelo Centro Histórico saindo da pousada (Rua Manuel Cabral, 119). Acompanhe a rota verde em tempo real.
           </p>
         </div>
 
@@ -650,18 +642,6 @@ export default function PraOndeUaiPage() {
                   )}
                 </Button>
               </div>
-
-              <Button
-                asChild
-                variant="outline"
-                className="w-full h-11 rounded-xl font-semibold text-xs sm:text-sm border-[#11314C] text-[#11314C] hover:bg-[#11314C] hover:text-white transition-colors"
-              >
-                <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer">
-                  <Compass size={16} className="mr-2" />
-                  Abrir rota no Google Maps (A pé)
-                  <ExternalLink size={14} className="ml-2" />
-                </a>
-              </Button>
             </div>
           </div>
 

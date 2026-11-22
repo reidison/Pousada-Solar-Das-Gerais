@@ -121,7 +121,7 @@ export default function Page() {
           >
             <div className="space-y-2">
               <p className="text-slate-600">
-                Trajeto a pé pelo Centro Histórico saindo da pousada com rota verde no mapa e Google Maps.
+                Sua caminhada pelo Centro Histórico. Acompanhe a rota verde em tempo real.
               </p>
               <p className="text-xs font-medium text-[#11314C]">
                 Partida: Rua Manuel Cabral, 119
