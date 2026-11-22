@@ -4,7 +4,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link';
 import {
   ArrowLeft,
-  ArrowUpDown,
   Clock,
   Compass,
   ExternalLink,
@@ -13,6 +12,7 @@ import {
   MapPin,
   Navigation,
   Play,
+  Search,
   Square,
   Utensils,
   Landmark,
@@ -66,8 +66,13 @@ function totalRouteMeters(points: [number, number][]): number {
 }
 
 export default function PraOndeUaiPage() {
-  const [originId, setOriginId] = useState<string>(POUSADA_ORIGIN.id);
-  const [gpsOrigin, setGpsOrigin] = useState<{ lat: number; lng: number } | null>(null);
+  const [originText, setOriginText] = useState<string>('');
+  const [originCoords, setOriginCoords] = useState<{ lat: number; lng: number; label: string }>({
+    lat: POUSADA_ORIGIN.lat,
+    lng: POUSADA_ORIGIN.lng,
+    label: 'Pousada Solar das Gerais (Rua Manuel Cabral, 119)',
+  });
+  const [searchingOrigin, setSearchingOrigin] = useState<boolean>(false);
   const [destinationId, setDestinationId] = useState<string>('praca-tiradentes');
   const [categoryFilter, setCategoryFilter] = useState<'all' | Exclude<PlaceCategory, 'pousada'>>('all');
 
@@ -85,27 +90,9 @@ export default function PraOndeUaiPage() {
   const simTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const destination = useMemo(
-    () => ALL_PLACES.find((p) => p.id === destinationId) || OURO_PRETO_PLACES[0],
+    () => OURO_PRETO_PLACES.find((p) => p.id === destinationId) || OURO_PRETO_PLACES[0],
     [destinationId]
   );
-
-  const originCoords = useMemo(() => {
-    if (originId === 'gps' && gpsOrigin) {
-      return {
-        lat: gpsOrigin.lat,
-        lng: gpsOrigin.lng,
-        label: 'Minha localização atual (GPS)',
-        query: `${gpsOrigin.lat},${gpsOrigin.lng}`,
-      };
-    }
-    const found = ALL_PLACES.find((p) => p.id === originId) || POUSADA_ORIGIN;
-    return {
-      lat: found.lat,
-      lng: found.lng,
-      label: found.name,
-      query: found.googleMapsQuery,
-    };
-  }, [originId, gpsOrigin]);
 
   const stopWalking = useCallback(() => {
     if (watchIdRef.current !== null && typeof navigator !== 'undefined' && navigator.geolocation) {
@@ -171,6 +158,50 @@ export default function PraOndeUaiPage() {
     };
   }, [originCoords.lat, originCoords.lng, destination.lat, destination.lng, stopWalking]);
 
+  const handleUsePousada = () => {
+    setOriginText('Pousada Solar das Gerais - Rua Manuel Cabral, 119');
+    setOriginCoords({
+      lat: POUSADA_ORIGIN.lat,
+      lng: POUSADA_ORIGIN.lng,
+      label: 'Pousada Solar das Gerais (Rua Manuel Cabral, 119)',
+    });
+    setGpsStatus('Partida definida: Pousada Solar das Gerais.');
+  };
+
+  const handleSearchOrigin = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const query = originText.trim();
+    if (!query) {
+      handleUsePousada();
+      return;
+    }
+    setSearchingOrigin(true);
+    setGpsStatus('Localizando endereço de partida em Ouro Preto...');
+    try {
+      const fullQuery = query.toLowerCase().includes('ouro preto')
+        ? query
+        : `${query}, Ouro Preto, MG, Brasil`;
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(fullQuery)}`
+      );
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        setOriginCoords({
+          lat: parseFloat(data[0].lat),
+          lng: parseFloat(data[0].lon),
+          label: query,
+        });
+        setGpsStatus(`Partida definida: ${query}`);
+      } else {
+        setGpsStatus('Endereço não encontrado em Ouro Preto. Tente outro nome de rua ou use a pousada.');
+      }
+    } catch {
+      setGpsStatus('Não foi possível buscar o endereço agora. Use a pousada ou seu GPS.');
+    } finally {
+      setSearchingOrigin(false);
+    }
+  };
+
   const handleUseCurrentLocation = () => {
     if (typeof navigator === 'undefined' || !navigator.geolocation) {
       setGpsStatus('Seu navegador não suporta geolocalização.');
@@ -179,8 +210,12 @@ export default function PraOndeUaiPage() {
     setGpsStatus('Buscando sua localização...');
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setGpsOrigin({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-        setOriginId('gps');
+        setOriginText('Minha localização atual (GPS)');
+        setOriginCoords({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          label: 'Minha localização atual (GPS)',
+        });
         setGpsStatus('Localização atual definida como partida.');
       },
       () => {
@@ -269,13 +304,6 @@ export default function PraOndeUaiPage() {
     }, 350);
   };
 
-  const handleSwapOriginDest = () => {
-    if (originId === 'gps') return;
-    const prevOrigin = originId;
-    setOriginId(destinationId);
-    setDestinationId(prevOrigin);
-  };
-
   // Remaining distance & time based on current progress
   const progressFraction =
     walkMode !== 'idle' && routePoints.length > 1
@@ -350,10 +378,13 @@ export default function PraOndeUaiPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Left Panel: De / Para Controls + Live HUD */}
           <div className="lg:col-span-5 bg-white rounded-2xl border border-stone-200/90 shadow-sm p-5 space-y-4">
-            {/* De (Origem) */}
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-[#11314C] flex items-center gap-1.5">
+            {/* De (Origem) - Campo preenchível com sugestão da Pousada */}
+            <form onSubmit={handleSearchOrigin} className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="origin-input"
+                  className="text-xs font-bold uppercase tracking-wider text-[#11314C] flex items-center gap-1.5"
+                >
                   <span className="w-2.5 h-2.5 rounded-full bg-[#11314C] ring-2 ring-[#ECA31D]" />
                   De (Partida)
                 </label>
@@ -366,34 +397,36 @@ export default function PraOndeUaiPage() {
                   Usar meu GPS
                 </button>
               </div>
-              <select
-                value={originId}
-                onChange={(e) => setOriginId(e.target.value)}
-                className="w-full h-11 rounded-xl border border-stone-200 bg-[#FAF9F5] px-3 text-sm font-medium text-[#11314C] focus:outline-none focus:ring-2 focus:ring-[#11314C]/20"
-              >
-                {gpsOrigin && (
-                  <option value="gps">Minha localização atual (GPS)</option>
-                )}
-                {ALL_PLACES.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
-            </div>
 
-            {/* Swap divider */}
-            <div className="flex items-center justify-center -my-1">
+              <div className="flex gap-2">
+                <input
+                  id="origin-input"
+                  type="text"
+                  value={originText}
+                  onChange={(e) => setOriginText(e.target.value)}
+                  placeholder="Pousada Solar das Gerais - Rua Manuel Cabral, 119"
+                  className="flex-1 h-11 rounded-xl border border-stone-200 bg-[#FAF9F5] px-3 text-sm font-medium text-[#11314C] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#11314C]/20"
+                />
+                <Button
+                  type="submit"
+                  variant="outline"
+                  disabled={searchingOrigin}
+                  className="h-11 px-3 rounded-xl border-stone-200 text-[#11314C] hover:bg-stone-100 shrink-0"
+                  title="Buscar endereço de partida"
+                >
+                  <Search size={16} />
+                </Button>
+              </div>
+
               <button
                 type="button"
-                onClick={handleSwapOriginDest}
-                disabled={originId === 'gps'}
-                title="Inverter De / Para"
-                className="p-1.5 rounded-full border border-stone-200 bg-white text-slate-600 hover:text-[#11314C] hover:bg-stone-50 disabled:opacity-40 transition-colors"
+                onClick={handleUsePousada}
+                className="inline-flex items-center gap-1.5 text-[11px] font-medium text-[#11314C] bg-amber-50 hover:bg-amber-100/80 border border-[#ECA31D]/50 px-2.5 py-1 rounded-full transition-colors"
               >
-                <ArrowUpDown size={15} />
+                <MapPin size={11} className="text-[#B45309]" />
+                Sugestão: Pousada Solar das Gerais (Rua Manuel Cabral, 119)
               </button>
-            </div>
+            </form>
 
             {/* Para (Destino) */}
             <div>
@@ -406,7 +439,7 @@ export default function PraOndeUaiPage() {
                 onChange={(e) => setDestinationId(e.target.value)}
                 className="w-full h-11 rounded-xl border border-emerald-200 bg-emerald-50/40 px-3 text-sm font-semibold text-[#11314C] focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
               >
-                {ALL_PLACES.filter((p) => p.id !== originId).map((p) => (
+                {OURO_PRETO_PLACES.map((p) => (
                   <option key={p.id} value={p.id}>
                     {p.name}
                   </option>
